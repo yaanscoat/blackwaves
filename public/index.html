@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en" data-motion="3" data-view="home">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+		<title>blackwaves</title>
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="theme-color" content="#050505" />
+		<meta name="robots" content="noindex" />
+		<link rel="preload" href="/fonts/lexend-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+		<link rel="stylesheet" href="/styles.css" />
+	</head>
+
+	<body>
+		<div class="bg" aria-hidden="true">
+			<div id="bg-media" class="bg__media"></div>
+			<canvas id="bg-canvas" class="bg__canvas"></canvas>
+			<div class="bg__vignette"></div>
+		</div>
+
+		<nav id="dock" class="dock" aria-label="Main" data-glass>
+			<a class="dock__brand" href="#/" data-view="home" aria-label="blackwaves home">
+				<img src="/favicon.ico" alt="" width="24" height="24" />
+				<span class="dock__name">blackwaves</span>
+			</a>
+			<div id="dock-menu" class="dock__menu">
+				<div class="dock__menu-inner">
+					<div class="dock__row">
+						<span class="dock__sep" aria-hidden="true"></span>
+						<div class="dock__nav">
+							<span class="dock__indicator" aria-hidden="true"></span>
+							<a class="dock__item" href="#/games" data-view="games" data-icon="games"><span class="dock__label">Games</span></a>
+							<a class="dock__item" href="#/apps" data-view="apps" data-icon="apps"><span class="dock__label">Apps</span></a>
+							<a class="dock__item" href="#/movies" data-view="movies" data-icon="movies"><span class="dock__label">Movies</span></a>
+							<a class="dock__item" href="#/browser" data-view="browser" data-icon="browser"><span class="dock__label">Browser</span></a>
+						</div>
+						<span class="dock__spacer" aria-hidden="true"></span>
+						<button id="dock-notify" class="dock__item" type="button" aria-label="Notifications" aria-haspopup="dialog" aria-expanded="false" aria-controls="notify-panel" data-icon="bell">
+							<span id="dock-badge" class="dock__badge" hidden></span>
+							<span class="dock__label">Notifications</span>
+						</button>
+						<button id="dock-settings" class="dock__item" type="button" aria-label="Settings" data-icon="settings"><span class="dock__label">Settings</span></button>
+					</div>
+				</div>
+			</div>
+			<button id="dock-toggle" class="dock__toggle" type="button" aria-controls="dock-menu" aria-expanded="true" aria-label="Collapse menu">
+				<span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>
+				<span class="dock__label">Collapse</span>
+			</button>
+			<div id="notify-panel" class="notify" role="dialog" aria-label="Notifications" hidden></div>
+		</nav>
+
+		<main class="views">
+			<!-- home -->
+			<section id="view-home" class="view view--home" aria-label="Home">
+				<div class="hero">
+					<button id="hero-logo" class="hero__logo" type="button" aria-label="Throw confetti">
+						<span class="hero__logo-art"><img src="/favicon.ico" alt="" width="64" height="64" /></span>
+					</button>
+					<h1 class="hero__title" aria-label="blackwaves">
+						<span class="hero__word">blackwaves</span>
+					</h1>
+					<form id="home-search" class="search" role="search" data-glass autocomplete="off">
+						<button id="home-engine" class="search__engine"></button>
+						<input
+							id="home-input"
+							class="search__input"
+							type="text"
+							name="q"
+							aria-label="Search or enter address"
+							role="combobox"
+							aria-autocomplete="list"
+							aria-controls="home-suggest"
+							aria-expanded="false"
+							autocapitalize="off"
+							spellcheck="false"
+							enterkeyhint="search"
+						/>
+						<button class="search__go" type="submit" aria-label="Search" data-icon="search"></button>
+						<ul id="home-suggest" class="suggest" role="listbox" hidden></ul>
+					</form>
+				</div>
+			</section>
+
+			<!-- games -->
+			<section id="view-games" class="view view--scroll" aria-label="Games" hidden>
+				<header class="page-head">
+					<div class="page-head__title">
+						<h2>games</h2>
+						<span id="games-count" class="page-head__count"></span>
+					</div>
+					<label class="field-search" data-glass>
+						<span data-icon="search"></span>
+						<input id="games-search" type="search" placeholder="Search games" aria-label="Search games" autocomplete="off" spellcheck="false" />
+					</label>
+				</header>
+				<div id="games-chips" class="chips" aria-label="Filter games"></div>
+				<div id="games-grid" class="games-grid" role="list"></div>
+				<div id="games-more" class="games-more" aria-hidden="true"></div>
+
+				<div id="player" class="player" hidden>
+					<div class="player__bar" data-glass>
+						<button id="player-back" type="button" class="icon-btn" aria-label="Back to games" data-icon="back"></button>
+						<div class="player__title">
+							<strong id="player-title"></strong>
+							<span id="player-source"></span>
+						</div>
+						<button id="player-fav" type="button" class="icon-btn" aria-label="Favorite"></button>
+						<button id="player-reload" type="button" class="icon-btn" aria-label="Restart game" data-icon="reload"></button>
+						<button id="player-popout" type="button" class="icon-btn" aria-label="Open in about:blank" title="Open in about:blank" data-icon="popout"></button>
+						<button id="player-fullscreen" type="button" class="icon-btn" aria-label="Fullscreen" data-icon="fullscreen"></button>
+					</div>
+					<iframe
+						id="player-frame"
+						class="player__frame"
+						title="Game"
+						allow="autoplay; fullscreen; gamepad; pointer-lock; clipboard-write"
+						allowfullscreen
+					></iframe>
+				</div>
+			</section>
+
+			<!-- apps -->
+			<section id="view-apps" class="view view--scroll" aria-label="Apps" hidden>
+				<header class="page-head">
+					<div class="page-head__title"><h2>apps</h2></div>
+					<label class="field-search" data-glass>
+						<span data-icon="search"></span>
+						<input id="apps-search" type="search" placeholder="Search apps" aria-label="Search apps" autocomplete="off" spellcheck="false" />
+					</label>
+				</header>
+				<div id="apps-chips" class="chips" aria-label="Filter apps"></div>
+				<div id="apps-grid" class="apps-grid"></div>
+			</section>
+
+			<!-- movies -->
+			<section id="view-movies" class="view view--frame" aria-label="Movies" hidden>
+				<div class="frame-bar" data-glass>
+					<span class="frame-bar__title" data-icon="movies"><span>movies</span></span>
+					<button id="movies-reload" type="button" class="icon-btn" aria-label="Reload" data-icon="reload"></button>
+					<button id="movies-fullscreen" type="button" class="icon-btn" aria-label="Fullscreen" data-icon="fullscreen"></button>
+				</div>
+				<div id="movies-frame-host" class="frame-host">
+					<p id="movies-status" class="frame-status"><span class="spinner"></span>Loading movies…</p>
+				</div>
+			</section>
+
+			<!-- browser -->
+			<section id="view-browser" class="view view--frame" aria-label="Browser" hidden>
+				<div class="browser-bar" data-glass>
+					<div class="tabs-row">
+						<div id="tabstrip" class="tabstrip" role="tablist" aria-label="Tabs"></div>
+						<button id="tab-new" type="button" class="icon-btn" aria-label="New tab" title="New tab (Alt+T)" data-icon="plus"></button>
+					</div>
+					<div class="nav-row">
+						<button id="back" type="button" class="icon-btn" aria-label="Back" data-icon="back"></button>
+						<button id="forward" type="button" class="icon-btn" aria-label="Forward" data-icon="forward"></button>
+						<button id="reload" type="button" class="icon-btn" aria-label="Reload" data-icon="reload"></button>
+						<form id="omnibox" class="omnibox" role="search">
+							<button id="browser-engine" class="search__engine"></button>
+							<input
+								id="address"
+								type="text"
+								name="address"
+								placeholder="Search or enter address"
+								autocomplete="off"
+								autocapitalize="off"
+								spellcheck="false"
+								enterkeyhint="go"
+								aria-label="Address"
+							/>
+						</form>
+						<button id="browser-fullscreen" type="button" class="icon-btn" aria-label="Fullscreen" data-icon="fullscreen"></button>
+					</div>
+				</div>
+				<div id="frames" class="frames">
+					<div id="newtab" class="newtab">
+						<p class="newtab__title">new tab</p>
+						<form id="newtab-form" class="newtab__form" autocomplete="off">
+							<span data-icon="search"></span>
+							<input id="newtab-input" type="text" placeholder="Search or enter address" aria-label="Search or enter address" spellcheck="false" autocapitalize="off" />
+						</form>
+						<div class="newtab__links">
+							<button type="button" data-url="https://www.youtube.com/"><img src="/api/icon/youtube.com" alt="" width="28" height="28" /><span>YouTube</span></button>
+							<button type="button" data-url="https://open.spotify.com/"><img src="/api/icon/spotify.com" alt="" width="28" height="28" /><span>Spotify</span></button>
+							<button type="button" data-url="https://discord.com/app"><img src="/api/icon/discord.com" alt="" width="28" height="28" /><span>Discord</span></button>
+							<button type="button" data-url="https://www.reddit.com/"><img src="/api/icon/reddit.com" alt="" width="28" height="28" /><span>Reddit</span></button>
+							<button type="button" data-url="https://www.wikipedia.org/"><img src="/api/icon/wikipedia.org" alt="" width="28" height="28" /><span>Wikipedia</span></button>
+							<button type="button" data-url="https://www.twitch.tv/"><img src="/api/icon/twitch.tv" alt="" width="28" height="28" /><span>Twitch</span></button>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<div id="settings" class="settings-backdrop" hidden>
+			<div id="settings-dialog" class="settings" role="dialog" aria-modal="true" aria-labelledby="settings-title" data-glass>
+				<nav id="settings-nav" class="settings__nav" role="tablist" aria-label="Settings sections" aria-orientation="vertical"></nav>
+				<div class="settings__main">
+					<header class="settings__head">
+						<h2 id="settings-title" class="settings__title"></h2>
+						<button id="settings-close" type="button" class="icon-btn" aria-label="Close settings" data-icon="close"></button>
+					</header>
+					<div id="settings-content" class="settings__content" role="tabpanel"></div>
+				</div>
+			</div>
+		</div>
+
+		<div id="toasts" class="toasts" aria-live="polite"></div>
+
+		<script type="module" src="/js/app.js"></script>
+	</body>
+</html>
