@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="favicon.ico" alt="Alt Text" width="500">
+  <img src="favicon.ico" alt="Alt Text" width="300">
 </p>
 
-<h1>blackwaves!</h1>
+<h1 align="center">blackwaves!</h1>
