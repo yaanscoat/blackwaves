@@ -1,0 +1,38 @@
+{
+  "name": "blackwaves",
+  "version": "3.0.0",
+  "description": "blackwaves: games, movies, music, manga, a proxy browser, chat and a shop, all in one tab.",
+  "type": "module",
+  "license": "AGPL-3.0-or-later",
+  "private": true,
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "node server/index.js --dev",
+    "build": "vite build",
+    "start": "node server/index.js",
+    "check:size": "node scripts/check-size.js",
+    "check": "node --check server/index.js && node scripts/check-size.js"
+  },
+  "dependencies": {
+    "@mercuryworkshop/epoxy-transport": "3.0.1",
+    "@mercuryworkshop/libcurl-transport": "2.0.6",
+    "@mercuryworkshop/scramjet": "2.0.67-alpha.2",
+    "@mercuryworkshop/scramjet-controller": "0.0.14",
+    "@mercuryworkshop/wisp-js": "0.5.0",
+    "@preact/preset-vite": "^2.10.5",
+    "@preact/signals": "^2.9.0",
+    "cheerio": "^1.2.0",
+    "hls.js": "^1.6.17",
+    "ipaddr.js": "^2.5.0",
+    "preact": "^10.29.1",
+    "undici": "^7.30.1",
+    "vite": "^8.0.8",
+    "ws": "^8.21.3",
+    "youtubei.js": "^18.2.0"
+  },
+  "devDependencies": {
+    "omggif": "^1.0.10"
+  }
+}
