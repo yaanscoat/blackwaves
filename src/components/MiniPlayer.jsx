@@ -9,7 +9,7 @@ export function MiniPlayer() {
   const { time, duration } = progress.value;
   const liked = likes.value.some((entry) => entry.id === track.id);
   return (
-    <div class="mini-player glass liquid" role="region" aria-label="Now playing">
+    <div class="mini-player glass liquid sheen" role="region" aria-label="Now playing">
       <button class="mini-art" onClick={() => navigate("/music")} aria-label="Open music">
         {track.album?.cover ? <img src={track.album.cover} alt="" /> : <Icon name="music" />}
         {playing.value && (

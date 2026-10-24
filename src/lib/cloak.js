@@ -60,7 +60,61 @@ export function launchCloaked(mode) {
 }
 
 export function panic() {
-  location.replace(settings.value.panicUrl || "https://classroom.google.com");
+  const url = settings.value.panicUrl || "https://classroom.google.com";
+  // if we're inside an about:blank / blob: cloak, take the whole tab with us
+  try {
+    window.top.location.replace(url);
+  } catch {
+    location.replace(url);
+  }
+}
+
+function onPanicKey(event) {
+  const key = settings.value.panicKey;
+  if (!key || event.key !== key) return;
+  const target = event.target;
+  if (target && target.nodeType === 1 && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) return;
+  event.preventDefault();
+  event.stopPropagation();
+  panic();
+}
+
+/**
+ * key presses inside iframes never reach this page, so the panic key wouldn't
+ * work while you're in a game, the browser or a movie. everything we proxy runs
+ * on our own origin, so we can reach into every frame (and frames inside those)
+ * and listen there too. re-hooked on every load because navigation swaps documents.
+ */
+const hooked = new WeakSet();
+function hookFrame(frame) {
+  if (hooked.has(frame)) return;
+  hooked.add(frame);
+  const attach = () => {
+    try {
+      const doc = frame.contentDocument;
+      if (!doc || doc.__bwPanic) return;
+      doc.__bwPanic = true;
+      doc.addEventListener("keydown", onPanicKey, true);
+      watchFrames(doc);
+    } catch {}
+  };
+  frame.addEventListener("load", attach);
+  attach();
+}
+
+function watchFrames(doc) {
+  try {
+    doc.querySelectorAll("iframe, frame").forEach(hookFrame);
+    new MutationObserver((records) => {
+      for (const record of records) {
+        for (const node of record.addedNodes) {
+          if (node.nodeType !== 1) continue;
+          if (node.tagName === "IFRAME" || node.tagName === "FRAME") hookFrame(node);
+          else node.querySelectorAll?.("iframe, frame").forEach(hookFrame);
+        }
+      }
+    }).observe(doc.documentElement, { childList: true, subtree: true });
+  } catch {}
 }
 
 export function initCloak() {
@@ -82,13 +136,8 @@ export function initCloak() {
     }).observe(titleEl, { childList: true, characterData: true, subtree: true });
   }
 
-  document.addEventListener("keydown", (event) => {
-    const key = settings.value.panicKey;
-    if (!key || event.key !== key) return;
-    const target = event.target;
-    if (target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) return;
-    panic();
-  });
+  document.addEventListener("keydown", onPanicKey, true);
+  watchFrames(document);
 
   const mode = settings.value.autoLaunch;
   if (mode !== "off" && !isFramed() && !sessionStorage.getItem("bw-launched")) {

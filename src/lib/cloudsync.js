@@ -5,6 +5,7 @@ import { signal } from "@preact/signals";
 import { getBlob, putBlob, storage } from "./storage.js";
 import { get, put } from "./api.js";
 import { loadSettings } from "./settings.js";
+import { loadMusicState } from "./player.js";
 
 export const SYNCED_KEYS = [
   "settings",
@@ -17,6 +18,7 @@ export const SYNCED_KEYS = [
   "musicLikes",
   "musicRecents",
   "musicAlbums",
+  "musicArtists",
   "mangaProgress",
 ];
 
@@ -89,6 +91,7 @@ async function applyRemote(remote) {
     if (changed) {
       storage.set("syncMeta", stamps);
       loadSettings();
+      loadMusicState();
     }
   } finally {
     applying = false;

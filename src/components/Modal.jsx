@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { Icon } from "./Icon.jsx";
+import { attachLens } from "../lib/fx/lens.js";
+
+let lensCount = 0;
 
 export function Modal({ title, onClose, wide = false, children, class: className = "", hideHead = false }) {
   const [closing, setClosing] = useState(false);
@@ -10,6 +13,8 @@ export function Modal({ title, onClose, wide = false, children, class: className
     setClosing(true);
     setTimeout(onClose, 190);
   };
+
+  useEffect(() => attachLens(panel.current, `bw-lens-modal-${++lensCount}`, { strength: 45, bevel: 30 }), []);
 
   useEffect(() => {
     const onKey = (event) => event.key === "Escape" && close();

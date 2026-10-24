@@ -17,10 +17,12 @@ export const shuffle = signal(false);
 export const repeat = signal("off"); // "off" | "all" | "one"
 export const likes = signal([]);
 export const savedAlbums = signal([]);
+export const followedArtists = signal([]);
 
 export function loadMusicState() {
   likes.value = storage.get("musicLikes", []);
   savedAlbums.value = storage.get("musicAlbums", []);
+  followedArtists.value = storage.get("musicArtists", []);
   repeat.value = storage.get("musicRepeat", "off");
   shuffle.value = storage.get("musicShuffle", false);
   volume.value = storage.get("musicVolume", 1);
@@ -171,6 +173,18 @@ export function toggleSavedAlbum(album) {
   savedAlbums.value = saved ? savedAlbums.value.filter((entry) => entry.id !== album.id) : [album, ...savedAlbums.value];
   storage.set("musicAlbums", savedAlbums.value);
   return !saved;
+}
+
+export function isFollowing(artist) {
+  return followedArtists.value.some((entry) => entry.id === artist.id);
+}
+
+export function toggleFollow(artist) {
+  const following = isFollowing(artist);
+  const { id, name, picture, source } = artist;
+  followedArtists.value = following ? followedArtists.value.filter((entry) => entry.id !== id) : [{ id, name, picture, source }, ...followedArtists.value];
+  storage.set("musicArtists", followedArtists.value);
+  return !following;
 }
 
 /** saves the track as a real audio file through our stream proxy */

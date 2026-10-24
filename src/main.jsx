@@ -1,5 +1,6 @@
 import { render } from "preact";
 import "./styles/base.css";
+import "./styles/glass.css";
 import "./styles/topbar.css";
 import "./styles/app.css";
 import { initStorage, storage } from "./lib/storage.js";
@@ -11,6 +12,9 @@ import { loadMusicState } from "./lib/player.js";
 import { initCloak } from "./lib/cloak.js";
 import { initOverlay } from "./lib/fx/overlay.js";
 import { initSearchLight } from "./lib/fx/searchlight.js";
+import { initSheen, refreshLenses } from "./lib/fx/lens.js";
+import { effect } from "@preact/signals";
+import { settings } from "./lib/settings.js";
 import { connect } from "./lib/realtime.js";
 import { refreshMe, me } from "./lib/account.js";
 import { loadConsent, consent } from "./components/Welcome.jsx";
@@ -34,6 +38,11 @@ async function boot() {
   initCloak();
   initOverlay();
   initSearchLight();
+  initSheen();
+  effect(() => {
+    void settings.value.glassRefraction;
+    refreshLenses();
+  });
   initEasterEggs();
 
   // refraction only works in chromium, everyone else gets plain frosted glass

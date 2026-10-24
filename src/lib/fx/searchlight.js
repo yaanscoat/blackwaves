@@ -44,6 +44,7 @@ export function initSearchLight() {
         current = { x: event.clientX - rect.left, y: event.clientY - rect.top };
         el.setAttribute("data-lit", "");
       }
+      if (!active) return;
       const rect = active.getBoundingClientRect();
       target = { x: event.clientX - rect.left, y: event.clientY - rect.top };
       if (!raf) raf = requestAnimationFrame(step);

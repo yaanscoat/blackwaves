@@ -27,6 +27,16 @@ export function updateTab(id, patch) {
   tabs.value = tabs.value.map((tab) => (tab.id === id ? { ...tab, ...patch } : tab));
 }
 
+/** drag-to-reorder: drops tab `id` where tab `target` currently sits */
+export function moveTab(id, target) {
+  const list = [...tabs.value];
+  const from = list.findIndex((tab) => tab.id === id);
+  const to = list.findIndex((tab) => tab.id === target);
+  if (from < 0 || to < 0 || from === to) return;
+  list.splice(to, 0, list.splice(from, 1)[0]);
+  tabs.value = list;
+}
+
 export function closeTab(id) {
   const index = tabs.value.findIndex((tab) => tab.id === id);
   const next = tabs.value.filter((tab) => tab.id !== id);

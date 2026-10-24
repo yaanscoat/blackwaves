@@ -2,6 +2,7 @@
 // middle, the now-playing bar along the bottom. the audio itself lives in
 // lib/player.js so it keeps going when you leave this page.
 import { useEffect, useMemo, useState } from "preact/hooks";
+import { signal } from "@preact/signals";
 import { Icon } from "../components/Icon.jsx";
 import { get } from "../lib/api.js";
 import { storage } from "../lib/storage.js";
@@ -27,6 +28,9 @@ import {
   downloadTrack,
   toggleSavedAlbum,
   isSavedAlbum,
+  followedArtists,
+  isFollowing,
+  toggleFollow,
   formatTime,
 } from "../lib/player.js";
 import { me } from "../lib/account.js";
@@ -52,6 +56,42 @@ const BROWSE = [
 ].map(([title, query], index) => ({ id: `browse-${index}`, title, url: `/api/music/search?type=tracks&q=${encodeURIComponent(query)}` }));
 
 const SOURCE_LABEL = { ytmusic: "YouTube Music", soundcloud: "SoundCloud" };
+
+// the open album/artist/playlist lives out here so any artist name anywhere on
+// the page can open a profile, and so leaving music and coming back keeps your place.
+// back walks the stack like a browser would. a tiny, ad-free browser.
+const view = signal(null);
+const backStack = [];
+
+function openView(next) {
+  if (view.value) backStack.push(view.value);
+  if (backStack.length > 40) backStack.shift();
+  view.value = next;
+  document.querySelector(".sp-scroll")?.scrollTo({ top: 0 });
+}
+
+function goBack() {
+  view.value = backStack.pop() || null;
+}
+
+function closeViews() {
+  backStack.length = 0;
+  view.value = null;
+}
+
+function ArtistLink({ artist, class: className = "" }) {
+  if (!artist?.name) return null;
+  if (!artist.id) return <span class={className}>{artist.name}</span>;
+  const go = (event) => {
+    event.stopPropagation();
+    openView({ kind: "artist", id: artist.id });
+  };
+  return (
+    <span class={`artist-link ${className}`} role="link" tabIndex={0} onClick={go} onKeyDown={(event) => event.key === "Enter" && go(event)}>
+      {artist.name}
+    </span>
+  );
+}
 
 function greeting() {
   const hour = new Date().getHours();
@@ -98,12 +138,12 @@ function TrackCard({ track, list }) {
         <PlayFab active={active} onClick={() => (active ? toggle() : playTrack(track, list))} />
       </span>
       <span class="m-title">{track.title}</span>
-      <span class="m-sub">{track.artist?.name}</span>
+      <ArtistLink class="m-sub" artist={track.artist} />
     </div>
   );
 }
 
-function AlbumCard({ album, onOpen }) {
+function AlbumCard({ album, onOpen, sub }) {
   return (
     <div class="m-card" onClick={() => onOpen({ kind: "album", id: album.id })} role="button" tabIndex={0}>
       <span class="m-art">
@@ -111,7 +151,7 @@ function AlbumCard({ album, onOpen }) {
         <PlayFab label={`Open ${album.title}`} onClick={() => onOpen({ kind: "album", id: album.id, autoplay: true })} />
       </span>
       <span class="m-title">{album.title}</span>
-      <span class="m-sub">{album.artist?.name || `${album.count} songs`}</span>
+      {sub ? <span class="m-sub">{sub}</span> : album.artist?.name ? <ArtistLink class="m-sub" artist={album.artist} /> : <span class="m-sub">{album.count} songs</span>}
     </div>
   );
 }
@@ -166,7 +206,7 @@ function Shelf({ title, url, items: given, onOpen, kind = "tracks", source, load
   );
 }
 
-function TrackTable({ tracks, showAlbum = true }) {
+function TrackTable({ tracks, showAlbum = true, showPlays = false }) {
   const current = nowPlaying.value;
   if (!tracks.length) return null;
   return (
@@ -174,7 +214,7 @@ function TrackTable({ tracks, showAlbum = true }) {
       <div class="t-row t-head" role="row">
         <span>#</span>
         <span>Title</span>
-        {showAlbum && <span class="t-album">Album</span>}
+        {showPlays ? <span class="t-album">Plays</span> : showAlbum && <span class="t-album">Album</span>}
         <span class="t-dur">
           <Icon name="clock" size={15} />
         </span>
@@ -197,10 +237,21 @@ function TrackTable({ tracks, showAlbum = true }) {
                   {track.title}
                   {track.explicit && <span class="badge explicit">E</span>}
                 </span>
-                <span class="t-sub">{track.artist?.name}</span>
+                <ArtistLink class="t-sub" artist={track.artist} />
               </span>
             </span>
-            {showAlbum && <span class="t-album t-sub">{track.album?.title}</span>}
+            {showPlays ? (
+              <span class="t-album t-sub t-plays">{track.plays || ""}</span>
+            ) : (
+              showAlbum &&
+              (track.album?.id ? (
+                <span class="t-album t-sub artist-link" role="link" tabIndex={0} onClick={() => openView({ kind: "album", id: track.album.id })}>
+                  {track.album.title}
+                </span>
+              ) : (
+                <span class="t-album t-sub">{track.album?.title}</span>
+              ))
+            )}
             <span class="t-dur">
               <button class={`t-icon ${liked ? "on" : ""}`} aria-label={liked ? "Remove from Liked Songs" : "Save to Liked Songs"} onClick={() => toggleLike(track)}>
                 <Icon name="heart" size={15} fill={liked} />
@@ -296,6 +347,9 @@ function Search({ query, onOpen }) {
   const cloudSongs = cloud.data?.items || [];
   const top = songs[0] || cloudSongs[0];
   const anyLoading = tracks.loading || cloud.loading;
+  // typed an artist's exact name? they're the top result, like spotify does it
+  const name = debounced.toLowerCase();
+  const topArtist = [...(artists.data?.items || []), ...(cloudArtists.data?.items || [])].find((artist) => artist.name?.toLowerCase() === name);
   return (
     <>
       {anyLoading && !top ? (
@@ -311,14 +365,23 @@ function Search({ query, onOpen }) {
         <div class="search-top">
           <section>
             <h2 class="m-section">Top result</h2>
-            <div class="top-result" onClick={() => playTrack(top, songs.length ? songs : cloudSongs)} role="button" tabIndex={0}>
-              {top.album?.cover && <img src={top.album.cover} alt="" />}
-              <strong>{top.title}</strong>
-              <span class="m-sub">
-                Song · {top.artist?.name} · {SOURCE_LABEL[top.source] || ""}
-              </span>
-              <PlayFab active={nowPlaying.value?.id === top.id} onClick={() => playTrack(top, songs.length ? songs : cloudSongs)} />
-            </div>
+            {topArtist ? (
+              <div class="top-result" onClick={() => onOpen({ kind: "artist", id: topArtist.id })} role="button" tabIndex={0}>
+                {topArtist.picture && <img class="round" src={topArtist.picture} alt="" />}
+                <strong>{topArtist.name}</strong>
+                <span class="m-sub">Artist · {SOURCE_LABEL[topArtist.id.startsWith("sr:") ? "soundcloud" : "ytmusic"]}</span>
+                <PlayFab label={`Open ${topArtist.name}`} onClick={() => onOpen({ kind: "artist", id: topArtist.id, autoplay: true })} />
+              </div>
+            ) : (
+              <div class="top-result" onClick={() => playTrack(top, songs.length ? songs : cloudSongs)} role="button" tabIndex={0}>
+                {top.album?.cover && <img src={top.album.cover} alt="" />}
+                <strong>{top.title}</strong>
+                <span class="m-sub">
+                  Song · <ArtistLink artist={top.artist} /> · {SOURCE_LABEL[top.source] || ""}
+                </span>
+                <PlayFab active={nowPlaying.value?.id === top.id} onClick={() => playTrack(top, songs.length ? songs : cloudSongs)} />
+              </div>
+            )}
           </section>
           <section>
             <h2 class="m-section">Songs <span class="source-tag">YouTube Music</span></h2>
@@ -362,11 +425,155 @@ function Search({ query, onOpen }) {
   );
 }
 
+function BackButton() {
+  return (
+    <button class="btn ghost sm c-back" onClick={goBack}>
+      <Icon name="back" size={16} /> Back
+    </button>
+  );
+}
+
+const DISCOGRAPHY = [
+  ["all", "All"],
+  ["albums", "Albums"],
+  ["singles", "Singles & EPs"],
+];
+
+function ArtistView({ view: current }) {
+  const { data, error } = useData(`/api/music/artist/${encodeURIComponent(current.id)}`);
+  const [morePopular, setMorePopular] = useState(false);
+  const [allSongs, setAllSongs] = useState(false);
+  const [filter, setFilter] = useState("all");
+
+  const popular = data?.popular || [];
+  const tracks = data?.tracks?.length ? data.tracks : popular;
+  useEffect(() => {
+    if (current.autoplay && popular.length) playTrack(popular[0], popular);
+  }, [popular.length > 0]);
+
+  if (!data) {
+    return (
+      <div class="collection-view">
+        <div class="c-hero">
+          <BackButton />
+          {error ? <p class="muted">{error}</p> : <div class="spinner" />}
+        </div>
+      </div>
+    );
+  }
+
+  const { artist, albums = [], singles = [], related = [] } = data;
+  const byYear = (a, b) => (Number(b.year) || 0) - (Number(a.year) || 0);
+  const releases = filter === "albums" ? albums : filter === "singles" ? singles : [...albums, ...singles].sort(byYear);
+  const following = isFollowing(artist);
+  const playingHere = tracks.some((track) => track.id === nowPlaying.value?.id) && playing.value;
+  const stats = [artist.followers, tracks.length && `${tracks.length}${tracks.length >= 100 ? "+" : ""} songs`, albums.length && `${albums.length} album${albums.length === 1 ? "" : "s"}`].filter(Boolean);
+
+  return (
+    <div class="artist-view">
+      <header class={`a-hero ${artist.banner ? "has-banner" : ""}`} style={artist.banner ? { "--banner": `url("${artist.banner}")` } : undefined}>
+        <BackButton />
+        <div class="a-head">
+          <span class="a-photo">{artist.picture ? <img src={artist.picture} alt="" /> : <Icon name="user" size={56} />}</span>
+          <div class="a-text">
+            <span class="a-kind">
+              <Icon name="check" size={13} stroke={2.4} /> Artist · {SOURCE_LABEL[artist.source] || ""}
+            </span>
+            <h1>{artist.name}</h1>
+            <span class="m-sub">{stats.join(" · ")}</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="c-actions">
+        <PlayFab label={playingHere ? "Pause" : `Play ${artist.name}`} active={playingHere} onClick={() => (playingHere ? toggle() : popular[0] && playTrack(popular[0], popular))} />
+        <button
+          class={`c-icon ${shuffle.value ? "on" : ""}`}
+          aria-label="Shuffle play"
+          data-tip="Shuffle play"
+          onClick={() => {
+            if (!shuffle.value) toggleShuffle();
+            if (tracks.length) playTrack(tracks[Math.floor(Math.random() * tracks.length)], tracks);
+          }}
+        >
+          <Icon name="shuffle" size={22} />
+        </button>
+        <button class={`btn ghost follow-btn ${following ? "on" : ""}`} onClick={() => toggleFollow(artist)}>
+          {following ? "Following" : "Follow"}
+        </button>
+      </div>
+
+      {popular.length > 0 && (
+        <section>
+          <h2 class="m-section">Popular</h2>
+          <TrackTable tracks={popular.slice(0, morePopular ? 10 : 5)} showPlays={popular.some((track) => track.plays)} />
+          {popular.length > 5 && (
+            <button class="see-more" onClick={() => setMorePopular(!morePopular)}>
+              {morePopular ? "Show less" : "See more"}
+            </button>
+          )}
+        </section>
+      )}
+
+      {albums.length + singles.length > 0 && (
+        <section class="shelf">
+          <h2>Discography</h2>
+          <div class="chip-row" role="tablist">
+            {DISCOGRAPHY.filter(([key]) => key === "all" || (key === "albums" ? albums.length : singles.length)).map(([key, label]) => (
+              <button key={key} role="tab" aria-selected={filter === key} class={`chip ${filter === key ? "on" : ""}`} onClick={() => setFilter(key)}>
+                {label}
+              </button>
+            ))}
+          </div>
+          <div class="shelf-row">
+            {releases.map((album) => (
+              <AlbumCard key={album.id} album={album} onOpen={openView} sub={[album.year, album.kind || "Album"].filter(Boolean).join(" · ")} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {tracks.length > popular.length && (
+        <section>
+          <h2 class="m-section">
+            All songs <span class="source-tag">{tracks.length}</span>
+          </h2>
+          <TrackTable tracks={allSongs ? tracks : tracks.slice(0, 10)} />
+          {tracks.length > 10 && (
+            <button class="see-more" onClick={() => setAllSongs(!allSongs)}>
+              {allSongs ? "Show less" : `Show all ${tracks.length}`}
+            </button>
+          )}
+        </section>
+      )}
+
+      {artist.description && (
+        <section>
+          <h2 class="m-section">About</h2>
+          <div class={`a-about ${artist.banner ? "has-banner" : ""}`} style={artist.banner ? { "--banner": `url("${artist.banner}")` } : undefined}>
+            <p>{artist.description}</p>
+          </div>
+        </section>
+      )}
+
+      {related.length > 0 && (
+        <section class="shelf">
+          <h2>Fans also like</h2>
+          <div class="shelf-row">
+            {related.map((entry) => (
+              <ArtistCard key={entry.id} artist={entry} onOpen={openView} />
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  );
+}
+
 function Collection({ view, onBack }) {
-  const remote = useData(view.kind === "album" || view.kind === "artist" ? `/api/music/${view.kind}/${encodeURIComponent(view.id)}` : view.kind === "shelf" ? view.url : null);
+  const remote = useData(view.kind === "album" ? `/api/music/album/${encodeURIComponent(view.id)}` : view.kind === "shelf" ? view.url : null);
   let head = null;
   let tracks = [];
-  let albums = [];
   if (view.kind === "liked") {
     head = { title: "Liked Songs", kind: "Playlist", subtitle: `${likes.value.length} songs`, liked: true };
     tracks = likes.value;
@@ -377,17 +584,16 @@ function Collection({ view, onBack }) {
     tracks = remote.data?.items || [];
     head = { title: view.title, kind: "Playlist", subtitle: "Fresh from YouTube Music" };
   } else if (remote.data) {
-    const info = view.kind === "album" ? remote.data.album : remote.data.artist;
+    const info = remote.data.album;
     head = {
-      title: info?.title || info?.name,
-      kind: view.kind === "album" ? "Album" : "Artist",
-      subtitle: view.kind === "album" ? [info?.artist?.name, info?.year, `${remote.data.tracks.length} songs`].filter(Boolean).join(" · ") : "",
-      cover: info?.cover || info?.picture,
-      round: view.kind === "artist",
-      album: view.kind === "album" ? info : null,
+      title: info?.title,
+      kind: info?.kind || "Album",
+      artist: info?.artist,
+      subtitle: [info?.year, `${remote.data.tracks.length} songs`].filter(Boolean).join(" · "),
+      cover: info?.cover,
+      album: info,
     };
     tracks = remote.data.tracks;
-    albums = remote.data.albums || [];
   }
 
   useEffect(() => {
@@ -397,9 +603,7 @@ function Collection({ view, onBack }) {
   return (
     <div class="collection-view">
       <div class="c-hero">
-        <button class="btn ghost sm c-back" onClick={onBack}>
-          <Icon name="back" size={16} /> Back
-        </button>
+        <BackButton />
         {head ? (
           <div class="c-head">
             <span class={`c-cover ${head.round ? "round" : ""} ${head.liked ? "liked-art" : ""}`}>
@@ -408,7 +612,11 @@ function Collection({ view, onBack }) {
             <div>
               <span class="m-sub">{head.kind}</span>
               <h1>{head.title}</h1>
-              <span class="m-sub">{head.subtitle}</span>
+              <span class="m-sub c-byline">
+                {head.artist?.name && <ArtistLink class="c-artist" artist={head.artist} />}
+                {head.artist?.name && head.subtitle && " · "}
+                {head.subtitle}
+              </span>
             </div>
           </div>
         ) : remote.error ? (
@@ -443,16 +651,6 @@ function Collection({ view, onBack }) {
       ) : (
         <TrackTable tracks={tracks} showAlbum={view.kind !== "album"} />
       )}
-      {albums.length > 0 && (
-        <section class="shelf">
-          <h2>Discography</h2>
-          <div class="shelf-row">
-            {albums.map((album) => (
-              <AlbumCard key={album.id} album={album} onOpen={view.onOpen} />
-            ))}
-          </div>
-        </section>
-      )}
     </div>
   );
 }
@@ -469,7 +667,7 @@ function NowPlayingBar() {
             <span class="np-art">{track.album?.cover ? <img src={track.album.cover} alt="" /> : <Icon name="music" />}</span>
             <span class="np-text">
               <span class="np-title">{track.title}</span>
-              <span class="m-sub">{track.artist?.name}</span>
+              <ArtistLink class="m-sub" artist={track.artist} />
             </span>
             <button class={`c-icon small ${liked ? "on" : ""}`} aria-label={liked ? "Remove from Liked Songs" : "Save to Liked Songs"} onClick={() => toggleLike(track)}>
               <Icon name="heart" size={17} fill={liked} />
@@ -546,17 +744,18 @@ function NowPlayingBar() {
 export function Music() {
   const [tab, setTab] = useState("home");
   const [query, setQuery] = useState("");
-  const [view, setView] = useState(null);
-  const open = (next) => setView({ ...next, onOpen: open });
+  const current = view.value;
+  const open = openView;
+  const setView = closeViews;
 
   return (
     <main class="spotify">
       <aside class="sp-side">
         <nav class="sp-panel glass">
-          <button class={`sp-nav ${tab === "home" && !view ? "active" : ""}`} onClick={() => (setTab("home"), setView(null))}>
+          <button class={`sp-nav ${tab === "home" && !current ? "active" : ""}`} onClick={() => (setTab("home"), setView())}>
             <Icon name="home" size={22} /> Home
           </button>
-          <button class={`sp-nav ${tab === "search" && !view ? "active" : ""}`} onClick={() => (setTab("search"), setView(null))}>
+          <button class={`sp-nav ${tab === "search" && !current ? "active" : ""}`} onClick={() => (setTab("search"), setView())}>
             <Icon name="search" size={22} /> Search
           </button>
         </nav>
@@ -591,19 +790,30 @@ export function Music() {
               </span>
             </button>
           ))}
+          {followedArtists.value.map((artist) => (
+            <button key={artist.id} class="lib-item" onClick={() => open({ kind: "artist", id: artist.id })}>
+              <span class="lib-art round">{artist.picture ? <img src={artist.picture} alt="" /> : <Icon name="user" size={16} />}</span>
+              <span class="lib-text">
+                <span>{artist.name}</span>
+                <span class="m-sub">Artist</span>
+              </span>
+            </button>
+          ))}
         </div>
       </aside>
 
       <section class="sp-main glass">
-        {tab === "search" && !view && (
+        {tab === "search" && !current && (
           <label class="searchbox sp-search">
             <Icon name="search" />
             <input autoFocus placeholder="What do you want to listen to?" value={query} onInput={(event) => setQuery(event.currentTarget.value)} aria-label="Search music" />
           </label>
         )}
         <div class="sp-scroll">
-          {view ? (
-            <Collection key={`${view.kind}-${view.id || view.url || ""}`} view={view} onBack={() => setView(null)} />
+          {current?.kind === "artist" ? (
+            <ArtistView key={`artist-${current.id}`} view={current} />
+          ) : current ? (
+            <Collection key={`${current.kind}-${current.id || current.url || ""}`} view={current} />
           ) : tab === "search" ? (
             <Search query={query} onOpen={open} />
           ) : (

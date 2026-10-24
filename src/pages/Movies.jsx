@@ -5,6 +5,8 @@ import { navigate, route, segments } from "../lib/router.js";
 import { storage } from "../lib/storage.js";
 import { createFrame } from "../lib/proxy.js";
 import "../styles/media.css";
+import "../styles/player.css";
+import { VideoPlayer } from "../components/VideoPlayer.jsx";
 
 const img = (path, size = "w342") => (path ? `/api/movies/img/${size}${path}` : "");
 
@@ -231,33 +233,6 @@ function Browse({ onOpen }) {
   );
 }
 
-function HlsPlayer({ src, onFail }) {
-  const video = useRef(null);
-  useEffect(() => {
-    let hls;
-    let cancelled = false;
-    (async () => {
-      const el = video.current;
-      if (el.canPlayType("application/vnd.apple.mpegurl")) {
-        el.src = src;
-        return;
-      }
-      const { default: Hls } = await import("hls.js");
-      if (cancelled) return;
-      if (!Hls.isSupported()) return onFail();
-      hls = new Hls({ maxBufferLength: 30 });
-      hls.loadSource(src);
-      hls.attachMedia(el);
-      hls.on(Hls.Events.ERROR, (_, data) => data.fatal && onFail());
-    })();
-    return () => {
-      cancelled = true;
-      hls?.destroy();
-    };
-  }, [src]);
-  return <video ref={video} class="player-frame" controls autoplay playsInline />;
-}
-
 /** the embed players run inside scramjet, so they're proxied like everything else */
 function ProxiedEmbed({ url }) {
   const iframe = useRef(null);
@@ -299,7 +274,22 @@ function ProxiedEmbed({ url }) {
   );
 }
 
-function Player({ type, id, season, episode }) {
+/** remember how far in you are, per title and episode */
+function savedTime(type, id, season, episode) {
+  const entry = storage.get("watchProgress", []).find((item) => item.type === type && String(item.id) === String(id));
+  if (!entry || (type === "tv" && (entry.season !== season || entry.episode !== episode))) return 0;
+  return entry.time && entry.duration && entry.time < entry.duration - 60 ? entry.time : 0;
+}
+
+function saveTime(type, id, season, episode, time, duration) {
+  const list = storage.get("watchProgress", []);
+  const index = list.findIndex((item) => item.type === type && String(item.id) === String(id));
+  if (index < 0) return;
+  list[index] = { ...list[index], season, episode, time, duration, at: Date.now() };
+  storage.set("watchProgress", [...list]);
+}
+
+function Player({ type, id, season, episode, data }) {
   const [player, setPlayer] = useState(() => storage.get("moviePlayer", "auto"));
   const streams = useFetch(type === "movie" ? `/api/movies/stream/movie/${id}` : `/api/movies/stream/tv/${id}/${season}/${episode}`);
   const [hlsFailed, setHlsFailed] = useState(false);
@@ -321,7 +311,27 @@ function Player({ type, id, season, episode }) {
     <div class="player-wrap">
       <div class="player-stage">
         {builtIn ? (
-          <HlsPlayer src={hls.url} onFail={() => setHlsFailed(true)} />
+          <VideoPlayer
+            key={hls.url}
+            src={hls.url}
+            title={data ? data.title || data.name : ""}
+            subtitle={type === "tv" ? `Season ${season}, episode ${episode}` : ""}
+            meta={{
+              year: String(data?.release_date || data?.first_air_date || "").slice(0, 4),
+              runtime: data?.runtime ? `${Math.floor(data.runtime / 60)}h ${data.runtime % 60}m` : "",
+              rating: data?.vote_average ? data.vote_average.toFixed(1) : "",
+              genres: (data?.genres || []).slice(0, 3).map((genre) => genre.name).join(", "),
+              overview: data?.overview || "",
+            }}
+            startAt={savedTime(type, id, season, episode)}
+            onProgress={(time, duration) => saveTime(type, id, season, episode, time, duration)}
+            onFail={() => setHlsFailed(true)}
+            downloadUrl={(() => {
+              const original = new URL(hls.url, location.origin).searchParams.get("u");
+              const name = [data?.title || data?.name, type === "tv" ? `S${season}E${episode}` : String(data?.release_date || "").slice(0, 4)].filter(Boolean).join(" ");
+              return original ? `/api/movies/download?u=${encodeURIComponent(original)}&name=${encodeURIComponent(name)}` : "";
+            })()}
+          />
         ) : waiting ? (
           <div class="empty">
             <div class="spinner" />
@@ -398,7 +408,7 @@ function Detail({ type, id, autoplay }) {
       <button class="btn ghost sm detail-back" onClick={() => navigate("/movies")}>
         <Icon name="back" size={16} /> Movies & shows
       </button>
-      {playing && <Player type={type} id={id} season={season} episode={episode} />}
+      {playing && <Player type={type} id={id} season={season} episode={episode} data={data} />}
       <div class="detail-main">
         <img class="detail-poster" src={img(data.poster_path, "w500")} alt="" />
         <div class="detail-text">

@@ -15,6 +15,9 @@ async function readCached(source) {
 export const SOURCES = [
   { id: "all", name: "All sources" },
   { id: "gn-math", name: "gn-math" },
+  { id: "seraph", name: "Seraph" },
+  { id: "ugs", name: "UGS" },
+  { id: "ckv", name: "CKV" },
   { id: "selenite", name: "Selenite" },
   { id: "truffled", name: "Truffled" },
   { id: "edurocks", name: "Edurocks" },

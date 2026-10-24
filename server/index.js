@@ -328,7 +328,7 @@ if (config.dev) {
     appType: "spa",
   });
 } else if (!fs.existsSync(path.join(paths.dist, "index.html"))) {
-  console.warn("heads up: dist/index.html is missing, run `npm run build` before `npm start`.");
+  console.warn("heads up: dist/index.html is missing. `npm start` builds it for you, or run `npm run build`.");
 }
 
 server.on("error", (error) => {

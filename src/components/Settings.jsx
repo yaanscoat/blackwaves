@@ -1,7 +1,7 @@
 import { useState } from "preact/hooks";
 import { Modal } from "./Modal.jsx";
 import { Icon } from "./Icon.jsx";
-import { settingsOpen, openAuth } from "../lib/ui.js";
+import { settingsOpen, openAuth, NAV } from "../lib/ui.js";
 import { settings, setSetting, resetSettings } from "../lib/settings.js";
 import { THEMES, ACCENTS } from "../data/themes.js";
 import { BACKGROUNDS } from "../lib/fx/scenes.js";
@@ -77,6 +77,33 @@ function Segmented({ k, options, label }) {
   );
 }
 
+const DOCK_EXTRAS = [
+  { id: "coins", icon: "coin", label: "Coins" },
+  { id: "bell", icon: "bell", label: "Notifications" },
+  { id: "settings", icon: "settings", label: "Settings" },
+];
+
+function DockItems() {
+  const hidden = Array.isArray(settings.value.topbarHidden) ? settings.value.topbarHidden : [];
+  const flip = (id) => setSetting("topbarHidden", hidden.includes(id) ? hidden.filter((entry) => entry !== id) : [...hidden, id]);
+  return (
+    <div class="dock-picker">
+      {[...NAV, ...DOCK_EXTRAS].map((item) => {
+        const shown = !hidden.includes(item.id);
+        return (
+          <button key={item.id} class={`dock-pick ${shown ? "on" : ""}`} aria-pressed={shown} onClick={() => flip(item.id)}>
+            <Icon name={item.icon} size={18} />
+            <span>{item.label}</span>
+            <span class="dock-pick-check">
+              <Icon name={shown ? "check" : "plus"} size={13} stroke={2.4} />
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 function Appearance() {
   const s = settings.value;
   return (
@@ -117,10 +144,95 @@ function Appearance() {
         <Toggle k="glass" label="Liquid glass" />
       </Row>
       {s.glass && (
-        <Row title="Glass strength" hint={`${s.glassStrength}%`}>
-          <input class="range" type="range" min="0" max="100" value={s.glassStrength} onInput={(event) => setSetting("glassStrength", Number(event.currentTarget.value))} />
-        </Row>
+        <>
+          <Row title="Glass style" stack>
+            <Segmented
+              k="glassStyle"
+              label="Glass style"
+              options={[
+                { id: "liquid", name: "Liquid" },
+                { id: "frosted", name: "Frosted" },
+                { id: "clear", name: "Clear" },
+                { id: "tinted", name: "Tinted" },
+              ]}
+            />
+          </Row>
+          <Row title="Blur" hint={`${s.glassStrength}%`}>
+            <input class="range" type="range" min="0" max="100" value={s.glassStrength} onInput={(event) => setSetting("glassStrength", Number(event.currentTarget.value))} />
+          </Row>
+          {s.glassStyle === "liquid" && (
+            <Row title="Refraction" hint={document.documentElement.dataset.liquid === "on" ? `${s.glassRefraction}%: how much the edges bend what's behind them` : "Needs Chrome, Edge, Opera or another Chromium browser"}>
+              <input
+                class="range"
+                type="range"
+                min="0"
+                max="100"
+                value={s.glassRefraction}
+                disabled={document.documentElement.dataset.liquid !== "on"}
+                onInput={(event) => setSetting("glassRefraction", Number(event.currentTarget.value))}
+              />
+            </Row>
+          )}
+          <Row title="Light reflections" hint="A highlight that follows your cursor across glass.">
+            <Toggle k="glassSheen" label="Light reflections" />
+          </Row>
+        </>
       )}
+      <h3 class="set-h">Top bar</h3>
+      <Row title="Style" stack>
+        <Segmented
+          k="topbarStyle"
+          label="Top bar style"
+          options={[
+            { id: "floating", name: "Floating dock" },
+            { id: "bar", name: "Full-width bar" },
+            { id: "pill", name: "Minimal pill" },
+            { id: "bottom", name: "Bottom dock" },
+          ]}
+        />
+      </Row>
+      <Row title="Size" stack>
+        <Segmented
+          k="topbarSize"
+          label="Top bar size"
+          options={[
+            { id: "compact", name: "Compact" },
+            { id: "regular", name: "Regular" },
+            { id: "large", name: "Large" },
+          ]}
+        />
+      </Row>
+      <Row title="Labels" hint="Icons only, with names on hover, or names always showing." stack>
+        <Segmented
+          k="topbarLabels"
+          label="Top bar labels"
+          options={[
+            { id: "hover", name: "On hover" },
+            { id: "always", name: "Always" },
+          ]}
+        />
+      </Row>
+      <Row title="Current page marker" stack>
+        <Segmented
+          k="topbarIndicator"
+          label="Current page marker"
+          options={[
+            { id: "dot", name: "Glowing dot" },
+            { id: "underline", name: "Underline" },
+            { id: "pill", name: "Highlight" },
+            { id: "none", name: "None" },
+          ]}
+        />
+      </Row>
+      <Row title="What's in the top bar" hint="Tap to hide or show. Hidden pages move into the menu button and their Alt shortcuts still work." stack>
+        <DockItems />
+      </Row>
+      <Row title="Show the blackwaves name">
+        <Toggle k="topbarBrand" label="Show the blackwaves name" />
+      </Row>
+      <Row title="Magnify icons on hover" hint="The mac-dock swell.">
+        <Toggle k="topbarMagnify" label="Magnify icons on hover" />
+      </Row>
       <Row title="Motion" hint="How much stuff moves around." stack>
         <Segmented
           k="motion"
@@ -522,6 +634,9 @@ function About() {
           </span>
         ))}
       </div>
+      <p class="small panic-hint">
+        <span class="kbd">{settings.value.panicKey || "not set"}</span> Panic key: jumps to {settings.value.panicUrl.replace("https://", "").replace("http://", "")} from anywhere on blackwaves, even inside games, the browser and movies. Change it in Privacy & cloaking.
+      </p>
       <p class="faint small about-secrets">
         Secrets found: {found.value.length}/{SECRETS.length}
       </p>

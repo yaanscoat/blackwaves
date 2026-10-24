@@ -131,3 +131,25 @@ for (const { name, reader } of gifs) {
   fs.writeFileSync(path.join(output, name.replace(/\.gif$/, ".png")), png(first));
   console.log(`${name}: ${(fs.statSync(path.join(input, name)).size / 1024).toFixed(0)} KB -> ${(gif.length / 1024).toFixed(0)} KB`);
 }
+
+// 4. the newer decorations are discord's own animated pngs: transparent in the
+// middle already, so they're copied as-is and drawn in front of the avatar.
+// the still version is just the default image with the animation chunks dropped.
+function apngStill(buffer) {
+  const keep = [];
+  let offset = 8;
+  while (offset < buffer.length) {
+    const length = buffer.readUInt32BE(offset);
+    const type = buffer.toString("ascii", offset + 4, offset + 8);
+    if (!["acTL", "fcTL", "fdAT"].includes(type)) keep.push(buffer.subarray(offset, offset + 12 + length));
+    offset += 12 + length;
+  }
+  return Buffer.concat([buffer.subarray(0, 8), ...keep]);
+}
+
+for (const name of fs.readdirSync(input).filter((file) => file.endsWith(".png"))) {
+  const source = fs.readFileSync(path.join(input, name));
+  fs.writeFileSync(path.join(output, name), source);
+  fs.writeFileSync(path.join(output, name.replace(/\.png$/, ".still.png")), apngStill(source));
+  console.log(`${name}: copied + still`);
+}

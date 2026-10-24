@@ -6,7 +6,7 @@ import { DEFAULT_BOOKMARKS } from "../data/catalogs.js";
 import { faviconUrl } from "../lib/gameurl.js";
 import { resolveInput } from "../lib/search.js";
 
-function useBookmarks() {
+export function useBookmarks() {
   const [list, setList] = useState(() => storage.get("bookmarks") || DEFAULT_BOOKMARKS);
   useEffect(() => storage.on("bookmarks", (value) => setList(value || DEFAULT_BOOKMARKS)), []);
   return [list, (next) => storage.set("bookmarks", next)];

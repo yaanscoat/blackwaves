@@ -413,7 +413,64 @@ function parseTruffled(payload) {
         ] : [];
     });
 }
+// the gmshelf collections (ugs, ckv, seraph) are plain github repos full of
+// game files. jsdelivr serves them, and their game pages expect the repos to sit
+// side by side (ugs games borrow seraph's ruffle), which jsdelivr's /gh/ layout does.
+const GMSHELF = "https://cdn.jsdelivr.net/gh/gmshelf";
+
+function prettyName(value) {
+    const name = text(value);
+    // ckv names are slugs like "10minutestilldawn"; at least capitalize them
+    return name && name === name.toLowerCase() && !name.includes(" ") ? name.charAt(0).toUpperCase() + name.slice(1) : name;
+}
+
+function parseGmshelf(source, repo) {
+    return (payload) => {
+        const rows = Array.isArray(payload) ? payload : isRecord(payload) && Array.isArray(payload.games) ? payload.games : null;
+        if (!rows) {
+            throw new GameCatalogError("catalog payload has no games", { kind: "upstream-data", source });
+        }
+        const base = `${GMSHELF}/${repo}@main`;
+        return rows.filter(isRecord).flatMap((game) => {
+            const path = text(game.url);
+            const name = prettyName(game.name);
+            if (!path || !name) return [];
+            // the json paths start with "/", which would jump to the root of jsdelivr; keep them inside the repo
+            const gameUrl = absoluteHttpUrl(path.replace(/^\/+/, ""), `${base}/`);
+            if (!gameUrl) return [];
+            let cover = text(game.img);
+            if (!cover || cover.includes("placeholder")) {
+                // seraph keeps real covers in /covers/<folder>.jpg even though its json says placeholder
+                const slug = path.split("/").filter(Boolean)[1]?.replace(/\.html?$/, "");
+                cover = repo === "seraph" && slug ? `/covers/${slug}.jpg` : "";
+            }
+            const mapped = mappedGame(source, {
+                id: path,
+                name,
+                gameUrl,
+                coverUrl: cover ? proxiedCoverUrl(cover.replace(/^\/+/, ""), `${base}/`) : "",
+            });
+            return mapped ? [mapped] : [];
+        });
+    };
+}
+
 export const GAME_SOURCE_ADAPTERS = {
+    seraph: {
+        key: "seraph",
+        catalogUrl: getProxyUrl(`${GMSHELF}/seraph@main/seraph.json`),
+        parse: parseGmshelf("seraph", "seraph")
+    },
+    ckv: {
+        key: "ckv",
+        catalogUrl: getProxyUrl(`${GMSHELF}/ckv@main/ckv.json`),
+        parse: parseGmshelf("ckv", "ckv")
+    },
+    ugs: {
+        key: "ugs",
+        catalogUrl: getProxyUrl(`${GMSHELF}/ugs@main/ugs.json`),
+        parse: parseGmshelf("ugs", "ugs")
+    },
     edurocks: {
         key: "edurocks",
         catalogUrl: getProxyUrl(EDUROCKS_CATALOG_URL),

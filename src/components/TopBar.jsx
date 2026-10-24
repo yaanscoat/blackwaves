@@ -7,6 +7,7 @@ import { me, coinPulse, logout, canClaimDaily, claimDaily } from "../lib/account
 import { notifications, markAllRead, clearNotifications, toast } from "../lib/notify.js";
 import { settings } from "../lib/settings.js";
 import { openProfile } from "./ProfileCard.jsx";
+import { attachLens } from "../lib/fx/lens.js";
 
 function useClickAway(ref, open, close) {
   useEffect(() => {
@@ -52,7 +53,7 @@ function Bell() {
         {unread > 0 && <span class="dock-dot">{unread > 9 ? "9+" : unread}</span>}
       </button>
       {open && (
-        <div class="popover glass liquid notif-pop">
+        <div class="popover glass liquid sheen notif-pop">
           <div class="notif-head">
             <h3>Notifications</h3>
             {list.length > 0 && (
@@ -110,7 +111,7 @@ function Account() {
         {user ? <Avatar user={user} size={30} /> : <Icon name="user" />}
       </button>
       {open && (
-        <div class="popover glass liquid account-pop">
+        <div class="popover glass liquid sheen account-pop">
           {user ? (
             <>
               <button class="account-head" onClick={() => (setOpen(false), openProfile(user.username))}>
@@ -186,6 +187,13 @@ export function TopBar() {
   const indicator = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const current = section(route.value);
+  // anything switched off in settings > appearance moves into the "more" menu
+  const hidden = new Set(Array.isArray(settings.value.topbarHidden) ? settings.value.topbarHidden : []);
+  const shownNav = NAV.filter((item) => !hidden.has(item.id));
+  const tucked = NAV.some((item) => hidden.has(item.id)) || hidden.has("settings");
+
+  // chromium bends the backdrop through a lens drawn for the dock's exact shape
+  useEffect(() => attachLens(dock.current, "bw-lens-dock", { strength: 60 }), []);
 
   // slide the glowing pill under whichever item is active
   useLayoutEffect(() => {
@@ -210,7 +218,7 @@ export function TopBar() {
     });
   };
   const onMove = (event) => {
-    if (settings.value.motion !== "full") return;
+    if (settings.value.motion !== "full" || !settings.value.topbarMagnify) return;
     const state = magnet.current;
     state.x = event.clientX;
     if (state.raf) return;
@@ -226,7 +234,7 @@ export function TopBar() {
 
   return (
     <header class="topbar">
-      <nav class="dock glass liquid" ref={dock} onPointerEnter={onEnter} onPointerMove={onMove} onPointerLeave={onLeave} aria-label="Main">
+      <nav class="dock glass liquid sheen" ref={dock} onPointerEnter={onEnter} onPointerMove={onMove} onPointerLeave={onLeave} aria-label="Main">
         <a
           class="brand"
           href="/"
@@ -241,7 +249,7 @@ export function TopBar() {
         </a>
         <span class="dock-sep" />
         <div class="dock-nav">
-          {NAV.map((item) => (
+          {shownNav.map((item) => (
             <a
               key={item.id}
               href={item.path}
@@ -255,19 +263,28 @@ export function TopBar() {
               }}
             >
               <Icon name={item.icon} />
+              <span class="dock-label">{item.label.split(" ")[0]}</span>
             </a>
           ))}
           <span class="dock-indicator" ref={indicator} />
         </div>
         <span class="dock-sep" />
         <div class="dock-right">
-          <Coins />
-          <Bell />
-          <button class="dock-item" aria-label="Settings" data-tip="Settings  ·  Alt+," onClick={() => openSettings()}>
-            <Icon name="settings" />
-          </button>
+          {!hidden.has("coins") && <Coins />}
+          {!hidden.has("bell") && <Bell />}
+          {!hidden.has("settings") && (
+            <button class="dock-item" aria-label="Settings" data-tip="Settings  ·  Alt+," onClick={() => openSettings()}>
+              <Icon name="settings" />
+            </button>
+          )}
           <Account />
-          <button class="dock-item dock-burger" aria-label="Menu" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>
+          <button
+            class={`dock-item dock-burger ${tucked ? "tucked" : ""}`}
+            aria-label="More"
+            data-tip="More"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
             <Icon name={menuOpen ? "x" : "menu"} />
           </button>
         </div>
@@ -278,7 +295,7 @@ export function TopBar() {
             <a
               key={item.id}
               href={item.path}
-              class={`mobile-item ${current === item.id ? "active" : ""}`}
+              class={`mobile-item ${current === item.id ? "active" : ""} ${hidden.has(item.id) ? "" : "in-dock"}`}
               style={{ "--i": index }}
               onClick={(event) => {
                 event.preventDefault();
@@ -289,6 +306,12 @@ export function TopBar() {
               <span>{item.label}</span>
             </a>
           ))}
+          {hidden.has("settings") && (
+            <button class="mobile-item" style={{ "--i": NAV.length }} onClick={() => openSettings()}>
+              <Icon name="settings" />
+              <span>Settings</span>
+            </button>
+          )}
         </div>
       )}
     </header>

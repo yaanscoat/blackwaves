@@ -185,6 +185,88 @@
 .c-icon:disabled { opacity: 0.35; cursor: default; }
 .repeat-one { position: absolute; top: 3px; right: 2px; font-size: 9px; font-weight: 500; color: var(--accent); }
 
+.t-plays { font-variant-numeric: tabular-nums; }
+.c-byline { display: inline-flex; align-items: center; gap: 4px; white-space: pre; }
+.c-artist { color: var(--text); font-weight: 500; }
+
+/* anything with an artist's name in it opens their profile */
+.artist-link { cursor: pointer; }
+.artist-link:hover { color: var(--text); text-decoration: underline; text-underline-offset: 2px; }
+.lib-art.round, .top-result img.round { border-radius: 50%; }
+
+/* artist profile */
+.artist-view { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; }
+.a-hero {
+  position: relative;
+  display: grid;
+  gap: 18px;
+  align-content: space-between;
+  min-height: 300px;
+  margin: -20px -24px 0;
+  padding: 20px 24px 22px;
+  isolation: isolate;
+}
+/* the artist's banner, faded into the page like spotify's header image */
+.a-hero.has-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--banner) center 30% / cover no-repeat;
+  mask-image: linear-gradient(180deg, #000 30%, transparent);
+  opacity: 0.55;
+  animation: a-banner-in 0.9s var(--ease) both;
+}
+@keyframes a-banner-in {
+  from { opacity: 0; scale: 1.06; }
+}
+.a-hero .c-back { align-self: start; }
+.a-head { display: flex; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+.a-photo {
+  width: 208px;
+  height: 208px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgb(var(--text-rgb) / 0.08);
+  box-shadow: 0 20px 60px rgb(0 0 0 / 0.6);
+  animation: a-photo-in 0.6s var(--spring) both;
+}
+@keyframes a-photo-in {
+  from { opacity: 0; scale: 0.85; }
+}
+.a-photo img { width: 100%; height: 100%; object-fit: cover; }
+.a-text { display: grid; gap: 2px; min-width: 0; }
+.a-kind { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text); }
+.a-kind .icon { padding: 2px; border-radius: 50%; background: var(--accent); color: var(--bg); width: 17px; height: 17px; }
+.a-text h1 { font-size: clamp(40px, 7vw, 92px); line-height: 1; letter-spacing: -0.04em; margin: 6px 0 10px; text-shadow: 0 4px 30px rgb(0 0 0 / 0.45); overflow-wrap: anywhere; }
+.c-actions .follow-btn { height: 34px; padding: 0 18px; border: 1px solid rgb(var(--text-rgb) / 0.4); border-radius: 99px; font-weight: 500; transition: border-color 0.2s, transform 0.2s var(--spring); }
+.c-actions .follow-btn:hover { border-color: var(--text); transform: scale(1.04); }
+.c-actions .follow-btn.on { border-color: var(--accent); color: var(--accent); }
+.see-more { margin: 8px 12px 0; padding: 0; border: 0; background: none; color: var(--muted); font-weight: 500; font-size: 14px; cursor: pointer; }
+.see-more:hover { color: var(--text); }
+.chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 2px 0 12px; }
+.chip { height: 32px; padding: 0 14px; border: 0; border-radius: 99px; background: rgb(var(--text-rgb) / 0.08); color: var(--text); font-size: 14px; cursor: pointer; transition: background 0.2s, color 0.2s; }
+.chip:hover { background: rgb(var(--text-rgb) / 0.15); }
+.chip.on { background: var(--text); color: var(--bg); }
+.a-about {
+  position: relative;
+  max-width: 760px;
+  min-height: 160px;
+  display: flex;
+  align-items: flex-end;
+  padding: 24px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgb(var(--text-rgb) / 0.07);
+  isolation: isolate;
+}
+.a-about.has-banner::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgb(0 0 0 / 0.15), rgb(0 0 0 / 0.8)), var(--banner) center / cover; }
+.a-about p { margin: 0; line-height: 1.6; color: rgb(255 255 255 / 0.92); display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+.a-about:not(.has-banner) p { color: var(--text); }
+
 /* now playing bar */
 .np-bar {
   grid-column: 1 / -1;
@@ -228,6 +310,8 @@
   .spotify { grid-template-columns: 1fr; }
   .sp-side { display: none; }
   .search-top { grid-template-columns: 1fr; }
+  .a-photo { width: 132px; height: 132px; }
+  .a-hero { min-height: 240px; }
   .t-row { grid-template-columns: 30px minmax(0, 1fr) 110px; }
   .t-row .t-album { display: none; }
   .np-bar { grid-template-columns: minmax(0, 1fr) auto; height: auto; padding: 10px 12px; }

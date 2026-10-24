@@ -147,7 +147,7 @@ export function Shop() {
             <div key={item.id} class={`shop-item glass r-${item.rarity}`} style={{ "--i": Math.min(index, 20) }}>
               <button class="shop-preview" onClick={() => setPreview(item)} aria-label={`Preview ${item.name}`}>
                 {item.kind === "decoration" ? (
-                  <Avatar user={{ ...viewer, decoration: item.id }} size={92} />
+                  <Avatar user={{ ...viewer, decoration: item.id }} size={92} still />
                 ) : (
                   <span class="title-preview">
                     <span>{viewer.displayName}</span>

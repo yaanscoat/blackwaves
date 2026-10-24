@@ -8,7 +8,8 @@
 import crypto from "node:crypto";
 import vm from "node:vm";
 import { Readable } from "node:stream";
-import { Innertube, Log, Platform } from "youtubei.js";
+import { Innertube, Log, Platform, YTNodes } from "youtubei.js";
+import { mint } from "./potoken.js";
 import { BROWSER_UA, publicFetch } from "../lib/net.js";
 import { createCache } from "../lib/cache.js";
 import { json, securityHeaders, text } from "../lib/http.js";
@@ -38,9 +39,17 @@ Platform.shim.eval = async (data, env) => {
 let innertube = null;
 let innertubeAt = 0;
 async function yt() {
-  // the player script rotates, so start a fresh session every few hours
+  // the player script rotates, so start a fresh session every few hours. the
+  // session is tied to the same visitor the po tokens are minted for.
   if (!innertube || Date.now() - innertubeAt > 4 * 60 * 60 * 1000) {
-    innertube = Innertube.create({ generate_session_locally: true, retrieve_player: true }).catch((error) => {
+    innertube = (async () => {
+      const session = await mint().catch(() => null);
+      return Innertube.create({
+        generate_session_locally: true,
+        retrieve_player: true,
+        ...(session ? { po_token: session.token, visitor_data: session.visitorData } : {}),
+      });
+    })().catch((error) => {
       innertube = null;
       throw error;
     });
@@ -65,13 +74,19 @@ function ytArtists(item) {
 function ytTrack(item, fallback = {}) {
   const artists = ytArtists(item);
   const first = artists[0] || fallback.artist;
+  // artist pages don't fill in .album, it's only in the raw columns (title | artist | plays | album)
+  const columns = (item.flex_columns || []).map((column) => column.title);
+  const albumRun = columns.flatMap((column) => column?.runs || []).find((run) => run.endpoint?.payload?.browseId?.startsWith("MPRE"));
+  const album = item.album || (albumRun ? { id: albumRun.endpoint.payload.browseId, name: albumRun.text } : null);
+  const plays = columns.map((column) => column?.text || "").find((value) => /\bplays?$/i.test(value)) || "";
   return {
     id: `y:${item.id}`,
     title: item.title?.text || item.title || "Untitled",
     duration: item.duration?.seconds || 0,
     explicit: Boolean(item.badges?.some?.((badge) => /explicit/i.test(badge.label || ""))),
     artist: first ? { id: first.channel_id ? `yr:${first.channel_id}` : "", name: artists.map((artist) => artist.name).join(", ") || first.name } : null,
-    album: item.album ? { id: item.album.id ? `ya:${item.album.id}` : "", title: item.album.name, cover: ytThumb(item.thumbnail) || fallback.cover || "" } : { id: "", title: "", cover: ytThumb(item.thumbnail) || fallback.cover || "" },
+    album: album ? { id: album.id ? `ya:${album.id}` : "", title: album.name, cover: ytThumb(item.thumbnail) || fallback.cover || "" } : { id: "", title: "", cover: ytThumb(item.thumbnail) || fallback.cover || "" },
+    ...(plays ? { plays: plays.replace(/\s*plays?$/i, "") } : {}),
     source: "ytmusic",
   };
 }
@@ -83,7 +98,8 @@ function ytAlbum(item) {
     title: item.title?.text || item.title || item.name || "Untitled",
     cover: ytThumb(item.thumbnail, 400),
     artist: artists[0] ? { id: artists[0].channel_id ? `yr:${artists[0].channel_id}` : "", name: artists[0].name } : null,
-    year: item.year || "",
+    year: item.year || (item.subtitle?.text || "").match(/\b(19|20)\d{2}\b/)?.[0] || "",
+    kind: /single|\bep\b/i.test(item.item_type || item.subtitle?.text || "") ? "Single" : "Album",
     count: 0,
     source: "ytmusic",
   };
@@ -143,30 +159,93 @@ const ytmusic = {
       .map((track) => ({ ...track, album: { id: info.id, title: info.title, cover } }));
     return { album: info, tracks };
   },
+  /**
+   * the whole artist page: photo, bio, popular songs, every song, every album and
+   * single (the page itself only shows ten of each, so we follow its "more" links)
+   * and the artists fans also like.
+   */
   async artist(id) {
-    const artist = await (await yt()).music.getArtist(id);
+    const client = await yt();
+    const artist = await client.music.getArtist(id);
     const header = artist.header || {};
-    const info = { id: `yr:${id}`, name: header.title?.text || "Artist", picture: ytThumb(header.thumbnail || header.foreground_thumbnail, 544) };
-    let tracks = [];
-    let albums = [];
+    const photo = header.thumbnail || header.foreground_thumbnail;
+    const info = {
+      id: `yr:${id}`,
+      name: header.title?.text || "Artist",
+      picture: ytThumb(photo, 544),
+      banner: ytThumb(photo, 1080),
+      description: (header.description?.text || "").split("\n")[0].slice(0, 600),
+      followers: header.subscription_button?.subscriber_count?.text || "",
+      source: "ytmusic",
+    };
+    let popular = [];
+    let related = [];
+    const albums = [];
+    const singles = [];
+    const expand = async (section, into) => {
+      into.push(...(section.contents || []).filter((item) => item.id).map(ytAlbum));
+      const endpoint = section.header?.more_content?.endpoint;
+      if (!endpoint) return;
+      try {
+        const page = await endpoint.call(client.actions, { client: "YTMUSIC", parse: true });
+        const all = (page.contents_memo?.getType(YTNodes.MusicTwoRowItem) || []).filter((item) => item.id).map(ytAlbum);
+        if (all.length > into.length) into.splice(0, into.length, ...all);
+      } catch {}
+    };
+    const jobs = [];
     for (const section of artist.sections || []) {
       const title = (section.header?.title?.text || section.title?.text || "").toLowerCase();
-      if (!tracks.length && title.includes("song")) tracks = (section.contents || []).filter((item) => item.id).map((item) => ytTrack(item));
-      if (title.includes("album") || title.includes("single")) albums.push(...(section.contents || []).filter(isAlbumLike).map(ytAlbum));
+      if (!popular.length && title.includes("song")) popular = (section.contents || []).filter((item) => item.id).map((item) => ytTrack(item));
+      else if (title.startsWith("album")) jobs.push(expand(section, albums));
+      else if (title.startsWith("single")) jobs.push(expand(section, singles));
+      else if (title.includes("also like") || title.includes("similar")) related = (section.contents || []).filter((item) => item.id).map(ytArtist);
     }
-    return { artist: info, albums: albums.slice(0, 20), tracks };
+    let tracks = [];
+    jobs.push(
+      artist
+        .getAllSongs()
+        .then((list) => (tracks = (list?.contents || []).filter((item) => item.id).map((item) => ytTrack(item))))
+        .catch(() => {}),
+    );
+    await Promise.all(jobs);
+    // the top songs shelf has no lengths, borrow them from the full list
+    const lengths = new Map(tracks.map((track) => [track.id, track.duration]));
+    for (const track of popular) track.duration ||= lengths.get(track.id) || 0;
+    // and it only has five, so top it up to ten
+    const seen = new Set(popular.map((track) => track.id));
+    for (const track of tracks) {
+      if (popular.length >= 10) break;
+      if (!seen.has(track.id)) popular.push(track), seen.add(track.id);
+    }
+    const credit = (track) => (track.artist?.name ? track : { ...track, artist: { id: info.id, name: info.name } });
+    singles.forEach((single) => (single.kind = "Single"));
+    return { artist: info, popular: popular.map(credit), tracks: (tracks.length ? tracks : popular).map(credit), albums, singles, related };
   },
   async stream(id) {
     return cache.wrap(`ys:${id}`, async () => {
       const client = await yt();
-      const info = await client.music.getInfo(id);
-      if (info.playability_status?.status && info.playability_status.status !== "OK") {
-        throw httpError(403, info.playability_status.reason || "youtube won't play that one here");
+      // the youtube music client plus a token bound to this exact video is the
+      // only combination youtube still streams start to finish
+      const token = (await mint(id).catch(() => null))?.token;
+      let info;
+      try {
+        info = await client.getBasicInfo(id, { client: "YTMUSIC", ...(token ? { po_token: token } : {}) });
+        if (info.playability_status?.status && info.playability_status.status !== "OK") throw new Error(info.playability_status.reason || "unplayable");
+        const format = info.chooseFormat({ type: "audio", quality: "best", format: "mp4" });
+        let url = await format.decipher(client.session.player);
+        if (token) url = `${url.replace(/&pot=[^&]*/, "")}&pot=${token}`;
+        return { stream: signed("stream", url), type: "file" };
+      } catch (error) {
+        // youtube said no (bot check, region lock, datacenter ip...). play the same song from soundcloud instead.
+        const title = info?.basic_info?.title;
+        const artist = info?.basic_info?.author?.replace(/ - Topic$/, "");
+        if (title) {
+          const match = (await soundcloud.search(`${artist || ""} ${title}`.trim(), "tracks").catch(() => []))[0];
+          if (match) return { ...(await soundcloud.stream(match.id.slice(2))), fallback: "soundcloud" };
+        }
+        throw httpError(403, "youtube won't play that one right now");
       }
-      const format = info.chooseFormat({ type: "audio", quality: "best", format: "mp4" });
-      const url = await format.decipher(client.session.player);
-      return { stream: signed("stream", url), type: "file" };
-    }, 60 * 60 * 1000);
+    }, 50 * 60 * 1000);
   },
 };
 
@@ -206,6 +285,7 @@ async function sc(path, params = {}, retried = false) {
   return response.json();
 }
 
+const COMPACT = new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 });
 const scArt = (url, size = "t500x500") => (url ? signed("art", url.replace("-large.", `-${size}.`)) : "");
 const scPlayable = (track) => track && track.policy !== "BLOCK" && track.media?.transcodings?.length;
 const scArtist = (user) => (user ? { id: `sr:${user.id}`, name: user.username || user.full_name || "Artist", picture: scArt(user.avatar_url) } : null);
@@ -216,6 +296,18 @@ const scTrack = (track) => ({
   explicit: false,
   artist: scArtist(track.user),
   album: { id: "", title: track.genre || "", cover: scArt(track.artwork_url || track.user?.avatar_url) },
+  ...(track.playback_count ? { plays: COMPACT.format(track.playback_count) } : {}),
+  source: "soundcloud",
+});
+
+const scAlbum = (playlist, artist) => ({
+  id: `sa:${playlist.id}`,
+  title: playlist.title || "Untitled",
+  cover: scArt(playlist.artwork_url || playlist.tracks?.[0]?.artwork_url || playlist.user?.avatar_url),
+  artist,
+  year: String(playlist.release_date || playlist.display_date || playlist.created_at || "").slice(0, 4),
+  kind: ["ep", "single"].includes(playlist.set_type) ? "Single" : "Album",
+  count: playlist.track_count || 0,
   source: "soundcloud",
 });
 
@@ -232,8 +324,47 @@ const soundcloud = {
     return (data.collection || []).map((entry) => entry.track).filter(scPlayable).map(scTrack);
   },
   async artist(id) {
-    const [user, tracks] = await Promise.all([sc(`/users/${id}`), sc(`/users/${id}/tracks`, { limit: 40 })]);
-    return { artist: scArtist(user), albums: [], tracks: (tracks.collection || []).filter(scPlayable).map(scTrack) };
+    const none = { collection: [] };
+    const [user, top, tracks, albums] = await Promise.all([
+      sc(`/users/${id}`),
+      sc(`/users/${id}/toptracks`, { limit: 10 }).catch(() => none),
+      sc(`/users/${id}/tracks`, { limit: 80 }).catch(() => none),
+      sc(`/users/${id}/albums`, { limit: 50 }).catch(() => none),
+    ]);
+    const base = scArtist(user);
+    const info = {
+      ...base,
+      banner: user.visuals?.visuals?.[0]?.visual_url ? signed("art", user.visuals.visuals[0].visual_url) : "",
+      description: String(user.description || "").split("\n")[0].slice(0, 600),
+      followers: user.followers_count ? `${Number(user.followers_count).toLocaleString("en-US")} followers` : "",
+      source: "soundcloud",
+    };
+    const all = (tracks.collection || []).filter(scPlayable).map(scTrack);
+    const popular = (top.collection || []).filter(scPlayable).map(scTrack);
+    const records = (albums.collection || []).map((playlist) => scAlbum(playlist, base));
+    return {
+      artist: info,
+      popular: (popular.length ? popular : all).slice(0, 10),
+      tracks: all,
+      albums: records.filter((album) => album.kind === "Album"),
+      singles: records.filter((album) => album.kind === "Single"),
+      related: [],
+    };
+  },
+  async album(id) {
+    const playlist = await sc(`/playlists/${id}`);
+    // soundcloud only fills in the first few tracks, the rest come back as bare ids
+    const listed = playlist.tracks || [];
+    const full = listed.filter((track) => track.title);
+    const missing = listed.filter((track) => !track.title).map((track) => track.id);
+    for (let i = 0; i < missing.length; i += 50) {
+      const batch = await sc("/tracks", { ids: missing.slice(i, i + 50).join(",") }).catch(() => []);
+      if (Array.isArray(batch)) full.push(...batch);
+    }
+    const order = new Map(listed.map((track, index) => [track.id, index]));
+    full.sort((a, b) => order.get(a.id) - order.get(b.id));
+    const album = { ...scAlbum(playlist, scArtist(playlist.user)), count: full.length };
+    return { album, tracks: full.filter(scPlayable).map(scTrack).map((track) => ({ ...track, album: { id: album.id, title: album.title, cover: track.album.cover || album.cover } })) };
   },
   async stream(id) {
     return cache.wrap(`ss:${id}`, async () => {
@@ -268,7 +399,7 @@ const audius = {
 };
 
 function provider(id) {
-  const match = /^(y|s|ya|yr|sr|a):([A-Za-z0-9_-]+)$/.exec(String(id));
+  const match = /^(y|s|ya|yr|sr|sa|a):([A-Za-z0-9_-]+)$/.exec(String(id));
   if (!match) throw httpError(400, "bad id");
   return [match[1], match[2]];
 }
@@ -291,7 +422,53 @@ function attachment(name, type) {
   return `attachment; filename="${file.replace(/[^\x20-\x7e]/g, "_")}"; filename*=UTF-8''${encodeURIComponent(file)}`;
 }
 
-async function pipe(req, res, url, { audio, download = "" }) {
+/**
+ * youtube's media servers 403 any open-ended range ("bytes=0-", no range at
+ * all, "bytes=1000-"). browsers and downloads always ask open-ended. so we read
+ * the real size from the url (clen) and walk the file in bounded chunks,
+ * handing the browser one normal-looking response.
+ */
+const YT_CHUNK = 2 * 1024 * 1024;
+async function pipeYoutube(req, res, url, download) {
+  const total = Number(new URL(url).searchParams.get("clen"));
+  if (!total) return pipe(req, res, url, { audio: true, download, chunked: false });
+  const match = !download && /bytes=(\d*)-(\d*)/.exec(req.headers.range || "");
+  let start = match && match[1] ? Number(match[1]) : 0;
+  let end = match && match[2] ? Math.min(Number(match[2]), total - 1) : total - 1;
+  if (match && !match[1] && match[2]) {
+    start = Math.max(0, total - Number(match[2]));
+    end = total - 1;
+  }
+  if (start >= total || end < start) {
+    res.writeHead(416, securityHeaders({ "Content-Range": `bytes */${total}` }));
+    return res.end();
+  }
+  const mime = new URL(url).searchParams.get("mime") || "audio/mp4";
+  const headers = { "Content-Type": mime, "Content-Length": end - start + 1, "Accept-Ranges": "bytes", "Cache-Control": "private, max-age=3600" };
+  if (download) headers["Content-Disposition"] = attachment(download, mime);
+  if (match) headers["Content-Range"] = `bytes ${start}-${end}/${total}`;
+  res.writeHead(match ? 206 : 200, securityHeaders(headers));
+  if (req.method === "HEAD") return res.end();
+  let closed = false;
+  res.on("close", () => (closed = true));
+  for (let offset = start; offset <= end && !closed; offset += YT_CHUNK) {
+    const last = Math.min(offset + YT_CHUNK - 1, end);
+    try {
+      const upstream = await publicFetch(url, { headers: { "user-agent": BROWSER_UA, range: `bytes=${offset}-${last}` }, signal: AbortSignal.timeout(30_000) });
+      if (!upstream.ok || !upstream.body) throw new Error(`youtube ${upstream.status}`);
+      for await (const chunk of upstream.body) {
+        if (closed) break;
+        if (!res.write(chunk)) await new Promise((resolve) => (res.once("drain", resolve), res.once("close", resolve)));
+      }
+    } catch {
+      return res.destroy();
+    }
+  }
+  res.end();
+}
+
+async function pipe(req, res, url, { audio, download = "", chunked = true }) {
+  if (audio && chunked && /\.googlevideo\.com$/.test(new URL(url).hostname)) return pipeYoutube(req, res, url, download);
   try {
     const headers = { "user-agent": BROWSER_UA };
     if (audio && req.headers.range && !download) headers.range = req.headers.range;
@@ -398,6 +575,7 @@ export async function handleMusic(req, res, pathname, searchParams) {
     let match;
     if ((match = /^\/album\/(.+)$/.exec(rest))) {
       const [kind, id] = provider(decodeURIComponent(match[1]));
+      if (kind === "sa") return json(res, 200, await cache.wrap(`sal:${id}`, () => soundcloud.album(id)));
       if (kind !== "ya") throw httpError(400, "that isn't an album");
       return json(res, 200, await cache.wrap(`al:${id}`, () => ytmusic.album(id)));
     }

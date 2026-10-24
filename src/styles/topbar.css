@@ -203,6 +203,21 @@
 }
 .mobile-item:hover,
 .mobile-item.active { background: rgb(var(--text-rgb) / 0.08); text-decoration: none; }
+button.mobile-item { border: 0; background: none; font: inherit; cursor: pointer; text-align: left; }
+
+/* on wide screens the burger only shows up when you've tucked things away,
+   and its menu only lists what isn't already in the dock */
+@media (min-width: 901px) {
+  .dock-burger.tucked { display: grid; }
+  .mobile-item.in-dock { display: none; }
+  .mobile-menu {
+    left: 50%;
+    right: auto;
+    width: min(380px, calc(100vw - 24px));
+    margin-left: calc(min(380px, 100vw - 24px) / -2);
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+}
 
 @media (max-width: 1020px) {
   .brand-name { display: none; }
@@ -223,3 +238,67 @@
 
 /* browser mode hides the dock while you're in the browser; it draws its own chrome */
 [data-browser-mode="on"][data-route="browser"] .topbar { display: none; }
+
+/* ---------- top bar appearance options (Settings > Appearance > Top bar) ---------- */
+
+.dock { --dock-radius: 22px; border-radius: var(--dock-radius); }
+.dock-label { display: none; }
+
+/* sizes */
+[data-tb-size="compact"] { --topbar-h: 64px; }
+[data-tb-size="compact"] .dock { height: 48px; padding: 4px 6px 4px 10px; --dock-radius: 16px; }
+[data-tb-size="compact"] .dock-item { width: 36px; height: 36px; border-radius: 11px; }
+[data-tb-size="compact"] .dock-item .icon { width: 18px; height: 18px; }
+[data-tb-size="large"] { --topbar-h: 90px; }
+[data-tb-size="large"] .dock { height: 70px; padding: 8px 10px 8px 16px; --dock-radius: 26px; }
+[data-tb-size="large"] .dock-item { width: 54px; height: 54px; border-radius: 17px; }
+[data-tb-size="large"] .dock-item .icon { width: 24px; height: 24px; }
+
+/* always-on labels: the name sits under each icon */
+[data-tb-labels="always"] .dock-label { display: block; font-size: 10px; line-height: 1; margin-top: 3px; color: inherit; white-space: nowrap; }
+[data-tb-labels="always"] .dock-item.nav { width: auto; min-width: 52px; padding: 0 6px; display: flex; flex-direction: column; justify-content: center; }
+[data-tb-labels="always"] .dock-item.nav[data-tip]::after { display: none; }
+[data-tb-labels="always"] .dock { height: 62px; }
+[data-tb-labels="always"] { --topbar-h: 82px; }
+
+/* brand */
+[data-tb-brand="off"] .brand-name { display: none !important; }
+
+/* indicators */
+[data-tb-indicator="underline"] .dock-indicator { width: 18px; height: 3px; margin-left: -6px; bottom: -4px; }
+[data-tb-indicator="pill"] .dock-indicator,
+[data-tb-indicator="none"] .dock-indicator { display: none; }
+[data-tb-indicator="pill"] .dock-item.nav[aria-current="page"] {
+  background: rgb(var(--accent-rgb) / 0.2);
+  box-shadow: inset 0 0 0 1px rgb(var(--accent-rgb) / 0.35);
+}
+
+/* style: full-width bar, flush with the top of the window */
+[data-tb-style="bar"] .topbar { top: 0; padding: 0; }
+[data-tb-style="bar"] .dock { width: 100%; justify-content: space-between; --dock-radius: 0 0 20px 20px; border-top: 0; animation-name: bar-drop; }
+[data-tb-style="bar"] .dock-nav { margin: 0 auto; }
+@keyframes bar-drop { from { transform: translateY(-100%); } }
+
+/* style: minimal pill, icons only, tighter */
+[data-tb-style="pill"] .dock { --dock-radius: 999px; gap: 0; padding-left: 8px; }
+[data-tb-style="pill"] .brand-name,
+[data-tb-style="pill"] .dock-sep { display: none !important; }
+[data-tb-style="pill"] .brand { padding: 0 6px; }
+
+/* style: bottom dock, like a mac */
+[data-tb-style="bottom"] { --topbar-h: 8px; --bottombar-h: 86px; }
+[data-tb-style="bottom"] .topbar { top: auto; bottom: 12px; }
+[data-tb-style="bottom"] .dock { animation-name: dock-rise; }
+@keyframes dock-rise { from { opacity: 0; transform: translateY(28px) scale(0.94); } }
+[data-tb-style="bottom"] .dock-pop .popover { top: auto; bottom: calc(100% + 14px); transform-origin: bottom right; }
+[data-tb-style="bottom"] .dock [data-tip]::after { top: auto; bottom: calc(100% + 10px); }
+[data-tb-style="bottom"] .dock-indicator { bottom: auto; top: -3px; }
+[data-tb-style="bottom"] .mobile-menu { top: auto; bottom: 86px; transform-origin: bottom center; }
+[data-tb-style="bottom"] .page { padding-bottom: calc(var(--bottombar-h) + 40px); }
+[data-tb-style="bottom"] .status-corner,
+[data-tb-style="bottom"] .mini-player { bottom: calc(var(--bottombar-h) + 4px); }
+[data-tb-style="bottom"] .toasts { bottom: calc(var(--bottombar-h) + 14px); }
+[data-tb-style="bottom"] .chat-page,
+[data-tb-style="bottom"] .spotify { padding-bottom: var(--bottombar-h); }
+[data-tb-style="bottom"] .browser { bottom: var(--bottombar-h); }
+[data-tb-style="bottom"] .home { padding-bottom: calc(var(--bottombar-h) + 30px); }

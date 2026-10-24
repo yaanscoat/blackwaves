@@ -71,6 +71,8 @@ const EXT_TYPES = {
   bin: "application/octet-stream",
   glb: "model/gltf-binary",
   gltf: "model/gltf+json",
+  html: "text/html",
+  htm: "text/html",
   js: "text/javascript",
   mjs: "text/javascript",
   json: "application/json",

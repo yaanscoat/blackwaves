@@ -1,19 +1,18 @@
 <p align="center">
-  <img src="favicon.ico" alt="Alt Text" width="300">
+  <img src="favicon.ico" alt="blackwaves" width="300">
 </p>
 
 <h1 align="center">blackwaves!</h1>
 <p align="center">Surf the Web UwU</p>
 <p align="center">blackwaves is a slick UBG/Web-Proxy that's designed to bypass internet censorship.</p>
 
-## Feautures
+## Features
 - Cool UI
 - Music
 - Chatroom
 - Shop
 - Over 4000 Games
 - Cloud Gaming [BETA] (150 Titles 4 free)
-- Music
 - Manga
 - Cloudsync
 - Shop for pfp decorations
@@ -38,7 +37,7 @@ npm i      #npm install
 npm start  #nodejs server command
 ```
 
-then open https://localhost:8080 and you're finished!
+then open http://localhost:8080 and you're finished!
 
 ## Credits!
 
@@ -52,7 +51,7 @@ then open https://localhost:8080 and you're finished!
 * TMDB - movie and show metadata
 * Mercury Workshop - Scramjet, Wisp, epoxy and libcurl
 * x8rr/sapphire - the base of lyra's extension runtime
-* gn-math, Selenite, Truffled, Edurocks, wasm.rip, Velara - game sources
+* gn-math, Selenite, Truffled, Edurocks, wasm.rip, Velara, gmshelf (UGS, CKV, Seraph) - game sources
 * Lexend - the only font we use
 * oneko - the cat (you'll find it)
 

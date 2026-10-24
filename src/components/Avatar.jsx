@@ -27,7 +27,7 @@ export function Avatar({ user, size = 40, online, showStatus = false, decorate =
       ) : (
         <span class="avatar-img avatar-fallback">{initials(user?.displayName || user?.username)}</span>
       )}
-      {decoration && <img class="avatar-decor" src={animate ? decorationUrl(decoration) : decorationStill(decoration)} alt="" loading="lazy" draggable={false} />}
+      {decoration && <img class={`avatar-decor ${decoration.front ? "front" : ""}`} src={animate ? decorationUrl(decoration) : decorationStill(decoration)} alt="" loading="lazy" draggable={false} />}
       {showStatus && <span class={`avatar-status ${online ?? user?.online ? "on" : ""}`} />}
     </span>
   );
