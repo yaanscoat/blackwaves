@@ -24,6 +24,10 @@ export const config = {
     process.env.DATA_DIR || process.env.RAILWAY_VOLUME_MOUNT_PATH || path.join(ROOT, "data"),
   ),
   trustProxy: process.env.TRUST_PROXY ? process.env.TRUST_PROXY === "true" : true,
+  // the server keeps itself under this much ram (caches shed, new proxy streams paused)
+  memoryBudgetMb: intEnv("MEMORY_BUDGET_MB", 3072),
+  // optional http(s) proxy for youtube only, for hosts youtube asks to "sign in"
+  youtubeProxy: process.env.YOUTUBE_PROXY || "",
   tmdbKey: process.env.TMDB_API_KEY || "ebbc810d0c9a9a4a13a264f96897036e",
   adminUsers: (process.env.ADMIN_USERS || "yaanscoat,beery-tomato")
     .split(",")

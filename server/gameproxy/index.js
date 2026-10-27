@@ -5,6 +5,7 @@ import { BROWSER_UA, assertPublicUrl, isPublicIp, publicFetch } from "../lib/net
 import { parseCookies, securityHeaders } from "../lib/http.js";
 import { COVER_PREFIX, PROXY_PREFIX, decodeTarget, encodeTarget, proxyUrl } from "./encoding.js";
 import { rewriteCss, rewriteHtml } from "./rewrite.js";
+import { memoryLevel, onPressure } from "../lib/memory.js";
 import dns from "node:dns/promises";
 
 const BLOCKLIST = [
@@ -96,7 +97,14 @@ const ASSET_RE = /\.(wasm|pck|unityweb|data|mem|symbols|js|mjs|json|xml|glb|gltf
 // ---- a tiny lru cache for static game assets -------------------------------
 // keeps the hot stuff (unity loaders, sprite sheets) in ram so twenty kids
 // opening the same game don't make twenty trips to the same cdn.
-const CACHE_MAX_BYTES = Number(process.env.GAME_CACHE_MB || 64) * 1024 * 1024;
+// browsers are told to keep game files for a day, so this only has to cover
+// the first visit of each kid, not every visit
+const CACHE_MAX_BYTES = Number(process.env.GAME_CACHE_MB || 32) * 1024 * 1024;
+// most bytes we'll hold in ram at once for files we read whole (to cache or
+// rewrite); past this, cacheable files just stream through untouched
+const BUFFER_BUDGET = 96 * 1024 * 1024;
+const BROWSER_CACHE = "public, max-age=86400";
+let buffering = 0;
 const CACHE_ENTRY_MAX = 4 * 1024 * 1024;
 const GZIP_MAX = 3 * 1024 * 1024;
 const CACHE_TTL = 15 * 60 * 1000;
@@ -274,13 +282,23 @@ async function finish(req, res, status, headers, body) {
 async function readAll(stream, limit) {
   const chunks = [];
   let size = 0;
-  for await (const chunk of stream) {
-    size += chunk.length;
-    if (size > limit) throw new Error("too big");
-    chunks.push(chunk);
+  try {
+    for await (const chunk of stream) {
+      size += chunk.length;
+      buffering += chunk.length;
+      if (size > limit) throw new Error("too big");
+      chunks.push(chunk);
+    }
+    return Buffer.concat(chunks);
+  } finally {
+    buffering -= size;
   }
-  return Buffer.concat(chunks);
 }
+
+onPressure(() => {
+  cache.clear();
+  cacheBytes = 0;
+});
 
 function decodeText(buffer, contentType) {
   const charset = /charset=([^;]+)/i.exec(contentType)?.[1]?.trim().toLowerCase();
@@ -387,13 +405,16 @@ export async function proxyGame(req, res, { target, token, cover = false }) {
       return finish(req, res, upstream.status, headers, Buffer.from(rewritten));
     }
 
+    // let the browser keep its own copy so the next visit never reaches us
+    if (assetLike && isGet && upstream.status === 200 && !setCookies.length) headers["cache-control"] ||= BROWSER_CACHE;
+
     if (cacheable && upstream.status === 200 && !setCookies.length) {
       const declared = Number(upstream.headers.get("content-length") || 0);
-      if (!declared || declared <= CACHE_ENTRY_MAX) {
+      const roomy = memoryLevel() === "ok" && buffering + (declared || CACHE_ENTRY_MAX) <= BUFFER_BUDGET;
+      if (roomy && (!declared || declared <= CACHE_ENTRY_MAX)) {
         const body = await readAll(upstream.body, CACHE_ENTRY_MAX * 4);
         clearTimeout(timeout);
-        headers["cache-control"] ||= "public, max-age=600";
-        if (cover) headers["cache-control"] = "public, max-age=86400";
+        if (cover) headers["cache-control"] = BROWSER_CACHE;
         cacheSet(target, { status: 200, headers: { ...headers }, body, expires: Date.now() + CACHE_TTL });
         return finish(req, res, 200, headers, body);
       }

@@ -15,7 +15,7 @@ import { syncState, push, pull, markBackgroundChanged } from "../lib/cloudsync.j
 import { post } from "../lib/api.js";
 import { toast } from "../lib/notify.js";
 import { switchTransport } from "../lib/proxy.js";
-import { consent } from "./Welcome.jsx";
+import { consent, saveConsent } from "./Welcome.jsx";
 import { SECRETS, found } from "../lib/easter.js";
 import { navigate } from "../lib/router.js";
 
@@ -95,7 +95,7 @@ function DockItems() {
             <Icon name={item.icon} size={18} />
             <span>{item.label}</span>
             <span class="dock-pick-check">
-              <Icon name={shown ? "check" : "plus"} size={13} stroke={2.4} />
+              <Icon name={shown ? "check" : "plus"} size={13} />
             </span>
           </button>
         );
@@ -424,6 +424,21 @@ function Privacy() {
 function BrowserTab() {
   return (
     <>
+      <Row title="Show ads" hint="Ads keep blackwaves free. They come from third-party ad networks that set their own cookies, and every few clicks one opens in a new tab.">
+        <button
+          class="toggle"
+          role="switch"
+          aria-checked={Boolean(consent.value?.ads)}
+          aria-label="Show ads"
+          onClick={() => {
+            const on = !consent.value?.ads;
+            saveConsent({ ...consent.value, ads: on });
+            // ad scripts can't be unloaded from a running page, so switching off reloads it
+            if (on) toast("ads on, thanks for keeping blackwaves free");
+            else location.reload();
+          }}
+        />
+      </Row>
       <Row title="Search engine">
         <Select k="searchEngine" options={ENGINES} label="Search engine" />
       </Row>

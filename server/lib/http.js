@@ -44,7 +44,9 @@ export class HttpError extends Error {
 export function securityHeaders(extra = {}) {
   return {
     "X-Content-Type-Options": "nosniff",
-    "Referrer-Policy": "same-origin",
+    // other sites only ever learn which site you came from, never the page.
+    // ad networks need that much to know their ads are running here.
+    "Referrer-Policy": "strict-origin-when-cross-origin",
     ...extra,
   };
 }

@@ -15,7 +15,7 @@ function clock(seconds) {
   return h ? `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}` : `${m}:${String(s).padStart(2, "0")}`;
 }
 
-export function VideoPlayer({ src, title, subtitle = "", meta = {}, startAt = 0, onProgress, onFail, onEnded, downloadUrl }) {
+export function VideoPlayer({ src, title, subtitle = "", meta = {}, startAt = 0, onProgress, onFail, onEnded, onDownload }) {
   const wrap = useRef(null);
   const video = useRef(null);
   const hlsRef = useRef(null);
@@ -354,10 +354,10 @@ export function VideoPlayer({ src, title, subtitle = "", meta = {}, startAt = 0,
               )}
             </div>
           )}
-          {downloadUrl && (
-            <a class="vp-btn" href={downloadUrl} download aria-label="Download" data-tip="Download" data-tip-pos="up">
+          {onDownload && (
+            <button class="vp-btn" onClick={onDownload} aria-label="Download" data-tip="Download" data-tip-pos="up">
               <Icon name="download" size={19} />
-            </a>
+            </button>
           )}
           <div class="vp-menu-wrap">
             <button class="vp-btn" aria-label="Keyboard shortcuts" data-tip="Shortcuts (?)" data-tip-pos="up" onClick={() => setMenu(menu === "keys" ? null : "keys")}>

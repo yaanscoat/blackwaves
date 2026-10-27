@@ -232,95 +232,12 @@ function wrapStreams(streams) {
   };
 }
 
-// ---- downloads: stitch an hls stream back into one file -------------------------------
-
-async function fetchText(url, referer) {
-  const response = await publicFetch(url, { headers: { "user-agent": BROWSER_UA, referer, origin: new URL(referer).origin }, signal: AbortSignal.timeout(20_000) });
-  if (!response.ok) throw new Error(`playlist ${response.status}`);
-  return response.text();
-}
-
-/**
- * picks the best variant of a master playlist, then streams every segment of
- * it back to back. mpeg-ts segments concatenate into a valid .ts file and fmp4
- * segments (with their init map first) into a valid .mp4, so no remuxing needed.
- */
-async function download(req, res, searchParams) {
-  const target = searchParams.get("u") || "";
-  const name = String(searchParams.get("name") || "movie").replace(/[\/:*?"<>|]+/g, "").slice(0, 120) || "movie";
-  let url;
-  try {
-    url = new URL(target);
-  } catch {
-    return text(res, 400, "bad link");
-  }
-  const referer = searchParams.get("r") || url.origin + "/";
-  try {
-    let playlistUrl = url.href;
-    let playlist = await fetchText(playlistUrl, referer);
-    if (!playlist.startsWith("#EXTM3U")) return text(res, 400, "that isn't a stream");
-    if (playlist.includes("#EXT-X-STREAM-INF")) {
-      const lines = playlist.split("\n");
-      let best = null;
-      for (let i = 0; i < lines.length; i++) {
-        const bandwidth = /BANDWIDTH=(\d+)/.exec(lines[i]);
-        if (bandwidth && lines[i + 1] && !lines[i + 1].startsWith("#")) {
-          if (!best || Number(bandwidth[1]) > best.bandwidth) best = { bandwidth: Number(bandwidth[1]), uri: lines[i + 1].trim() };
-        }
-      }
-      if (!best) return text(res, 502, "no playable quality found");
-      playlistUrl = new URL(best.uri, playlistUrl).href;
-      playlist = await fetchText(playlistUrl, referer);
-    }
-    if (/#EXT-X-KEY:METHOD=(?!NONE)/.test(playlist)) return text(res, 415, "this stream is encrypted and can't be downloaded");
-    const parts = [];
-    let fmp4 = false;
-    for (const line of playlist.split("\n")) {
-      const map = /#EXT-X-MAP:URI="([^"]+)"/.exec(line);
-      if (map) {
-        fmp4 = true;
-        parts.push(new URL(map[1], playlistUrl).href);
-      } else if (line.trim() && !line.startsWith("#")) parts.push(new URL(line.trim(), playlistUrl).href);
-    }
-    const ext = fmp4 ? "mp4" : "ts";
-    const file = `${name}.${ext}`;
-    res.writeHead(200, securityHeaders({
-      "Content-Type": fmp4 ? "video/mp4" : "video/mp2t",
-      "Content-Disposition": `attachment; filename="${file.replace(/[^\x20-\x7e]/g, "_")}"; filename*=UTF-8''${encodeURIComponent(file)}`,
-      "Cache-Control": "no-store",
-    }));
-    let closed = false;
-    res.on("close", () => (closed = true));
-    // fetch a few segments ahead in parallel but write them strictly in order
-    const AHEAD = 6;
-    const grab = (part) => {
-      const pending = publicFetch(part, { headers: { "user-agent": BROWSER_UA, referer }, signal: AbortSignal.timeout(60_000) }).then(async (segment) => {
-        if (!segment.ok) throw new Error(`segment ${segment.status}`);
-        return Buffer.from(await segment.arrayBuffer());
-      });
-      pending.catch(() => {}); // failures are handled when we get to that segment
-      return pending;
-    };
-    const queue = parts.slice(0, AHEAD).map(grab);
-    for (let index = 0; index < parts.length; index++) {
-      if (closed) return;
-      const next = index + AHEAD;
-      if (next < parts.length) queue.push(grab(parts[next]));
-      const body = await queue[index];
-      queue[index] = null;
-      if (!res.write(body)) await new Promise((resolve) => (res.once("drain", resolve), res.once("close", resolve)));
-    }
-    res.end();
-  } catch {
-    if (!res.headersSent) text(res, 502, "the download didn't start, try another source");
-    else res.destroy();
-  }
-}
+// downloads happen in the browser now (src/lib/hlsdownload.js): it fetches the
+// segments through /hls one at a time, so nothing gets stitched together here.
 
 export async function handleMovies(req, res, pathname, searchParams) {
   const rest = pathname.slice("/api/movies".length);
   if (rest === "/hls") return hls(req, res, searchParams);
-  if (rest === "/download") return download(req, res, searchParams);
   if (rest === "/status") return json(res, 200, { tmdb: Boolean(config.tmdbKey) });
   const img = /^\/img\/([a-z0-9]+)(\/[^/]+)$/.exec(rest);
   if (img) return image(req, res, img[1], img[2]);

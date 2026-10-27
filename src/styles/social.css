@@ -134,7 +134,10 @@
 .shop-wallet { display: grid; gap: 8px; justify-items: end; }
 .wallet-amount { display: flex; align-items: center; gap: 8px; font-size: 34px; color: var(--gold); font-variant-numeric: tabular-nums; }
 .earn { border-radius: var(--r-md); padding: 12px 18px; margin-bottom: 18px; }
-.earn summary { cursor: pointer; }
+.earn summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; list-style: none; }
+.earn summary::-webkit-details-marker { display: none; }
+.earn summary .icon { color: var(--muted); transition: transform 0.3s var(--ease); }
+.earn[open] summary .icon { transform: rotate(180deg); }
 .earn ul { margin: 10px 0 2px; padding-left: 18px; display: grid; gap: 4px; color: var(--muted); }
 .shop-filters { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
 .shop-sort { width: auto; }

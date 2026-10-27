@@ -1,5 +1,6 @@
 import { useEffect, useState } from "preact/hooks";
 import { Icon } from "../components/Icon.jsx";
+import { NativeAd } from "../components/Ads.jsx";
 import { get } from "../lib/api.js";
 import { storage } from "../lib/storage.js";
 import { navigate, route, segments } from "../lib/router.js";
@@ -207,6 +208,7 @@ function Browse() {
           </button>
         ))}
       </div>
+      <NativeAd class="page-ad" />
       {reading.length > 0 && !debounced && (
         <section class="media-row">
           <div class="section-title">

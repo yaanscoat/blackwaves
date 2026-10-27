@@ -7,6 +7,8 @@ import { createFrame } from "../lib/proxy.js";
 import "../styles/media.css";
 import "../styles/player.css";
 import { VideoPlayer } from "../components/VideoPlayer.jsx";
+import { downloadHls } from "../lib/hlsdownload.js";
+import { NativeAd } from "../components/Ads.jsx";
 
 const img = (path, size = "w342") => (path ? `/api/movies/img/${size}${path}` : "");
 
@@ -326,11 +328,10 @@ function Player({ type, id, season, episode, data }) {
             startAt={savedTime(type, id, season, episode)}
             onProgress={(time, duration) => saveTime(type, id, season, episode, time, duration)}
             onFail={() => setHlsFailed(true)}
-            downloadUrl={(() => {
-              const original = new URL(hls.url, location.origin).searchParams.get("u");
+            onDownload={() => {
               const name = [data?.title || data?.name, type === "tv" ? `S${season}E${episode}` : String(data?.release_date || "").slice(0, 4)].filter(Boolean).join(" ");
-              return original ? `/api/movies/download?u=${encodeURIComponent(original)}&name=${encodeURIComponent(name)}` : "";
-            })()}
+              downloadHls({ url: hls.url, name, kind: "video" });
+            }}
           />
         ) : waiting ? (
           <div class="empty">
@@ -510,6 +511,7 @@ export function Movies() {
               <p>Search anything, pick a player, press play.</p>
             </div>
           </div>
+          <NativeAd class="page-ad" />
           <Browse onOpen={open} />
         </>
       )}

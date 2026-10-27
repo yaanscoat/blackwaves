@@ -47,6 +47,10 @@ async function load(stream, type) {
   audio.src = stream;
 }
 
+// title + artist ride along so the server can find the song on soundcloud if youtube refuses
+const trackUrl = (track) =>
+  `/api/music/track/${encodeURIComponent(track.id)}?${new URLSearchParams({ title: track.title || "", artist: track.artist?.name || "" })}`;
+
 export async function playTrack(track, list = null) {
   if (!audio) return;
   if (list) queue.value = list;
@@ -54,7 +58,7 @@ export async function playTrack(track, list = null) {
   nowPlaying.value = track;
   loadingTrack.value = true;
   try {
-    const { stream, type } = await get(`/api/music/track/${encodeURIComponent(track.id)}`);
+    const { stream, type } = await get(trackUrl(track));
     if (nowPlaying.value?.id !== track.id) return;
     await load(stream, type);
     await audio.play();
@@ -191,8 +195,10 @@ export function toggleFollow(artist) {
 export async function downloadTrack(track) {
   try {
     toast(`downloading ${track.title}...`);
-    const { stream } = await get(`/api/music/track/${encodeURIComponent(track.id)}`);
+    const { stream, type } = await get(trackUrl(track));
     const name = [track.artist?.name, track.title].filter(Boolean).join(" - ");
+    // soundcloud hls gets stitched on this device; youtube files stream straight through
+    if (type === "hls") return void import("./hlsdownload.js").then((module) => module.downloadHls({ url: stream, name, kind: "audio" }));
     const link = document.createElement("a");
     link.href = `${stream}&dl=${encodeURIComponent(name)}`;
     link.download = "";

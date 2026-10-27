@@ -4,6 +4,7 @@ import { Background } from "./components/Background.jsx";
 import { GlassDefs } from "./components/GlassDefs.jsx";
 import { Toasts } from "./components/Toasts.jsx";
 import { StatusCorner } from "./components/StatusCorner.jsx";
+import { Downloads } from "./components/Downloads.jsx";
 import { Welcome } from "./components/Welcome.jsx";
 import { Settings } from "./components/Settings.jsx";
 import { AuthModal } from "./components/AuthModal.jsx";
@@ -25,6 +26,7 @@ const LOADERS = {
   manga: () => import("./pages/Manga.jsx").then((m) => m.Manga),
   cloud: () => import("./pages/Cloud.jsx").then((m) => m.Cloud),
   chat: () => import("./pages/Chat.jsx").then((m) => m.Chat),
+  ai: () => import("./pages/AI.jsx").then((m) => m.AI),
   shop: () => import("./pages/Shop.jsx").then((m) => m.Shop),
   profile: () => import("./pages/Profile.jsx").then((m) => m.Profile),
   u: () => import("./pages/Profile.jsx").then((m) => m.Profile),
@@ -114,7 +116,8 @@ export function App() {
       {hasPage && <AsyncPage key={current} name={current} />}
       {!hasPage && current !== "home" && !onBrowser && <NotFound />}
       <MiniPlayer />
-      {!onBrowser && current !== "chat" && current !== "music" && <StatusCorner />}
+      {!onBrowser && current !== "chat" && current !== "music" && current !== "ai" && <StatusCorner />}
+      <Downloads />
       <Toasts />
       <Settings />
       <AuthModal />

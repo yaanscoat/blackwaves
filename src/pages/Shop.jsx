@@ -1,5 +1,6 @@
 import { useState } from "preact/hooks";
 import { Icon } from "../components/Icon.jsx";
+import { NativeAd } from "../components/Ads.jsx";
 import { Avatar } from "../components/Avatar.jsx";
 import { Modal } from "../components/Modal.jsx";
 import { ProfileBody } from "../components/ProfileCard.jsx";
@@ -107,8 +108,12 @@ export function Shop() {
         </div>
       </div>
 
+      <NativeAd class="page-ad" />
       <details class="earn glass">
-        <summary>How do I get coins?</summary>
+        <summary>
+          How do I get coins?
+          <Icon name="down" size={16} />
+        </summary>
         <ul>
           <li>{ECONOMY.dailyBase} coins every day you claim, plus {ECONOMY.dailyStreakBonus} more for each day in a row (up to {ECONOMY.dailyStreakMax} days).</li>
           <li>{ECONOMY.perActiveMinute} coin for every minute you're actually using blackwaves, up to {ECONOMY.activeDailyCap} a day.</li>

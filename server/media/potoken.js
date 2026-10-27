@@ -4,10 +4,25 @@ import { Worker } from "node:worker_threads";
 
 let worker = null;
 let counter = 0;
+let idle = null;
 const pending = new Map();
+// the worker carries a whole fake browser (jsdom, ~400mb), and the tv/vision pro
+// clients don't need tokens at all, so it only lives while something uses it
+const IDLE_MS = 3 * 60 * 1000;
+
+function rest() {
+  clearTimeout(idle);
+  idle = setTimeout(() => {
+    if (pending.size) return rest();
+    worker?.terminate();
+    worker = null;
+  }, IDLE_MS);
+  idle.unref?.();
+}
 
 function spawn() {
-  worker = new Worker(new URL("./potoken-worker.js", import.meta.url));
+  // capped so a misbehaving fake browser can't eat the whole memory budget
+  worker = new Worker(new URL("./potoken-worker.js", import.meta.url), { resourceLimits: { maxOldGenerationSizeMb: 320 } });
   worker.unref();
   worker.on("message", ({ id, error, ...result }) => {
     const entry = pending.get(id);
@@ -27,6 +42,7 @@ function spawn() {
 
 export function mint(binding = "") {
   if (!worker) spawn();
+  rest();
   const id = ++counter;
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => {

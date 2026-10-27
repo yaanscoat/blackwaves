@@ -9,12 +9,13 @@ const DOCS = {
   privacy: {
     title: "Privacy Policy",
     sections: [
-      ["What we collect", "If you just use blackwaves, we don't collect anything that identifies you. The server sees your IP address while it relays your traffic, the same way any website does, and it keeps short-lived rate-limit counters in memory. We don't run analytics or ads."],
+      ["What we collect", "If you just use blackwaves, we don't collect anything that identifies you. The server sees your IP address while it relays your traffic, the same way any website does, and it keeps short-lived rate-limit counters in memory. We don't run analytics."],
+      ["Ads", "If you allow ads, blackwaves loads ads from third-party ad networks (abscloud.org, bauval.org and araplhn.org). Those networks get your IP address and basic device and browser details, may set their own cookies, and handle that data under their own privacy policies. Every few clicks an ad opens in a new tab, and some other ads do too. If you don't allow ads, none of their code loads. Change your choice any time in Settings > Browser."],
       ["What stays on your device", "Settings, history, bookmarks, favorites and backgrounds are stored in your browser, encrypted with a key that lives in a cookie. We can't read them. Clearing your cookies deletes the key, which makes the data unreadable and resets blackwaves."],
       ["CloudSync accounts", "If you make an account, we store your username, a hashed password (scrypt), your profile, coins, shop items, the data you choose to sync, and the chat messages you send. You can delete your account and all of that in Settings > CloudSync."],
       ["Chat", "Messages in public channels can be read by anyone using blackwaves. Direct messages are only shown to the two people in them, but they are stored on our server and are not end-to-end encrypted. Don't share anything sensitive."],
       ["The proxy", "Pages you open through the browser or the game proxy are fetched through our server. We don't log which sites you visit. Your blackwaves login cookie is never forwarded to them."],
-      ["Third parties", "Movies, music, manga and cloud gaming data come from TMDB, embed players, Tidal community instances, Audius, MangaDex and MangaPill. Embed players load from their own servers and have their own policies."],
+      ["Third parties", "Movies, music, manga, AI and cloud gaming data come from TMDB, embed players, YouTube Music, SoundCloud, OpenRouter, MangaDex and MangaPill. Messages you send to blackwaves AI are passed through our server to OpenRouter and the model provider that answers. Embed players load from their own servers and have their own policies."],
       ["Contact", `Questions? Find us on Discord: ${DISCORD}`],
     ],
   },
@@ -33,8 +34,8 @@ const DOCS = {
     sections: [
       ["Essential cookies", "bw_k holds the key that encrypts everything blackwaves saves on your device. bw_session keeps you signed in to CloudSync; it's only sent to our /api, never to sites you open through the proxy. bw_consent remembers your cookie choices."],
       ["Game cookies", "Games opened through the game proxy can set their own cookies so saves and logins work. They're scoped to our site and never include ours."],
-      ["Optional choices", "The online counter and search suggestions are optional. Turn them off on the welcome screen or in Settings > Privacy & cloaking."],
-      ["No tracking", "We don't use advertising, analytics or tracking cookies of any kind."],
+      ["Optional choices", "The online counter, search suggestions and ads are optional. Turn them off on the welcome screen, or later in Settings > Privacy & cloaking (counter and suggestions) and Settings > Browser (ads)."],
+      ["Advertising cookies", "If you allow ads, our ad networks (abscloud.org, bauval.org and araplhn.org) can set their own cookies to show and measure ads. They're set by those networks, not by us, and only load if you said yes. We don't use analytics cookies."],
       ["Clearing cookies", "Deleting your cookies removes the encryption key, so everything blackwaves saved on that device is reset. Your CloudSync account is untouched; sign back in to restore synced data."],
     ],
   },

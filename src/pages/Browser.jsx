@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { Icon } from "../components/Icon.jsx";
+import { NativeAd } from "../components/Ads.jsx";
 import { SearchBox } from "../components/SearchBox.jsx";
 import { Bookmarks, useBookmarks } from "../components/Bookmarks.jsx";
 import { Avatar } from "../components/Avatar.jsx";
@@ -47,7 +48,7 @@ function Dropdown({ icon, label, children, class: className = "" }) {
   return (
     <div class={`bm-drop ${className}`} ref={wrap}>
       <button class={`bm-btn ${open ? "on" : ""}`} aria-label={label} data-tip={open ? undefined : label} aria-expanded={open} onClick={() => setOpen(!open)}>
-        {typeof icon === "string" ? <Icon name={icon} size={18} stroke={icon === "dots" ? 3 : 1.75} /> : icon}
+        {typeof icon === "string" ? <Icon name={icon} size={18} /> : icon}
       </button>
       {open && (
         <div class="bm-menu" role="menu" onClick={(event) => event.target.closest(".menu-item") && setOpen(false)}>
@@ -155,6 +156,7 @@ function NewTabPage({ tab }) {
       <img class="logo-img newtab-logo" src="/favicon.ico" alt="" />
       <SearchBox big autoFocus placeholder={placeholder} onSubmit={(text) => go(resolveInput(text))} />
       <Bookmarks onOpen={go} />
+      <NativeAd class="newtab-ad" />
     </div>
   );
 }

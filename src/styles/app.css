@@ -498,7 +498,7 @@
 .segmented button { padding: 7px 14px; border: 0; border-radius: 9px; background: none; cursor: pointer; color: var(--muted); font-size: 14px; transition: background 0.2s, color 0.2s; }
 .segmented button[aria-checked="true"] { background: var(--accent); color: var(--bg); }
 
-.theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; max-height: 300px; overflow: auto; padding: 2px; }
+.theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; padding: 2px; }
 .theme-swatch { display: grid; gap: 6px; padding: 6px; border: 1px solid var(--line); border-radius: 12px; background: none; cursor: pointer; text-align: left; transition: border-color 0.2s, transform 0.25s var(--spring); }
 .theme-swatch:hover { transform: translateY(-2px); }
 .theme-swatch[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px rgb(var(--accent-rgb) / 0.3); }
@@ -596,3 +596,31 @@
 .egg-neko { position: fixed; left: 0; top: 0; width: 32px; height: 32px; z-index: 460; pointer-events: none; background-image: url(/assets/img/oneko.gif); image-rendering: pixelated; }
 .panic-hint { margin-top: 16px; color: var(--muted); }
 .panic-hint .kbd { margin-right: 6px; }
+
+/* downloads stitched on this device (lib/hlsdownload.js) */
+.downloads { position: fixed; left: 14px; bottom: 14px; z-index: 140; display: grid; gap: 8px; width: min(320px, calc(100vw - 28px)); }
+.download { display: flex; align-items: center; gap: 12px; padding: 10px 10px 10px 14px; border-radius: 14px; animation: pop-in 0.3s var(--spring); }
+.download > .icon { flex: none; color: var(--accent); }
+.download.failed > .icon { color: var(--danger); }
+.download-text { flex: 1; min-width: 0; display: grid; gap: 3px; }
+.download-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13.5px; }
+.download-state { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.download-bar { height: 3px; border-radius: 3px; background: rgb(var(--text-rgb) / 0.12); overflow: hidden; }
+.download-bar i { display: block; height: 100%; background: var(--accent); transition: width 0.3s var(--ease); }
+.download-cancel { display: grid; place-items: center; width: 28px; height: 28px; flex: none; border: 0; border-radius: 8px; background: none; color: var(--muted); cursor: pointer; }
+.download-cancel:hover { color: var(--text); background: rgb(var(--text-rgb) / 0.08); }
+
+/* ads (lib/ads.js): only rendered when someone allowed them */
+.ad-slot { position: relative; width: min(728px, 100%); margin: 0 auto; }
+.ad-slot:has(> div:empty) .ad-label { visibility: hidden; }
+.ad-label { display: block; margin-bottom: 6px; font-size: 11px; color: var(--faint); text-align: center; }
+.home-ad { margin-top: 28px; }
+.games-ad { margin: 0 auto 20px; }
+.ad-sponsor { display: flex; align-items: center; gap: 8px; width: fit-content; margin: 16px auto 0; padding: 7px 14px 7px 8px; border: 1px solid var(--line); border-radius: 99px; background: rgb(var(--text-rgb) / 0.04); color: var(--muted); font-size: 13px; text-decoration: none; transition: color 0.2s, border-color 0.2s; }
+.ad-sponsor::before { content: "Ad"; padding: 1px 7px; border-radius: 99px; background: rgb(var(--text-rgb) / 0.1); color: var(--faint); font-size: 11px; }
+.ad-sponsor:hover { color: var(--text); border-color: rgb(var(--text-rgb) / 0.25); text-decoration: none; }
+.page-ad { margin: 0 auto 24px; }
+.newtab-ad { margin-top: 8px; }
+.ads-disclaimer { width: 100%; padding: 12px 14px; border-radius: 14px; border: 1px solid rgb(var(--accent-rgb) / 0.25); background: rgb(var(--accent-rgb) / 0.07); text-align: left; }
+.ads-disclaimer strong { font-size: 14px; }
+.ads-disclaimer p { margin: 4px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted); }

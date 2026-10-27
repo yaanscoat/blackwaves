@@ -20,7 +20,8 @@ export function Modal({ title, onClose, wide = false, children, class: className
     const onKey = (event) => event.key === "Escape" && close();
     window.addEventListener("keydown", onKey);
     const previous = document.activeElement;
-    panel.current?.querySelector("input, button, [tabindex]")?.focus({ preventScroll: true });
+    const field = panel.current?.querySelector("input:not([type=hidden]), textarea, select");
+    (field || panel.current)?.focus({ preventScroll: true });
     return () => {
       window.removeEventListener("keydown", onKey);
       previous?.focus?.({ preventScroll: true });
@@ -29,7 +30,7 @@ export function Modal({ title, onClose, wide = false, children, class: className
 
   return (
     <div class={`modal-backdrop ${closing ? "closing" : ""}`} onPointerDown={(event) => event.target === event.currentTarget && close()}>
-      <div ref={panel} class={`modal glass liquid ${wide ? "wide" : ""} ${className}`} role="dialog" aria-modal="true" aria-label={title}>
+      <div ref={panel} class={`modal glass liquid ${wide ? "wide" : ""} ${className}`} role="dialog" aria-modal="true" aria-label={title} tabIndex={-1}>
         {!hideHead && (
           <div class="modal-head">
             <h2>{title}</h2>

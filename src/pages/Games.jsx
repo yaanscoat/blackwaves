@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { Icon } from "../components/Icon.jsx";
+import { NativeAd } from "../components/Ads.jsx";
 import { SOURCES, loadSource, searchGames, favorites, recents, toggleFavorite, isFavorite, addRecent, normalize } from "../lib/games/catalog.js";
 import { settings, setSetting } from "../lib/settings.js";
 import { proxyUrl } from "../lib/gameurl.js";
@@ -205,6 +206,7 @@ export function Games() {
         </div>
       ) : (
         <>
+          <NativeAd class="games-ad" />
           <div class="card-grid">
             {results.slice(0, limit).map((game, index) => (
               <GameCard key={game.key} game={game} index={index} onPlay={play} />

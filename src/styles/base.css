@@ -348,6 +348,7 @@ img { display: block; max-width: 100%; }
   padding: 24px;
   animation: modal-in 0.45s var(--spring);
 }
+.modal:focus { outline: none; }
 .modal.wide { width: min(980px, 100%); }
 .modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
 .closing .modal { animation: modal-out 0.2s var(--ease) forwards; }

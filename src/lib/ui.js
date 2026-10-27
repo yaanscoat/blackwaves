@@ -20,5 +20,6 @@ export const NAV = [
   { id: "manga", path: "/manga", icon: "manga", label: "Manga", key: "r" },
   { id: "cloud", path: "/cloud", icon: "cloud", label: "Cloud gaming", key: "l" },
   { id: "chat", path: "/chat", icon: "chat", label: "Chat", key: "c" },
+  { id: "ai", path: "/ai", icon: "ai", label: "AI", key: "a" },
   { id: "shop", path: "/shop", icon: "shop", label: "Shop", key: "s" },
 ];

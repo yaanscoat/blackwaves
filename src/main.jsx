@@ -19,6 +19,7 @@ import { connect } from "./lib/realtime.js";
 import { refreshMe, me } from "./lib/account.js";
 import { loadConsent, consent } from "./components/Welcome.jsx";
 import { loadServerInfo } from "./components/StatusCorner.jsx";
+import { initAds } from "./lib/ads.js";
 import { App } from "./App.jsx";
 
 async function boot() {
@@ -35,6 +36,7 @@ async function boot() {
   loadSecrets();
   loadMusicState();
   loadConsent();
+  initAds();
   initCloak();
   initOverlay();
   initSearchLight();

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { Icon } from "../components/Icon.jsx";
+import { NativeAd } from "../components/Ads.jsx";
 import { Modal } from "../components/Modal.jsx";
 import { get, post } from "../lib/api.js";
 import { toast } from "../lib/notify.js";
@@ -39,6 +40,7 @@ export function Cloud() {
           <input placeholder="Search cloud games" value={query} onInput={(event) => setQuery(event.currentTarget.value)} aria-label="Search cloud games" />
         </label>
       </div>
+      <NativeAd class="page-ad" />
       <div class="cloud-offline glass">
         <span class="offline-dot" />
         <div>

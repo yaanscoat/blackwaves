@@ -32,7 +32,10 @@ import { handleMovies } from "./media/movies.js";
 import { handleManga } from "./media/manga/index.js";
 import { handleMusic } from "./media/music.js";
 import { handleCloud } from "./media/cloud.js";
+import { handleAi } from "./media/ai.js";
 import { SHOP_ITEMS } from "../shared/shop.js";
+import { tuneWisp } from "./lib/wisp-tuning.js";
+import { memoryStats } from "./lib/memory.js";
 
 // ---- wisp (the thing the proxy browser actually tunnels through) ----------------
 wispLogging.set_level(config.dev ? wispLogging.WARN : wispLogging.ERROR);
@@ -43,9 +46,11 @@ Object.assign(wisp.options, {
   parse_real_ip: config.trustProxy,
   // don't set stream_limit_per_host: wisp-js 0.5.0 iterates an object there and
   // crashes the whole process the first time someone opens a website. ask us how we know.
-  stream_limit_total: 512,
+  // per browser tab. a busy site opens maybe 40; this stops one tab hoarding sockets
+  stream_limit_total: 160,
   dns_result_order: "ipv4first",
 });
+await tuneWisp();
 
 const apiLimiter = createLimiter({ windowMs: 60_000, max: 600 });
 const authLimiter = createLimiter({ windowMs: 10 * 60_000, max: 20 });
@@ -87,7 +92,7 @@ async function serveScramjet(req, res) {
   res.end(req.method === "HEAD" ? undefined : patchedScramjet);
 }
 
-const APP_ROUTES =/^\/(home|browser|games|movies|music|manga|cloud|chat|shop|profile|legal|settings|u)?(\/.*)?$/;
+const APP_ROUTES =/^\/(home|browser|games|movies|music|manga|cloud|chat|ai|shop|profile|legal|settings|u)?(\/.*)?$/;
 
 let vite = null;
 
@@ -245,6 +250,7 @@ async function handleApi(req, res, url, ip) {
   if (pathname.startsWith("/api/manga/")) return handleManga(req, res, pathname, searchParams);
   if (pathname.startsWith("/api/music/")) return handleMusic(req, res, pathname, searchParams);
   if (pathname.startsWith("/api/cloud/")) return handleCloud(req, res, pathname, searchParams);
+  if (pathname.startsWith("/api/ai/")) return handleAi(req, res, pathname, ip);
 
   for (const entry of routes) {
     if (entry.method !== req.method && !(entry.method === "GET" && req.method === "HEAD")) continue;
@@ -275,7 +281,7 @@ async function onRequest(req, res) {
   const ip = clientIp(req);
 
   try {
-    if (pathname === "/health") return text(res, 200, "ok");
+    if (pathname === "/health") return url.searchParams.has("memory") ? json(res, 200, memoryStats()) : text(res, 200, "ok");
 
     // game proxy first, including root-relative requests made by game pages
     if (pathname.startsWith("/!!/") || pathname.startsWith("/!cover!/")) return await handlePrefixed(req, res, pathname, search);

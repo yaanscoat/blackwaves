@@ -1,6 +1,15 @@
-/** a boring ttl + lru map. boring is good. boring doesn't page you at 3am. */
+import { onPressure } from "./memory.js";
+
+/**
+ * a boring ttl + lru map. boring is good. boring doesn't page you at 3am.
+ * every cache empties itself when the server runs short on memory; the
+ * browsers asking for things keep their own copies anyway.
+ */
 export function createCache({ max = 500, ttl = 5 * 60 * 1000 } = {}) {
   const map = new Map();
+  onPressure(() => {
+    for (const key of map.keys()) if (!key.startsWith("pending:")) map.delete(key);
+  });
   return {
     get(key) {
       const entry = map.get(key);

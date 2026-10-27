@@ -39,6 +39,12 @@ npm start  #nodejs server command
 
 then open http://localhost:8080 and you're finished!
 
+>[!TIP]
+>If YouTube asks you to "sign in to confirm you're not a bot", YouTube doesn't like your server's IP. Set `YOUTUBE_PROXY=http://user:pass@host:port` to send only YouTube traffic (music and youtube.com in the browser) through another proxy. Music also falls back to SoundCloud on its own.
+
+>[!NOTE]
+>blackwaves keeps itself under 3 GB of RAM (tested with 300 people on at once). Change that with `MEMORY_BUDGET_MB`; check usage at `/health?memory`.
+
 ## Credits!
 
 * lyra by gayq the codebase  that **ALL** of blackwaves is built on
@@ -52,6 +58,7 @@ then open http://localhost:8080 and you're finished!
 * Mercury Workshop - Scramjet, Wisp, epoxy and libcurl
 * x8rr/sapphire - the base of lyra's extension runtime
 * gn-math, Selenite, Truffled, Edurocks, wasm.rip, Velara, gmshelf (UGS, CKV, Seraph) - game sources
+* Font Awesome Free - every icon ([CC BY 4.0](https://fontawesome.com/license/free))
 * Lexend - the only font we use
 * oneko - the cat (you'll find it)
 

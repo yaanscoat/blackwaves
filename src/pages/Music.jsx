@@ -477,7 +477,7 @@ function ArtistView({ view: current }) {
           <span class="a-photo">{artist.picture ? <img src={artist.picture} alt="" /> : <Icon name="user" size={56} />}</span>
           <div class="a-text">
             <span class="a-kind">
-              <Icon name="check" size={13} stroke={2.4} /> Artist · {SOURCE_LABEL[artist.source] || ""}
+              <Icon name="check" size={13} /> Artist · {SOURCE_LABEL[artist.source] || ""}
             </span>
             <h1>{artist.name}</h1>
             <span class="m-sub">{stats.join(" · ")}</span>

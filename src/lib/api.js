@@ -28,7 +28,24 @@ export async function api(path, { method = "GET", body, signal } = {}) {
   return data;
 }
 
-export const get = (path, options) => api(path, options);
+// answers that are the same for everyone get remembered on this device for a
+// few minutes, so flicking between pages doesn't keep asking the server again
+const SHAREABLE = /^\/api\/(movies\/(?!hls)|manga\/|music\/(home|search|charts|album|artist)|ai\/models|cloud\/)/;
+const MEMO_TTL = 5 * 60 * 1000;
+const memo = new Map();
+
+export function get(path, options) {
+  if (!SHAREABLE.test(path)) return api(path, options);
+  const hit = memo.get(path);
+  if (hit && Date.now() - hit.at < MEMO_TTL) return hit.promise;
+  const promise = api(path).catch((error) => {
+    memo.delete(path);
+    throw error;
+  });
+  memo.set(path, { at: Date.now(), promise });
+  if (memo.size > 300) memo.delete(memo.keys().next().value);
+  return promise;
+}
 export const post = (path, body, options) => api(path, { ...options, method: "POST", body: body ?? {} });
 export const patch = (path, body) => api(path, { method: "PATCH", body });
 export const put = (path, body) => api(path, { method: "PUT", body });

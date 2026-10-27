@@ -1,99 +1,30 @@
-// hand-rolled 24x24 stroke icons on one grid: rounded joins, 1.5 corner radii,
-// optical sizes matched by eye. one component, one map, zero icon fonts.
-const P = {
-  home: "M4 10.5 12 4l8 6.5M6 9v9.5A1.5 1.5 0 0 0 7.5 20H10v-4.5a2 2 0 0 1 4 0V20h2.5a1.5 1.5 0 0 0 1.5-1.5V9",
-  browser: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18",
-  games: "M8 7h8a5 5 0 0 1 4.9 4l.9 4.6a2.6 2.6 0 0 1-4.6 2.1L15.5 16h-7l-1.7 1.7a2.6 2.6 0 0 1-4.6-2.1L3.1 11A5 5 0 0 1 8 7zM8 9.75v3.5M6.25 11.5h3.5M15.5 10.5h.01M17.5 12.5h.01",
-  movies: "M4.5 5h15A1.5 1.5 0 0 1 21 6.5v11a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5v-11A1.5 1.5 0 0 1 4.5 5zM10 9.2v5.6l4.8-2.8z",
-  music: "M9 17.5v-11L20 4v11M9 17.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM20 15a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM9 10l11-2.5",
-  manga: "M12 7c-1.6-1.6-4.2-2.3-8-2.3v13.6c3.8 0 6.4.7 8 2.2 1.6-1.5 4.2-2.2 8-2.2V4.7c-3.8 0-6.4.7-8 2.3zM12 7v13.5",
-  cloud: "M7.5 19a4.5 4.5 0 0 1-.7-8.95 5.5 5.5 0 0 1 10.6-1.3A5.2 5.2 0 0 1 17 19zM10.8 11.8v4.4l3.6-2.2z",
-  chat: "M6.5 4h11A2.5 2.5 0 0 1 20 6.5v8a2.5 2.5 0 0 1-2.5 2.5H11l-4.5 3.5V17A2.5 2.5 0 0 1 4 14.5v-8A2.5 2.5 0 0 1 6.5 4zM8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01",
-  shop: "M5.5 8.5h13l-1 10.6a1.5 1.5 0 0 1-1.5 1.4H8a1.5 1.5 0 0 1-1.5-1.4zM9 11V7.5a3 3 0 0 1 6 0V11",
-  bell: "M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15zM10 20.5a2.2 2.2 0 0 0 4 0",
-  settings: "M4 7h8M18 7h2M4 17h2M12 17h8M15 9.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM9 19.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z",
-  user: "M12 11.5a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5zM5 20a7 7 0 0 1 14 0",
-  users: "M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21a7 7 0 0 1 14 0M16 3.1a4 4 0 0 1 0 7.8M22 21a7 7 0 0 0-4-6.3",
-  search: "M10.5 17.5a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4.5-4.5",
-  plus: "M12 5v14M5 12h14",
-  x: "M18 6 6 18M6 6l12 12",
-  back: "M19 12H5M12 19l-7-7 7-7",
-  forward: "M5 12h14M12 5l7 7-7 7",
-  refresh: "M21 12a9 9 0 1 1-2.6-6.4M21 3v6h-6",
-  star: "M12 3l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9z",
-  heart: "M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z",
-  play: "M7 4.5v15a.8.8 0 0 0 1.2.7l12-7.5a.8.8 0 0 0 0-1.4l-12-7.5A.8.8 0 0 0 7 4.5z",
-  pause: "M7 4h3v16H7zM14 4h3v16h-3z",
-  next: "M5 4.5v15l10-7.5zM19 5v14",
-  prev: "M19 4.5v15L9 12zM5 5v14",
-  volume: "M11 5 6 9H3v6h3l5 4zM15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13",
-  mute: "M11 5 6 9H3v6h3l5 4zM22 9l-6 6M16 9l6 6",
-  fullscreen: "M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3",
-  external: "M14 3h7v7M10 14 21 3M18 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5",
-  menu: "M4 7h16M4 12h16M4 17h16",
-  dots: "M12 5h.01M12 12h.01M12 19h.01",
-  coin: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 6.75v10.5M14.6 9.4c-.5-.75-1.4-1.15-2.6-1.15-1.5 0-2.6.75-2.6 1.8 0 2.5 5.2 1.3 5.2 3.85 0 1.05-1.1 1.85-2.6 1.85-1.2 0-2.15-.45-2.65-1.25",
-  send: "M22 2 11 13M22 2l-7 20-4-9-9-4z",
-  smile: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01",
-  trash: "M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1L5 6",
-  edit: "M12 20h9M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z",
-  reply: "M9 17 4 12l5-5M20 18v-2a4 4 0 0 0-4-4H4",
-  hash: "M4 9h16M4 15h16M10 3 8 21M16 3l-2 18",
-  at: "M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.9 7.9",
-  lock: "M5 11h14v10H5zM8 11V7a4 4 0 0 1 8 0v4",
-  shield: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
-  palette: "M12 22a10 10 0 1 1 10-10c0 2.8-2.2 4-4 4h-2a2 2 0 0 0-1.5 3.3c.7.9.1 2.7-2.5 2.7zM7.5 10.5h.01M10.5 7h.01M15 7.5h.01",
-  sparkles: "M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8zM5 2l.6 1.4L7 4l-1.4.6L5 6l-.6-1.4L3 4l1.4-.6z",
-  info: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 16v-4M12 8h.01",
-  discord: "M8.5 15.5c3 1.3 4 1.3 7 0M9 12.5h.01M15 12.5h.01M7 18c-2.5-.8-4-2-4-2 0-6 2-10 2-10s2.5-1.5 5-1.5l.5 1.3a14 14 0 0 1 3 0L14 4.5c2.5 0 5 1.5 5 1.5s2 4 2 10c0 0-1.5 1.2-4 2l-1-2",
-  github: "M9 19c-5 1.5-5-2.5-7-3m14 6v-3.9a3.4 3.4 0 0 0-.9-2.6c3.1-.4 6.4-1.6 6.4-7A5.4 5.4 0 0 0 20 4.8 5 5 0 0 0 19.9 1S18.7.7 16 2.5a13.4 13.4 0 0 0-7 0C6.3.7 5.1 1 5.1 1A5 5 0 0 0 5 4.8a5.4 5.4 0 0 0-1.5 3.7c0 5.4 3.3 6.6 6.4 7a3.4 3.4 0 0 0-.9 2.6V22",
-  check: "M20 6 9 17l-5-5",
-  down: "M6 9l6 6 6-6",
-  right: "M9 6l6 6-6 6",
-  eyeOff: "M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c5 0 9 4 10 7-.4 1.2-1.2 2.5-2.3 3.6M6.6 6.6C4.6 8 3.4 9.9 3 12c1 3 5 7 9 7 1.8 0 3.4-.5 4.8-1.4M9.9 9.9a3 3 0 0 0 4.2 4.2",
-  clock: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7.5V12l3 2",
-  pin: "M12 21s7-6.2 7-11.5a7 7 0 1 0-14 0C5 14.8 12 21 12 21zM12 12a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z",
-  logout: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9",
-  shuffle: "M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5",
-  repeat: "M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3",
-  tv: "M3 7h18v12H3zM8 3l4 4 4-4",
-  image: "M4 4h16v16H4zM8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM20 15l-5-5L4 20",
-  grid: "M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z",
-  list: "M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01",
-  gift: "M4 12v9h16v-9M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z",
-  crown: "M3 18h18M4 15 2.5 6l5.5 4 4-6 4 6 5.5-4L20 15z",
-  zap: "M13 2 3 14h9l-1 8 10-12h-9z",
-  copy: "M9 9h11v11H9zM5 15H4V4h11v1",
-  download: "M12 4v11M7.5 10.5 12 15l4.5-4.5M5 20h14",
-  upload: "M12 20V9M7.5 13.5 12 9l4.5 4.5M5 4h14",
-  wave: "M2 12c2-3 4-3 6 0s4 3 6 0 4-3 6 0M2 17c2-3 4-3 6 0s4 3 6 0 4-3 6 0M2 7c2-3 4-3 6 0s4 3 6 0 4-3 6 0",
-  ban: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM5.6 5.6l12.8 12.8",
-  flag: "M4 22V4M4 4h13l-2 4 2 4H4",
-  bookmark: "M6 3h12v18l-6-4-6 4z",
-  maximize: "M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7",
-  minimize: "M8 3v3a2 2 0 0 1-2 2H3M21 8h-3a2 2 0 0 1-2-2V3M3 16h3a2 2 0 0 1 2 2v3M16 21v-3a2 2 0 0 1 2-2h3",
-};
+// font awesome free glyphs (see scripts/build-icons.js). every icon sits in a
+// square box with a little breathing room, because font awesome draws to the
+// very edge of its canvas. wide glyphs like the gamepad keep their height
+// as long as they fit, so they don't shrink next to the square ones.
+import { GLYPHS } from "./glyphs.js";
 
-export function Icon({ name, size = 20, stroke = 1.75, class: className = "", fill = false, title }) {
-  const d = P[name] || P.info;
+const ROOM = 1.18;
+const WIDE_ROOM = 1.04;
+
+export function Icon({ name, size = 20, class: className = "", fill = false, title }) {
+  const [width, height, path, solid] = GLYPHS[name] || GLYPHS.info;
+  const box = Math.max(height * ROOM, width * WIDE_ROOM);
+  const viewBox = `${((width - box) / 2).toFixed(1)} ${((height - box) / 2).toFixed(1)} ${box.toFixed(1)} ${box.toFixed(1)}`;
   return (
     <svg
       class={`icon ${className}`}
       width={size}
       height={size}
-      viewBox="0 0 24 24"
-      fill={fill ? "currentColor" : "none"}
-      stroke="currentColor"
-      stroke-width={stroke}
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      viewBox={viewBox}
+      fill="currentColor"
       aria-hidden={title ? undefined : "true"}
       role={title ? "img" : undefined}
     >
       {title && <title>{title}</title>}
-      <path d={d} />
+      <path d={fill && solid ? solid : path} />
     </svg>
   );
 }
 
-export const ICON_NAMES = Object.keys(P);
+export const ICON_NAMES = Object.keys(GLYPHS);

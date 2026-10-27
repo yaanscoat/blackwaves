@@ -23,7 +23,10 @@ export const CHANGELOG = [
           "Artist profiles in Music: popular songs, every album, single and song, an About section and similar artists. Click any artist name to open one, and follow artists to keep them in your library.",
           "Three new game sources: UGS, CKV and Seraph.",
           "Choose what shows in the top bar under Appearance. Anything you hide moves into the menu button.",
-          "Cleaner, redrawn icons.",
+          "blackwaves AI: chat with free AI models (Alt+A). Chats stay on your device.",
+          "Much lighter server: downloads are put together on your device, pages and game files are cached by your browser, and the server keeps itself under 3 GB of memory even with 300 people on at once.",
+          "New icons from Font Awesome, plus a round of UI polish.",
+          "Music no longer hits YouTube's \"sign in to confirm you're not a bot\" wall on most servers, songs play all the way through again, and if YouTube still refuses, the same song plays from SoundCloud.",
         ],
       },
       {
@@ -99,7 +102,8 @@ export const CREDITS = [
   { name: "TMDB", what: "movie and show metadata", url: "https://www.themoviedb.org" },
   { name: "Mercury Workshop", what: "Scramjet, Wisp, epoxy and libcurl", url: "https://github.com/MercuryWorkshop" },
   { name: "x8rr/sapphire", what: "the base of lyra's extension runtime", url: "https://github.com/x8rr/sapphire" },
-  { name: "gn-math, Selenite, Truffled, Edurocks, wasm.rip, Velara", what: "game sources", url: "https://github.com/gn-math" },
+  { name: "gn-math, Selenite, Truffled, Edurocks, wasm.rip, Velara, gmshelf", what: "game sources", url: "https://github.com/gn-math" },
+  { name: "Font Awesome Free", what: "every icon (CC BY 4.0)", url: "https://fontawesome.com" },
   { name: "Lexend", what: "the only font we use", url: "https://www.lexend.com" },
   { name: "oneko", what: "the cat (you'll find it)", url: "https://github.com/adryd325/oneko.js" },
 ];

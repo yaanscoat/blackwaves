@@ -6,11 +6,16 @@
 // "ya:<browseId>" yt album, "yr:<channelId>" yt artist, "sr:<userId>" sc artist.
 // "a:<id>" is audius, kept so songs liked before 3.0 still play.
 import crypto from "node:crypto";
+import fs from "node:fs";
+import path from "node:path";
 import vm from "node:vm";
 import { Readable } from "node:stream";
-import { Innertube, Log, Platform, YTNodes } from "youtubei.js";
+import { Worker } from "node:worker_threads";
+import { Innertube, Log, Platform, UniversalCache, YTNodes } from "youtubei.js";
+import { config } from "../config.js";
 import { mint } from "./potoken.js";
 import { BROWSER_UA, publicFetch } from "../lib/net.js";
+import { innertubeFetch, isYoutubeHost, youtubeFetch, youtubeProxied } from "../lib/youtube-route.js";
 import { createCache } from "../lib/cache.js";
 import { json, securityHeaders, text } from "../lib/http.js";
 
@@ -36,23 +41,40 @@ Platform.shim.eval = async (data, env) => {
   return vm.runInNewContext(`(function(){${data.output}\nreturn { ${props.join(", ")} };})()`, {}, { timeout: 3000 });
 };
 
+const YT_CACHE = path.join(config.dataDir, "yt-cache");
+
+/** parses youtube's player in a throwaway thread so the main process never holds it */
+function warmPlayer() {
+  return new Promise((resolve) => {
+    fs.mkdirSync(YT_CACHE, { recursive: true });
+    const worker = new Worker(new URL("./yt-warm-worker.js", import.meta.url), { workerData: { cacheDir: YT_CACHE }, resourceLimits: { maxOldGenerationSizeMb: 512 } });
+    const timer = setTimeout(() => worker.terminate(), 30_000);
+    const done = () => (clearTimeout(timer), resolve());
+    worker.once("exit", done);
+    worker.once("error", done);
+  });
+}
+
 let innertube = null;
 let innertubeAt = 0;
 async function yt() {
   // the player script rotates, so start a fresh session every few hours. the
-  // session is tied to the same visitor the po tokens are minted for.
+  // session comes from youtube itself (a real visitor id is what lets the vision
+  // pro client stream without tokens); no session token, which would boot the
+  // ~400mb token worker on every server.
   if (!innertube || Date.now() - innertubeAt > 4 * 60 * 60 * 1000) {
-    innertube = (async () => {
-      const session = await mint().catch(() => null);
-      return Innertube.create({
-        generate_session_locally: true,
-        retrieve_player: true,
-        ...(session ? { po_token: session.token, visitor_data: session.visitorData } : {}),
+    innertube = warmPlayer()
+      .then(() =>
+        Innertube.create({
+          retrieve_player: true,
+          cache: new UniversalCache(true, YT_CACHE),
+          ...(youtubeProxied ? { fetch: innertubeFetch } : {}),
+        }),
+      )
+      .catch((error) => {
+        innertube = null;
+        throw error;
       });
-    })().catch((error) => {
-      innertube = null;
-      throw error;
-    });
     innertubeAt = Date.now();
   }
   return innertube;
@@ -109,6 +131,26 @@ const ytArtist = (item) => ({ id: `yr:${item.id}`, name: item.name || item.title
 
 const isSong = (item) => item?.id && (item.item_type === "song" || item.item_type === "video" || item.type === "MusicResponsiveListItem" && item.duration);
 const isAlbumLike = (item) => item?.id && ["album", "playlist", "single", "ep"].includes(item.item_type);
+
+// vision pro streams with just a real visitor session; the rest need a po token,
+// which boots the token worker, so they only get asked if vision pro says no
+const YT_CLIENTS = ["VISIONOS", "TV_SIMPLY", "YTMUSIC", "MWEB", "IOS"];
+const YT_NEEDS_TOKEN = new Set(["TV_SIMPLY", "YTMUSIC", "MWEB", "IOS"]);
+// whichever client worked last goes first next time
+let ytPreferred = 0;
+
+/** asks for 64kb from the middle of the file: the bit that dies on a bad link */
+async function ytStreams(url) {
+  const total = Number(new URL(url).searchParams.get("clen")) || 0;
+  const at = Math.max(0, Math.min(3_000_000, total - 70_000));
+  try {
+    const response = await youtubeFetch(url, { headers: { "user-agent": BROWSER_UA, range: `bytes=${at}-${at + 65_535}` }, signal: AbortSignal.timeout(8000) });
+    await response.body?.cancel();
+    return response.status === 206 || response.status === 200;
+  } catch {
+    return false;
+  }
+}
 
 const ytmusic = {
   async search(query, type) {
@@ -221,30 +263,39 @@ const ytmusic = {
     singles.forEach((single) => (single.kind = "Single"));
     return { artist: info, popular: popular.map(credit), tracks: (tracks.length ? tracks : popular).map(credit), albums, singles, related };
   },
-  async stream(id) {
+  /**
+   * youtube's "sign in to confirm you're not a bot" wall depends on the server's
+   * ip and on which app we pretend to be, so we try several apps in turn. the
+   * vision pro client needs no po token and streams whole songs; the tv and music
+   * clients are token-powered backups. a stream only counts once a byte range from
+   * the middle of the song actually downloads, because youtube likes to hand
+   * out links that die after the first megabyte. if every client is refused, the
+   * same song plays from soundcloud and nobody has to sign in to anything.
+   */
+  async stream(id, hint = {}) {
     return cache.wrap(`ys:${id}`, async () => {
       const client = await yt();
-      // the youtube music client plus a token bound to this exact video is the
-      // only combination youtube still streams start to finish
-      const token = (await mint(id).catch(() => null))?.token;
-      let info;
-      try {
-        info = await client.getBasicInfo(id, { client: "YTMUSIC", ...(token ? { po_token: token } : {}) });
-        if (info.playability_status?.status && info.playability_status.status !== "OK") throw new Error(info.playability_status.reason || "unplayable");
-        const format = info.chooseFormat({ type: "audio", quality: "best", format: "mp4" });
-        let url = await format.decipher(client.session.player);
-        if (token) url = `${url.replace(/&pot=[^&]*/, "")}&pot=${token}`;
-        return { stream: signed("stream", url), type: "file" };
-      } catch (error) {
-        // youtube said no (bot check, region lock, datacenter ip...). play the same song from soundcloud instead.
-        const title = info?.basic_info?.title;
-        const artist = info?.basic_info?.author?.replace(/ - Topic$/, "");
-        if (title) {
-          const match = (await soundcloud.search(`${artist || ""} ${title}`.trim(), "tracks").catch(() => []))[0];
-          if (match) return { ...(await soundcloud.stream(match.id.slice(2))), fallback: "soundcloud" };
-        }
-        throw httpError(403, "youtube won't play that one right now");
+      const order = [...YT_CLIENTS.slice(ytPreferred), ...YT_CLIENTS.slice(0, ytPreferred)];
+      let about = null;
+      for (const name of order) {
+        try {
+          const token = YT_NEEDS_TOKEN.has(name) ? (await mint(id).catch(() => null))?.token : null;
+          const info = await client.getBasicInfo(id, { client: name, ...(token ? { po_token: token } : {}) });
+          about ||= info.basic_info;
+          if (info.playability_status?.status !== "OK") continue;
+          const format = info.chooseFormat({ type: "audio", quality: "best", format: "mp4" });
+          let url = format.url || (await format.decipher(client.session.player));
+          if (token) url = `${url.replace(/&pot=[^&]*/, "")}&pot=${token}`;
+          if (!(await ytStreams(url))) continue;
+          ytPreferred = YT_CLIENTS.indexOf(name);
+          return { stream: signed("stream", url), type: "file" };
+        } catch {}
       }
+      const title = about?.title || hint.title;
+      const artist = about?.author?.replace(/ - Topic$/, "") || hint.artist;
+      const match = title && (await scMatch(title, artist).catch(() => null));
+      if (match) return { ...(await soundcloud.stream(match)), fallback: "soundcloud" };
+      throw httpError(403, "youtube won't play that one right now and soundcloud doesn't have it");
     }, 50 * 60 * 1000);
   },
 };
@@ -312,6 +363,20 @@ const scAlbum = (playlist, artist) => ({
 });
 
 const SC_GENRES = { all: "all-music" };
+
+/**
+ * the soundcloud stand-in for a youtube song: full tracks only (soundcloud
+ * serves 30 second previews of label releases), preferring one whose title
+ * actually contains the song name.
+ */
+async function scMatch(title, artist) {
+  const clean = (value) => String(value || "").toLowerCase().replace(/\(.*?\)|\[.*?\]|feat\..*$/g, "").replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+  const want = clean(title);
+  const results = (await sc("/search/tracks", { q: `${artist || ""} ${title}`.trim(), limit: 20 })).collection || [];
+  const full = results.filter((track) => scPlayable(track) && track.policy !== "SNIP");
+  const best = full.find((track) => want && clean(track.title).includes(want)) || full[0];
+  return best ? String(best.id) : null;
+}
 
 const soundcloud = {
   async search(query, type) {
@@ -429,6 +494,19 @@ function attachment(name, type) {
  * handing the browser one normal-looking response.
  */
 const YT_CHUNK = 2 * 1024 * 1024;
+
+/** waits for the browser to catch up, then tidies up both listeners */
+function drained(res) {
+  return new Promise((resolve) => {
+    const done = () => {
+      res.off("drain", done);
+      res.off("close", done);
+      resolve();
+    };
+    res.once("drain", done);
+    res.once("close", done);
+  });
+}
 async function pipeYoutube(req, res, url, download) {
   const total = Number(new URL(url).searchParams.get("clen"));
   if (!total) return pipe(req, res, url, { audio: true, download, chunked: false });
@@ -454,11 +532,11 @@ async function pipeYoutube(req, res, url, download) {
   for (let offset = start; offset <= end && !closed; offset += YT_CHUNK) {
     const last = Math.min(offset + YT_CHUNK - 1, end);
     try {
-      const upstream = await publicFetch(url, { headers: { "user-agent": BROWSER_UA, range: `bytes=${offset}-${last}` }, signal: AbortSignal.timeout(30_000) });
+      const upstream = await youtubeFetch(url, { headers: { "user-agent": BROWSER_UA, range: `bytes=${offset}-${last}` }, signal: AbortSignal.timeout(30_000) });
       if (!upstream.ok || !upstream.body) throw new Error(`youtube ${upstream.status}`);
       for await (const chunk of upstream.body) {
         if (closed) break;
-        if (!res.write(chunk)) await new Promise((resolve) => (res.once("drain", resolve), res.once("close", resolve)));
+        if (!res.write(chunk)) await drained(res);
       }
     } catch {
       return res.destroy();
@@ -472,7 +550,8 @@ async function pipe(req, res, url, { audio, download = "", chunked = true }) {
   try {
     const headers = { "user-agent": BROWSER_UA };
     if (audio && req.headers.range && !download) headers.range = req.headers.range;
-    const upstream = await publicFetch(url, { headers, signal: AbortSignal.timeout(audio ? 15 * 60 * 1000 : 15_000) });
+    const get = isYoutubeHost(new URL(url).hostname) ? youtubeFetch : publicFetch;
+    const upstream = await get(url, { headers, signal: AbortSignal.timeout(audio ? 15 * 60 * 1000 : 15_000) });
     if (!upstream.ok && upstream.status !== 206) return text(res, 502, "upstream error");
     const out = {
       "Content-Type": upstream.headers.get("content-type") || (audio ? "audio/mpeg" : "image/jpeg"),
@@ -496,7 +575,7 @@ async function pipe(req, res, url, { audio, download = "", chunked = true }) {
 }
 
 /** soundcloud hls: rewrite the playlist so every segment comes back through us, signed */
-async function hls(req, res, url, download) {
+async function hls(req, res, url) {
   try {
     const response = await publicFetch(url, { headers: { "user-agent": BROWSER_UA }, signal: AbortSignal.timeout(15_000) });
     if (!response.ok) return text(res, 502, "upstream error");
@@ -506,25 +585,8 @@ async function hls(req, res, url, download) {
     const lines = playlist.split("\n");
     const resolve = (value) => new URL(value, url).href;
 
-    if (download) {
-      // downloads get every segment glued into one file (works for mp3 and fragmented mp4)
-      const parts = [];
-      for (const line of lines) {
-        const map = /#EXT-X-MAP:URI="([^"]+)"/.exec(line);
-        if (map) parts.push(resolve(map[1]));
-        else if (line.trim() && !line.startsWith("#")) parts.push(resolve(line.trim()));
-      }
-      const mp3 = parts.some((part) => /\.mp3(\?|$)/.test(part)) || /mp3|mpeg/.test(url);
-      res.writeHead(200, securityHeaders({ "Content-Type": mp3 ? "audio/mpeg" : "audio/mp4", "Content-Disposition": attachment(download, mp3 ? "audio/mpeg" : "audio/mp4"), "Cache-Control": "no-store" }));
-      for (const part of parts) {
-        if (res.destroyed) return;
-        const chunk = await publicFetch(part, { headers: { "user-agent": BROWSER_UA }, signal: AbortSignal.timeout(30_000) });
-        if (!chunk.ok) break;
-        res.write(Buffer.from(await chunk.arrayBuffer()));
-      }
-      return res.end();
-    }
-
+    // downloads are glued together in the browser (src/lib/hlsdownload.js), so
+    // the server only ever relays one segment at a time
     const rewritten = lines
       .map((line) => {
         if (!line.trim()) return line;
@@ -558,7 +620,7 @@ export async function handleMusic(req, res, pathname, searchParams) {
     const url = verify(searchParams);
     if (!url) return text(res, 403, "bad link");
     const download = String(searchParams.get("dl") || "");
-    if (rest === "/hls") return hls(req, res, url, download);
+    if (rest === "/hls") return hls(req, res, url);
     return pipe(req, res, url, { audio: rest === "/stream", download: rest === "/stream" ? download : "" });
   }
   try {
@@ -589,7 +651,9 @@ export async function handleMusic(req, res, pathname, searchParams) {
       const [kind, id] = provider(decodeURIComponent(match[1]));
       const source = { y: ytmusic, s: soundcloud, a: audius }[kind];
       if (!source) throw httpError(400, "that isn't a track");
-      return json(res, 200, await source.stream(id));
+      // the title and artist let us find the song on soundcloud even when youtube tells us nothing
+      const hint = { title: String(searchParams.get("title") || "").slice(0, 200), artist: String(searchParams.get("artist") || "").slice(0, 200) };
+      return json(res, 200, await source.stream(id, hint));
     }
   } catch (error) {
     return json(res, error.status || 502, { error: [400, 403, 404].includes(error.status) ? error.message : "the music servers are being shy, try again" });
