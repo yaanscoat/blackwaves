@@ -24,6 +24,8 @@ export const CHANGELOG = [
           "Three new game sources: UGS, CKV and Seraph.",
           "Choose what shows in the top bar under Appearance. Anything you hide moves into the menu button.",
           "blackwaves AI: chat with free AI models (Alt+A). Chats stay on your device.",
+          "Paraphraser and Humanizer in blackwaves AI: reword text in different styles, or make stiff, robotic writing sound like a person wrote it, with the changed words highlighted.",
+          "blackwaves Premium for CloudSync accounts: priority search, higher AI limits and longer answers, custom instructions, file attachments, every rewrite style and a crown badge.",
           "Much lighter server: downloads are put together on your device, pages and game files are cached by your browser, and the server keeps itself under 3 GB of memory even with 300 people on at once.",
           "New icons from Font Awesome, plus a round of UI polish.",
           "Music no longer hits YouTube's \"sign in to confirm you're not a bot\" wall on most servers, songs play all the way through again, and if YouTube still refuses, the same song plays from SoundCloud.",
