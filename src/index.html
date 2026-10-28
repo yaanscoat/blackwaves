@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#04070d" />
+    <meta name="description" content="blackwaves: games, movies, music, manga and a proxy browser in one tab." />
+    <title>blackwaves</title>
+    <link rel="icon" href="/favicon.ico" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500&display=swap" rel="stylesheet" />
+    <style>
+      html, body { background: #04070d; margin: 0; }
+      #boot { position: fixed; inset: 0; display: grid; place-items: center; }
+      #boot img { width: 64px; opacity: .85; animation: boot 1.6s ease-in-out infinite; }
+      @keyframes boot { 50% { transform: translateY(-6px); opacity: .5; } }
+    </style>
+  </head>
+  <body>
+    <noscript>blackwaves needs javascript turned on.</noscript>
+    <div id="boot"><img src="/favicon.ico" alt="" /></div>
+    <div id="app"></div>
+    <script type="module" src="/main.jsx"></script>
+  </body>
+</html>
