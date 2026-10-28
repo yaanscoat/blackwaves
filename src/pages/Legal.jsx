@@ -3,7 +3,7 @@ import { navigate, route, segments } from "../lib/router.js";
 import { DISCORD } from "../data/catalogs.js";
 import "../styles/social.css";
 
-const UPDATED = "October 22, 2026";
+const UPDATED = "October 28, 2026";
 
 const DOCS = {
   privacy: {
@@ -13,9 +13,10 @@ const DOCS = {
       ["Ads", "If you allow ads, blackwaves loads ads from third-party ad networks (abscloud.org, bauval.org and araplhn.org). Those networks get your IP address and basic device and browser details, may set their own cookies, and handle that data under their own privacy policies. Every few clicks an ad opens in a new tab, and some other ads do too. If you don't allow ads, none of their code loads. Change your choice any time in Settings > Browser."],
       ["What stays on your device", "Settings, history, bookmarks, favorites and backgrounds are stored in your browser, encrypted with a key that lives in a cookie. We can't read them. Clearing your cookies deletes the key, which makes the data unreadable and resets blackwaves."],
       ["CloudSync accounts", "If you make an account, we store your username, a hashed password (scrypt), your profile, coins, shop items, the data you choose to sync, and the chat messages you send. You can delete your account and all of that in Settings > CloudSync."],
+      ["Premium payments", "Premium is paid through Stripe. You enter your card or payment details on Stripe's checkout page, never on blackwaves, and we never see or store them. When you pay, Stripe tells us the checkout and payment IDs, the amount, the currency and which blackwaves account it's for, and we keep that to keep your Premium on and to handle refunds. Stripe handles your payment details under its own privacy policy."],
       ["Chat", "Messages in public channels can be read by anyone using blackwaves. Direct messages are only shown to the two people in them, but they are stored on our server and are not end-to-end encrypted. Don't share anything sensitive."],
       ["The proxy", "Pages you open through the browser or the game proxy are fetched through our server. We don't log which sites you visit. Your blackwaves login cookie is never forwarded to them."],
-      ["Third parties", "Movies, music, manga, AI and cloud gaming data come from TMDB, embed players, YouTube Music, SoundCloud, OpenRouter, MangaDex and MangaPill. Messages you send to blackwaves AI are passed through our server to OpenRouter and the model provider that answers. Embed players load from their own servers and have their own policies."],
+      ["Third parties", "Movies, music, manga, AI and cloud gaming data come from TMDB, embed players, YouTube Music, SoundCloud, OpenRouter, MangaDex and MangaPill. Messages you send to blackwaves AI, text you paraphrase or humanize and files you attach to a chat are passed through our server to OpenRouter and the model provider that answers. We don't keep them. Embed players load from their own servers and have their own policies."],
       ["Contact", `Questions? Find us on Discord: ${DISCORD}`],
     ],
   },
@@ -25,6 +26,7 @@ const DOCS = {
       ["Using blackwaves", "blackwaves is provided as-is, for free, with no warranty. Use it at your own risk and follow the rules of whatever network you're on. You're responsible for what you do with it."],
       ["Be decent", "No harassment, hate, threats, spam, scams, doxxing or illegal content in chat or on profiles. Don't try to break the servers, abuse the proxy to attack other sites, or reach private networks. We can delete messages and ban accounts that break these rules."],
       ["Accounts and coins", "One person, one account. Coins and shop items have no cash value, can't be bought with real money, can't be transferred, and can be reset if we find exploits. If the economy breaks, we'll fix it; your pink cat ears may be at the mercy of a bug fix."],
+      ["Premium", "Premium is an optional paid upgrade. It belongs to the CloudSync account that bought it and can't be moved to another account. Its AI features run on free third-party models, which can change, slow down or be unavailable, so we can't promise any particular model or speed. A refund or a chargeback ends Premium, and accounts banned for breaking these terms lose it. Coins and shop items still can't be bought with money."],
       ["Content", "Games, movies, music and manga are provided by third-party sources. We don't host that content. See the DMCA page if you own something and want it removed."],
       ["Changes", "We can change these terms. If you keep using blackwaves after a change, you accept the new version."],
     ],
