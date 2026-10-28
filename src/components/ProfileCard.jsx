@@ -17,6 +17,7 @@ export function openProfile(username) {
 
 const BADGES = {
   developer: { label: "blackwaves developer", icon: "zap" },
+  premium: { label: "blackwaves Premium", icon: "crown" },
   early: { label: "early wave (one of the first 100)", icon: "wave" },
   "pink-ears": { label: "owns the pink cat ears", icon: "crown" },
   collector: { label: "collector: 10+ shop items", icon: "gift" },
