@@ -18,6 +18,7 @@ import { switchTransport } from "../lib/proxy.js";
 import { consent, saveConsent } from "./Welcome.jsx";
 import { SECRETS, found } from "../lib/easter.js";
 import { navigate } from "../lib/router.js";
+import { openPremium } from "../lib/premium.js";
 
 const TABS = [
   { id: "appearance", label: "Appearance", icon: "palette" },
@@ -492,7 +493,7 @@ function Account() {
       <div class="empty">
         <Icon name="cloud" />
         <h3>CloudSync</h3>
-        <p>One account syncs your settings, bookmarks, history, favorites and background across devices, and unlocks chat, coins and the shop.</p>
+        <p>One account syncs your settings, bookmarks, history, favorites and background across devices, and unlocks chat, coins, the shop and Premium.</p>
         <div class="btn-row">
           <button class="btn primary" onClick={() => openAuth("register")}>
             Create account
@@ -517,6 +518,20 @@ function Account() {
       >
         <button class="btn" onClick={() => pull().then(push)}>
           <Icon name="refresh" size={16} /> Sync now
+        </button>
+      </Row>
+      <Row
+        title="blackwaves Premium"
+        hint={
+          user.premium
+            ? user.premiumUntil >= 253402300799000
+              ? "Premium is on. Thank you for the support!"
+              : `Premium is on until ${new Date(user.premiumUntil).toLocaleDateString()}.`
+            : "Extra AI features and priority search."
+        }
+      >
+        <button class={`btn ${user.premium ? "" : "primary"}`} onClick={openPremium}>
+          <Icon name="crown" size={16} /> {user.premium ? "Your perks" : "Get Premium"}
         </button>
       </Row>
       <Row title="Change password" stack>
