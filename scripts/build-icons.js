@@ -90,6 +90,12 @@ const MAP = {
   stop: ["stop", "solid"],
   newChat: ["pen-to-square", "regular"],
   retry: ["rotate-left", "solid"],
+  attach: ["paperclip", "solid"],
+  sliders: ["sliders", "solid"],
+  paraphrase: ["pen-nib", "solid"],
+  humanize: ["user-pen", "solid"],
+  file: ["file-lines", "regular"],
+  swap: ["arrow-right-arrow-left", "solid"],
 };
 
 const camel = (name) => "fa" + name.replace(/(^|-)([a-z0-9])/g, (_, __, c) => c.toUpperCase());
