@@ -25,6 +25,7 @@ import { detectLocation, serverLocation } from "./lib/geo.js";
 import { suggestions } from "./lib/suggest.js";
 import * as accounts from "./cloudsync/accounts.js";
 import { readSnapshot, writeSnapshot, SYNC_MAX_BYTES } from "./cloudsync/sync.js";
+import { premiumStatus, stripeWebhook } from "./cloudsync/premium.js";
 import * as chat from "./social/chat.js";
 import { handleUpgrade as realtimeUpgrade, isOnline, onlineCount, refreshUser } from "./social/realtime.js";
 import { handleFallback, handleGameSocket, handlePrefixed, refererIsGame } from "./gameproxy/index.js";
@@ -36,6 +37,7 @@ import { handleAi } from "./media/ai.js";
 import { SHOP_ITEMS } from "../shared/shop.js";
 import { tuneWisp } from "./lib/wisp-tuning.js";
 import { memoryStats } from "./lib/memory.js";
+import { createLane } from "./lib/priority.js";
 
 // ---- wisp (the thing the proxy browser actually tunnels through) ----------------
 wispLogging.set_level(config.dev ? wispLogging.WARN : wispLogging.ERROR);
@@ -54,6 +56,11 @@ await tuneWisp();
 
 const apiLimiter = createLimiter({ windowMs: 60_000, max: 600 });
 const authLimiter = createLimiter({ windowMs: 10 * 60_000, max: 20 });
+// premium accounts get their own allowance instead of sharing their network's
+// (a whole school can sit behind one ip)
+const premiumLimiter = createLimiter({ windowMs: 60_000, max: 1200 });
+const searchLane = createLane({ concurrent: 24 });
+const SEARCHES = /^\/api\/(suggest$|movies\/search\/|music\/search$|manga\/(mangadex|pill)\/search$)/;
 
 // ---- static mounts ------------------------------------------------------------------
 const MOUNTS = [
@@ -242,22 +249,40 @@ route("POST", "/api/admin/ban", async ({ req }) => {
   return { ok: true };
 });
 
-async function handleApi(req, res, url, ip) {
-  const { pathname, searchParams } = url;
-  if (apiLimiter(ip)) return json(res, 429, { error: "slow down, you're sending way too many requests" });
+// premium
+route("GET", "/api/premium", ({ user }) => premiumStatus(user));
+route("POST", "/api/premium/webhook", async ({ req }) => {
+  for (const id of await stripeWebhook(req)) refreshUser(id);
+  return { received: true };
+});
 
+async function handleApi(req, res, url, ip) {
+  const user = req.headers.cookie?.includes(accounts.SESSION_COOKIE) ? accounts.sessionUser(req) : null;
+  const premium = accounts.isPremium(user);
+  if (premium ? premiumLimiter(user.id) : apiLimiter(ip)) return json(res, 429, { error: "slow down, you're sending way too many requests" });
+  if (!SEARCHES.test(url.pathname)) return dispatch(req, res, url, ip, user);
+  try {
+    await searchLane(premium, () => dispatch(req, res, url, ip, user));
+  } catch (error) {
+    if (!(error instanceof HttpError)) throw error;
+    json(res, error.status, { error: error.message });
+  }
+}
+
+async function dispatch(req, res, url, ip, user) {
+  const { pathname, searchParams } = url;
   if (pathname.startsWith("/api/movies/")) return handleMovies(req, res, pathname, searchParams);
   if (pathname.startsWith("/api/manga/")) return handleManga(req, res, pathname, searchParams);
   if (pathname.startsWith("/api/music/")) return handleMusic(req, res, pathname, searchParams);
   if (pathname.startsWith("/api/cloud/")) return handleCloud(req, res, pathname, searchParams);
-  if (pathname.startsWith("/api/ai/")) return handleAi(req, res, pathname, ip);
+  if (pathname.startsWith("/api/ai/")) return handleAi(req, res, pathname, ip, user);
 
   for (const entry of routes) {
     if (entry.method !== req.method && !(entry.method === "GET" && req.method === "HEAD")) continue;
     const params = entry.pattern.includes(":") ? routeParams(entry.pattern, pathname) : entry.pattern === pathname ? {} : null;
     if (!params) continue;
     try {
-      const result = await entry.handler({ req, res, params, query: searchParams, ip });
+      const result = await entry.handler({ req, res, params, query: searchParams, ip, user });
       if (result !== undefined && !res.headersSent) json(res, 200, result);
     } catch (error) {
       if (error instanceof HttpError) return json(res, error.status, { error: error.message });
