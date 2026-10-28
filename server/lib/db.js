@@ -102,7 +102,30 @@ db.exec(`
     created_at INTEGER NOT NULL
   );
   CREATE INDEX IF NOT EXISTS ledger_user ON ledger(user_id, id);
+
+  -- premium purchases (stripe checkouts) and gifts from admins. a user is
+  -- premium until the latest "until" among their active rows.
+  CREATE TABLE IF NOT EXISTS payments (
+    id TEXT PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+    kind TEXT NOT NULL,
+    status TEXT NOT NULL,
+    until INTEGER NOT NULL,
+    subscription TEXT,
+    payment_intent TEXT,
+    amount INTEGER NOT NULL DEFAULT 0,
+    currency TEXT NOT NULL DEFAULT '',
+    created_at INTEGER NOT NULL
+  );
+  CREATE INDEX IF NOT EXISTS payments_user ON payments(user_id);
+  CREATE INDEX IF NOT EXISTS payments_subscription ON payments(subscription);
+  CREATE INDEX IF NOT EXISTS payments_intent ON payments(payment_intent);
 `);
+
+// columns added after launch. CREATE TABLE IF NOT EXISTS leaves an existing
+// table alone, so older databases get them here.
+const userColumns = new Set(db.prepare("PRAGMA table_info(users)").all().map((column) => column.name));
+if (!userColumns.has("premium_until")) db.exec("ALTER TABLE users ADD COLUMN premium_until INTEGER NOT NULL DEFAULT 0");
 
 const cache = new Map();
 
