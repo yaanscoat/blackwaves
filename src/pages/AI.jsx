@@ -1,14 +1,26 @@
-// blackwaves ai: a chat with free models from openrouter. conversations stay on
-// this device (encrypted like everything else); the server only relays them.
+// blackwaves ai: a chat with free models from openrouter, plus a paraphraser and
+// a humanizer. conversations stay on this device (encrypted like everything
+// else); the server only relays them.
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { Icon } from "../components/Icon.jsx";
+import { Modal } from "../components/Modal.jsx";
 import { Markdown } from "../lib/md.jsx";
 import { get } from "../lib/api.js";
+import { streamAi } from "../lib/aistream.js";
 import { storage } from "../lib/storage.js";
 import { me } from "../lib/account.js";
+import { toast } from "../lib/notify.js";
+import { navigate, route, segments } from "../lib/router.js";
+import { isPremium, openPremium, premiumOnly } from "../lib/premium.js";
+import { AITool, TOOL_INFO } from "./AITools.jsx";
 import "../styles/ai.css";
 
 const MAX_CHATS = 40;
+// attached files live inside the chat, so only the newest few chats keep the
+// file text on this device; older ones keep the name and drop the contents
+const CHATS_WITH_FILES = 5;
+const FILE_CHARS = 40_000;
+const MAX_FILES = 3;
 const SUGGESTIONS = [
   "Explain photosynthesis like I'm 12",
   "Outline an essay about the Industrial Revolution",
@@ -22,37 +34,30 @@ const titleFrom = (text) => {
   return line.length > 46 ? `${line.slice(0, 44)}...` : line || "New chat";
 };
 
-/** posts the conversation and calls onEvent for every streamed event */
-async function streamChat({ model, messages, signal, onEvent }) {
-  const response = await fetch("/api/ai/chat", {
-    method: "POST",
-    signal,
-    credentials: "same-origin",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ model, messages }),
-  });
-  if (!response.ok || !response.body) {
-    const data = await response.json().catch(() => null);
-    throw new Error(data?.error || `the ai didn't answer (${response.status})`);
-  }
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = "";
-  for (;;) {
-    const { value, done } = await reader.read();
-    if (done) break;
-    buffer += decoder.decode(value, { stream: true });
-    let split;
-    while ((split = buffer.indexOf("\n\n")) !== -1) {
-      const chunk = buffer.slice(0, split);
-      buffer = buffer.slice(split + 2);
-      if (chunk.startsWith("data: ")) {
-        try {
-          onEvent(JSON.parse(chunk.slice(6)));
-        } catch {}
-      }
-    }
-  }
+/** what the model actually reads for a message: your text plus any attached files */
+function forModel(message) {
+  const files = (message.files || []).filter((file) => file.text);
+  if (!files.length) return message.content;
+  const attached = files.map((file) => `Attached file "${file.name}":\n\`\`\`\n${file.text}\n\`\`\``).join("\n\n");
+  return `${message.content}\n\n${attached}`;
+}
+
+function persist(list) {
+  const newest = new Set([...list].sort((a, b) => (b.at || 0) - (a.at || 0)).slice(0, CHATS_WITH_FILES).map((chat) => chat.id));
+  const slim = list.slice(0, MAX_CHATS).map((chat) =>
+    newest.has(chat.id) || !chat.messages.some((message) => message.files?.some((file) => file.text))
+      ? chat
+      : { ...chat, messages: chat.messages.map((message) => (message.files ? { ...message, files: message.files.map(({ name }) => ({ name })) } : message)) },
+  );
+  storage.set("aiChats", slim);
+}
+
+async function readTextFile(file) {
+  if (file.size > 2 * 1024 * 1024) throw new Error(`${file.name} is too big, files can be up to 2 MB`);
+  const text = await file.text();
+  // a NUL byte means it's not really text (an image, a pdf, a zip...)
+  if (text.includes("\u0000")) throw new Error(`${file.name} isn't a text file. Try a .txt, .md, .csv or code file`);
+  return { name: file.name, text: text.length > FILE_CHARS ? `${text.slice(0, FILE_CHARS)}\n[the rest of the file was cut off]` : text };
 }
 
 function Thinking({ text, live }) {
@@ -77,12 +82,34 @@ function Thinking({ text, live }) {
   );
 }
 
+function FileChips({ files, onRemove }) {
+  if (!files?.length) return null;
+  return (
+    <div class="ai-files">
+      {files.map((file, index) => (
+        <span key={index} class={`ai-file ${file.text ? "" : "gone"}`} data-tip={file.text ? undefined : "No longer attached on this device"}>
+          <Icon name="file" size={13} />
+          {file.name}
+          {onRemove && (
+            <button type="button" aria-label={`Remove ${file.name}`} onClick={() => onRemove(index)}>
+              <Icon name="x" size={11} />
+            </button>
+          )}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 function Message({ message, last, busy, onRetry }) {
   const [copied, setCopied] = useState(false);
   if (message.role === "user") {
     return (
       <div class="ai-msg user">
-        <div class="ai-bubble">{message.content}</div>
+        <div class="ai-user">
+          <FileChips files={message.files} />
+          {message.content && <div class="ai-bubble">{message.content}</div>}
+        </div>
       </div>
     );
   }
@@ -124,18 +151,80 @@ function Message({ message, last, busy, onRetry }) {
   );
 }
 
+function Instructions({ onClose }) {
+  const [value, setValue] = useState(() => storage.get("aiInstructions", ""));
+  return (
+    <Modal title="Custom instructions" onClose={onClose}>
+      {(close) => (
+        <form
+          class="ai-instructions"
+          onSubmit={(event) => {
+            event.preventDefault();
+            storage.set("aiInstructions", value.trim());
+            toast(value.trim() ? "custom instructions saved" : "custom instructions cleared", { kind: "success" });
+            close();
+          }}
+        >
+          <p class="muted small">What should blackwaves AI know about you, and how should it answer? This applies to every chat.</p>
+          <textarea
+            class="input"
+            rows={7}
+            maxLength={2000}
+            value={value}
+            placeholder={"I'm in 10th grade and taking AP Biology.\nKeep answers short and use bullet points.\nExplain code line by line."}
+            onInput={(event) => setValue(event.currentTarget.value)}
+          />
+          <div class="ai-instructions-foot">
+            <span class="faint small">{value.length} / 2000</span>
+            <button type="button" class="btn ghost" onClick={close}>
+              Cancel
+            </button>
+            <button class="btn primary">Save</button>
+          </div>
+        </form>
+      )}
+    </Modal>
+  );
+}
+
+function PremiumCard() {
+  if (isPremium()) {
+    return (
+      <button class="ai-premium-card on" onClick={openPremium}>
+        <Icon name="crown" size={15} /> Premium is on
+      </button>
+    );
+  }
+  return (
+    <button class="ai-premium-card" onClick={openPremium}>
+      <strong>
+        <Icon name="crown" size={15} /> Get Premium
+      </strong>
+      <span>Longer answers, custom instructions, files, every rewrite style and priority search.</span>
+    </button>
+  );
+}
+
 export function AI() {
   const [chats, setChats] = useState(() => storage.get("aiChats", []));
   const [activeId, setActiveId] = useState(() => storage.get("aiChats", [])[0]?.id || null);
   const [models, setModels] = useState([]);
   const [model, setModel] = useState(() => storage.get("aiModel", "auto"));
   const [draft, setDraft] = useState("");
+  const [files, setFiles] = useState([]);
   const [busy, setBusy] = useState(false);
+  const [toolBusy, setToolBusy] = useState(false);
   const [listOpen, setListOpen] = useState(false);
+  const [editing, setEditing] = useState(false);
   const abort = useRef(null);
   const scroller = useRef(null);
   const input = useRef(null);
+  const picker = useRef(null);
   const pinned = useRef(true);
+
+  const [, sub] = segments(route.value);
+  const tool = TOOL_INFO[sub] ? sub : "chat";
+  const premium = isPremium();
 
   const active = chats.find((chat) => chat.id === activeId) || null;
   const messages = active?.messages || [];
@@ -156,19 +245,15 @@ export function AI() {
   useEffect(() => {
     const el = scroller.current;
     if (el && pinned.current) el.scrollTop = el.scrollHeight;
-  }, [messages]);
+  }, [messages, tool]);
 
   const save = (next) => {
     const trimmed = next.slice(0, MAX_CHATS);
     setChats(trimmed);
-    storage.set("aiChats", trimmed);
+    persist(trimmed);
   };
 
-  const patchChat = (id, change) =>
-    setChats((list) => {
-      const next = list.map((chat) => (chat.id === id ? change(chat) : chat));
-      return next;
-    });
+  const patchChat = (id, change) => setChats((list) => list.map((chat) => (chat.id === id ? change(chat) : chat)));
 
   async function run(chatId, history) {
     setBusy(true);
@@ -185,18 +270,21 @@ export function AI() {
     const schedule = () => (pending ||= requestAnimationFrame(flush));
     flush();
     try {
-      await streamChat({
-        model,
-        messages: history.map(({ role, content }) => ({ role, content })),
-        signal: controller.signal,
-        onEvent: (event) => {
-          if (event.t) reply.content += event.t;
-          if (event.r) reply.reasoning += event.r;
-          if (event.m) reply.model = event.m;
-          if (event.e) reply.error = event.e;
-          schedule();
+      const instructions = premium ? storage.get("aiInstructions", "") : "";
+      await streamAi(
+        "/api/ai/chat",
+        { model, instructions, messages: history.map((message) => ({ role: message.role, content: message.role === "user" ? forModel(message) : message.content })) },
+        {
+          signal: controller.signal,
+          onEvent: (event) => {
+            if (event.t) reply.content += event.t;
+            if (event.r) reply.reasoning += event.r;
+            if (event.m) reply.model = event.m;
+            if (event.e) reply.error = event.e;
+            schedule();
+          },
         },
-      });
+      );
       if (!reply.content && !reply.error) reply.error = "the model sent back an empty reply. try again or pick another model.";
     } catch (error) {
       if (error.name !== "AbortError") reply.error = error.message;
@@ -206,7 +294,7 @@ export function AI() {
       setBusy(false);
       setChats((list) => {
         const next = list.map((chat) => (chat.id === chatId ? { ...chat, at: Date.now(), messages: [...history, { ...reply }] } : chat));
-        storage.set("aiChats", next.slice(0, MAX_CHATS));
+        persist(next);
         return next;
       });
     }
@@ -214,17 +302,20 @@ export function AI() {
 
   function send(text = draft) {
     const content = text.trim();
-    if (!content || busy) return;
+    if ((!content && !files.length) || busy) return;
+    const message = { role: "user", content: content || (files.length ? "Take a look at the attached file." : "") };
+    if (files.length) message.files = files;
     setDraft("");
+    setFiles([]);
     let chatId = activeId;
     let history;
     if (!active) {
       chatId = newId();
-      history = [{ role: "user", content }];
-      save([{ id: chatId, title: titleFrom(content), at: Date.now(), messages: history }, ...chats]);
+      history = [message];
+      save([{ id: chatId, title: titleFrom(content || files[0].name), at: Date.now(), messages: history }, ...chats]);
       setActiveId(chatId);
     } else {
-      history = [...messages.filter((entry) => !(entry.role === "assistant" && !entry.content)), { role: "user", content }];
+      history = [...messages.filter((entry) => !(entry.role === "assistant" && !entry.content)), message];
       save([{ ...active, at: Date.now(), messages: history }, ...chats.filter((chat) => chat.id !== chatId)]);
     }
     run(chatId, history);
@@ -241,8 +332,17 @@ export function AI() {
     abort.current?.abort();
     setActiveId(null);
     setDraft("");
+    setFiles([]);
     setListOpen(false);
+    if (tool !== "chat") navigate("/ai");
     requestAnimationFrame(() => input.current?.focus());
+  }
+
+  function openChat(id) {
+    if (busy && id !== activeId) abort.current?.abort();
+    setActiveId(id);
+    setListOpen(false);
+    if (tool !== "chat") navigate("/ai");
   }
 
   function remove(id) {
@@ -253,27 +353,45 @@ export function AI() {
     save(chats.filter((chat) => chat.id !== id));
   }
 
+  async function attach(list) {
+    const room = MAX_FILES - files.length;
+    if (room <= 0) return toast(`you can attach up to ${MAX_FILES} files per message`);
+    const picked = [...list].slice(0, room);
+    for (const file of picked) {
+      try {
+        const read = await readTextFile(file);
+        setFiles((current) => [...current, read].slice(0, MAX_FILES));
+      } catch (error) {
+        toast(error.message, { kind: "error" });
+      }
+    }
+  }
+
   const sorted = useMemo(() => [...chats].sort((a, b) => (b.at || 0) - (a.at || 0)), [chats]);
   const name = me.value?.displayName;
+  const working = busy || toolBusy;
 
   return (
     <main class={`ai ${listOpen ? "list-open" : ""}`}>
       <aside class="ai-side glass">
+        <nav class="ai-tools" aria-label="AI tools">
+          <button class={tool === "chat" ? "active" : ""} onClick={() => (navigate("/ai"), setListOpen(false))}>
+            <Icon name="chat" size={15} /> Chat
+          </button>
+          {Object.entries(TOOL_INFO).map(([id, entry]) => (
+            <button key={id} class={tool === id ? "active" : ""} onClick={() => (navigate(`/ai/${id}`), setListOpen(false))}>
+              <Icon name={entry.icon} size={15} /> {entry.title}
+            </button>
+          ))}
+        </nav>
         <button class="ai-new" onClick={startNew}>
           <Icon name="newChat" size={17} /> New chat
         </button>
         <div class="ai-chats" role="list">
           {sorted.length === 0 && <p class="ai-side-empty">Your chats show up here. They stay on this device.</p>}
           {sorted.map((chat) => (
-            <div key={chat.id} role="listitem" class={`ai-chat ${chat.id === activeId ? "active" : ""}`}>
-              <button
-                class="ai-chat-open"
-                onClick={() => {
-                  if (busy && chat.id !== activeId) abort.current?.abort();
-                  setActiveId(chat.id);
-                  setListOpen(false);
-                }}
-              >
+            <div key={chat.id} role="listitem" class={`ai-chat ${tool === "chat" && chat.id === activeId ? "active" : ""}`}>
+              <button class="ai-chat-open" onClick={() => openChat(chat.id)}>
                 {chat.title}
               </button>
               <button class="ai-chat-delete" aria-label={`Delete ${chat.title}`} data-tip="Delete" onClick={() => remove(chat.id)}>
@@ -282,16 +400,17 @@ export function AI() {
             </div>
           ))}
         </div>
+        <PremiumCard />
       </aside>
 
       <section class="ai-main glass">
         <header class="ai-head">
-          <button class="btn ghost icon-only sm ai-list-toggle" aria-label="Chats" onClick={() => setListOpen(!listOpen)}>
+          <button class="btn ghost icon-only sm ai-list-toggle" aria-label="Chats and tools" onClick={() => setListOpen(!listOpen)}>
             <Icon name="list" size={17} />
           </button>
           <label class="ai-model">
             <Icon name="ai" size={16} />
-            <select value={model} onChange={(event) => setModel(event.currentTarget.value)} aria-label="Model" disabled={busy}>
+            <select value={model} onChange={(event) => setModel(event.currentTarget.value)} aria-label="Model" disabled={working}>
               {models.map((entry) => (
                 <option key={entry.id} value={entry.id}>
                   {entry.id === "auto" ? entry.name : `${entry.name} (${entry.maker})`}
@@ -300,81 +419,133 @@ export function AI() {
             </select>
             <Icon name="down" size={13} />
           </label>
-          <button class="btn ghost icon-only sm" aria-label="New chat" data-tip="New chat" onClick={startNew}>
-            <Icon name="newChat" size={17} />
-          </button>
-        </header>
-
-        <div
-          class="ai-scroll"
-          ref={scroller}
-          onScroll={(event) => {
-            const el = event.currentTarget;
-            pinned.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
-          }}
-        >
-          {messages.length === 0 ? (
-            <div class="ai-empty">
-              <img class="logo-img ai-empty-logo" src="/favicon.ico" alt="" />
-              <h1>{name ? `What can I help with, ${name}?` : "What can I help with?"}</h1>
-              <div class="ai-suggestions">
-                {SUGGESTIONS.map((text) => (
-                  <button key={text} onClick={() => send(text)}>
-                    {text}
-                  </button>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div class="ai-thread">
-              {messages.map((message, index) => (
-                <Message key={index} message={message} last={index === messages.length - 1} busy={busy} onRetry={retry} />
-              ))}
-            </div>
-          )}
-        </div>
-
-        <form
-          class="ai-composer"
-          onSubmit={(event) => {
-            event.preventDefault();
-            send();
-          }}
-        >
-          <div class="ai-input">
-            <textarea
-              ref={input}
-              rows={1}
-              value={draft}
-              placeholder="Message blackwaves AI"
-              aria-label="Message"
-              maxLength={12000}
-              onInput={(event) => {
-                setDraft(event.currentTarget.value);
-                event.currentTarget.style.height = "auto";
-                event.currentTarget.style.height = `${Math.min(event.currentTarget.scrollHeight, 200)}px`;
-              }}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
-                  event.preventDefault();
-                  send();
-                  event.currentTarget.style.height = "auto";
-                } else if (event.key === "Escape" && busy) abort.current?.abort();
-              }}
-            />
-            {busy ? (
-              <button type="button" class="ai-send stop" aria-label="Stop" data-tip="Stop" onClick={() => abort.current?.abort()}>
-                <Icon name="stop" size={14} />
-              </button>
-            ) : (
-              <button type="submit" class="ai-send" aria-label="Send" disabled={!draft.trim()}>
-                <Icon name="send" size={15} />
-              </button>
+          <div class="ai-head-actions">
+            {tool === "chat" && (
+              <>
+                <button
+                  class={`btn ghost icon-only sm ${premium && storage.get("aiInstructions", "") ? "lit" : ""}`}
+                  aria-label="Custom instructions"
+                  data-tip={premium ? "Custom instructions" : "Custom instructions (Premium)"}
+                  onClick={premiumOnly(() => setEditing(true))}
+                >
+                  <Icon name="sliders" size={16} />
+                </button>
+                <button class="btn ghost icon-only sm" aria-label="New chat" data-tip="New chat" onClick={startNew}>
+                  <Icon name="newChat" size={17} />
+                </button>
+              </>
             )}
           </div>
-          <p class="ai-note">Free models through OpenRouter. AI gets things wrong, so check anything important.</p>
-        </form>
+        </header>
+
+        {tool !== "chat" ? (
+          <div class="ai-scroll">
+            <AITool key={tool} tool={tool} model={model} onBusy={setToolBusy} />
+          </div>
+        ) : (
+          <>
+            <div
+              class="ai-scroll"
+              ref={scroller}
+              onScroll={(event) => {
+                const el = event.currentTarget;
+                pinned.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+              }}
+            >
+              {messages.length === 0 ? (
+                <div class="ai-empty">
+                  <img class="logo-img ai-empty-logo" src="/favicon.ico" alt="" />
+                  <h1>{name ? `What can I help with, ${name}?` : "What can I help with?"}</h1>
+                  <div class="ai-suggestions">
+                    {SUGGESTIONS.map((text) => (
+                      <button key={text} onClick={() => send(text)}>
+                        {text}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div class="ai-thread">
+                  {messages.map((message, index) => (
+                    <Message key={index} message={message} last={index === messages.length - 1} busy={busy} onRetry={retry} />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <form
+              class="ai-composer"
+              onSubmit={(event) => {
+                event.preventDefault();
+                send();
+              }}
+              onDragOver={(event) => premium && event.preventDefault()}
+              onDrop={(event) => {
+                if (!event.dataTransfer?.files?.length) return;
+                event.preventDefault();
+                premiumOnly(() => attach(event.dataTransfer.files))();
+              }}
+            >
+              <div class="ai-input">
+                <FileChips files={files} onRemove={(index) => setFiles(files.filter((_, i) => i !== index))} />
+                <div class="ai-input-row">
+                  <button
+                    type="button"
+                    class="ai-attach"
+                    aria-label="Attach a file"
+                    data-tip={premium ? "Attach a text file" : "Attach files (Premium)"}
+                    onClick={premiumOnly(() => picker.current?.click())}
+                  >
+                    <Icon name="attach" size={16} />
+                  </button>
+                  <input
+                    ref={picker}
+                    type="file"
+                    multiple
+                    hidden
+                    accept=".txt,.md,.markdown,.csv,.tsv,.json,.xml,.html,.css,.js,.jsx,.ts,.tsx,.py,.java,.c,.cpp,.h,.cs,.go,.rs,.rb,.php,.swift,.kt,.sql,.yml,.yaml,.ini,.log,.tex,text/*"
+                    onChange={(event) => {
+                      attach(event.currentTarget.files);
+                      event.currentTarget.value = "";
+                    }}
+                  />
+                  <textarea
+                    ref={input}
+                    rows={1}
+                    value={draft}
+                    placeholder="Message blackwaves AI"
+                    aria-label="Message"
+                    maxLength={premium ? 60000 : 12000}
+                    onInput={(event) => {
+                      setDraft(event.currentTarget.value);
+                      event.currentTarget.style.height = "auto";
+                      event.currentTarget.style.height = `${Math.min(event.currentTarget.scrollHeight, 200)}px`;
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
+                        event.preventDefault();
+                        send();
+                        event.currentTarget.style.height = "auto";
+                      } else if (event.key === "Escape" && busy) abort.current?.abort();
+                    }}
+                  />
+                  {busy ? (
+                    <button type="button" class="ai-send stop" aria-label="Stop" data-tip="Stop" onClick={() => abort.current?.abort()}>
+                      <Icon name="stop" size={14} />
+                    </button>
+                  ) : (
+                    <button type="submit" class="ai-send" aria-label="Send" disabled={!draft.trim() && !files.length}>
+                      <Icon name="send" size={15} />
+                    </button>
+                  )}
+                </div>
+              </div>
+              <p class="ai-note">Free models through OpenRouter. AI gets things wrong, so check anything important.</p>
+            </form>
+          </>
+        )}
       </section>
+      {editing && <Instructions onClose={() => setEditing(false)} />}
     </main>
   );
 }
