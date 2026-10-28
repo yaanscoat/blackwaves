@@ -189,6 +189,7 @@
 .profile-badge.b-developer { color: var(--live); }
 .profile-badge.b-pink-ears { color: #ff9ccf; }
 .profile-badge.b-collector { color: var(--gold); }
+.profile-badge.b-premium { color: var(--gold); }
 .profile-main { display: grid; gap: 12px; padding: 14px 20px 22px; }
 .profile-names h2 { font-size: 22px; }
 .profile-title {
@@ -217,6 +218,26 @@
 .consent-choice.locked .toggle { opacity: 0.6; cursor: default; }
 .welcome-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
 .welcome-legal { max-width: 46ch; }
+
+/* ---------- premium ---------- */
+.premium-modal { width: min(700px, 100%); }
+.premium { display: grid; gap: 18px; }
+.premium-hero { display: flex; align-items: center; gap: 14px; }
+.premium-hero h3 { margin: 0 0 4px; font-size: 20px; }
+.premium-hero p { margin: 0; line-height: 1.5; }
+.premium-crown { display: grid; place-items: center; width: 54px; height: 54px; flex: none; border-radius: 16px; background: linear-gradient(135deg, rgb(255 207 92 / 0.3), rgb(var(--accent-rgb) / 0.2)); color: var(--gold); }
+.premium-perks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin: 0; padding: 0; list-style: none; }
+.premium-perks li:last-child:nth-child(odd) { grid-column: 1 / -1; }
+@media (max-width: 640px) { .premium-perks { grid-template-columns: 1fr; } }
+.premium-perks li { display: flex; align-items: flex-start; gap: 12px; padding: 9px 12px; border-radius: 12px; background: rgb(var(--bg-rgb) / 0.4); }
+.premium-perks li > .icon { flex: none; margin-top: 3px; color: var(--gold); }
+.premium-perks li > span { display: grid; gap: 2px; line-height: 1.45; }
+.premium-perks strong { font-weight: 500; }
+.premium-cta { display: grid; gap: 10px; justify-items: center; text-align: center; }
+.premium-cta p { margin: 0; line-height: 1.5; }
+.premium-buy { min-width: 220px; justify-content: center; }
+.premium-wait { display: inline-block; width: 10px; height: 10px; margin-right: 4px; border-radius: 50%; background: var(--gold); vertical-align: middle; animation: premium-pulse 1.2s ease-in-out infinite; }
+@keyframes premium-pulse { 50% { opacity: 0.3; } }
 .auth-form { display: grid; gap: 14px; }
 .form-error { color: var(--danger); font-size: 14px; }
 
