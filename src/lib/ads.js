@@ -25,9 +25,9 @@ export function injectScript(src) {
 // the count lives in sessionStorage so reloading doesn't reset it.
 const CLICKS_MIN = 3;
 const CLICKS_MAX = 6;
-// clicks that never count: typing into things, the cookie screen, the ads switch,
-// and the ads themselves (they open their own tabs)
-const IGNORE = 'input, textarea, select, [contenteditable="true"], .welcome, [aria-label="Show ads"], .ad-slot, .ad-sponsor';
+// clicks that never count: typing into things, the cookie screen, the premium
+// checkout, the ads switch, and the ads themselves (they open their own tabs)
+const IGNORE = 'input, textarea, select, [contenteditable="true"], .welcome, .premium-modal, [aria-label="Show ads"], .ad-slot, .ad-sponsor';
 
 const nextTarget = () => CLICKS_MIN + Math.floor(Math.random() * (CLICKS_MAX - CLICKS_MIN + 1));
 
