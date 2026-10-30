@@ -96,6 +96,7 @@ const MAP = {
   humanize: ["user-pen", "solid"],
   file: ["file-lines", "regular"],
   swap: ["arrow-right-arrow-left", "solid"],
+  cursor: ["arrow-pointer", "solid"],
 };
 
 const camel = (name) => "fa" + name.replace(/(^|-)([a-z0-9])/g, (_, __, c) => c.toUpperCase());
