@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { Modal } from "./Modal.jsx";
 import { Icon } from "./Icon.jsx";
 import { settingsOpen, openAuth, NAV } from "../lib/ui.js";
@@ -15,10 +15,12 @@ import { syncState, push, pull, markBackgroundChanged } from "../lib/cloudsync.j
 import { post } from "../lib/api.js";
 import { toast } from "../lib/notify.js";
 import { switchTransport } from "../lib/proxy.js";
-import { consent, saveConsent } from "./Welcome.jsx";
+import { consent } from "./Welcome.jsx";
 import { SECRETS, found } from "../lib/easter.js";
 import { navigate } from "../lib/router.js";
-import { openPremium } from "../lib/premium.js";
+import { cursorPacks, cursorUrl, loadCursorPacks } from "../lib/cursors.js";
+import { Dropdown } from "./Dropdown.jsx";
+import { Partners } from "./Partners.jsx";
 
 const TABS = [
   { id: "appearance", label: "Appearance", icon: "palette" },
@@ -48,21 +50,15 @@ function Toggle({ k, label }) {
 
 function Select({ k, options, label, onPick }) {
   return (
-    <select
-      class="select"
-      aria-label={label}
+    <Dropdown
+      label={label}
       value={settings.value[k]}
-      onChange={(event) => {
-        setSetting(k, event.currentTarget.value);
-        onPick?.(event.currentTarget.value);
+      options={options.map((option) => ({ value: option.id, label: option.name }))}
+      onChange={(value) => {
+        setSetting(k, value);
+        onPick?.(value);
       }}
-    >
-      {options.map((option) => (
-        <option key={option.id} value={option.id}>
-          {option.name}
-        </option>
-      ))}
-    </select>
+    />
   );
 }
 
@@ -259,6 +255,81 @@ function Appearance() {
   );
 }
 
+/** one cursor from a pack, animating while `playing` */
+function CursorFrame({ pack, entry, playing }) {
+  const [step, setStep] = useState(0);
+  useEffect(() => {
+    if (!playing || !entry.ms) return setStep(0);
+    let timer = setTimeout(function tick() {
+      setStep((value) => {
+        const next = (value + 1) % entry.frames.length;
+        timer = setTimeout(tick, entry.ms[next]);
+        return next;
+      });
+    }, entry.ms[0]);
+    return () => clearTimeout(timer);
+  }, [playing, entry]);
+  return <img src={cursorUrl(pack, entry.frames[step])} width={entry.size[0] > 32 ? 32 : entry.size[0]} height={entry.size[1] > 32 ? 32 : entry.size[1]} alt="" draggable={false} />;
+}
+
+function CursorCard({ pack, chosen }) {
+  const [hover, setHover] = useState(false);
+  const preview = ["default", "pointer", "text"].map((role) => pack.roles[role]).filter(Boolean);
+  const main = pack.roles.default;
+  return (
+    <button
+      class="option-card"
+      aria-pressed={chosen}
+      // point at a card to try its cursor on
+      style={{ cursor: `url("${cursorUrl(pack, main.frames[0])}") ${main.hot[0]} ${main.hot[1]}, pointer` }}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      onClick={() => setSetting("cursorPack", pack.id)}
+    >
+      <span class="cursor-thumb">
+        {preview.map((entry, i) => (
+          <CursorFrame key={i} pack={pack} entry={entry} playing={hover || chosen} />
+        ))}
+      </span>
+      <span>{pack.name}</span>
+    </button>
+  );
+}
+
+function CursorPicker() {
+  const s = settings.value;
+  const packs = cursorPacks.value;
+  useEffect(() => void loadCursorPacks(), []);
+  const chosen = packs?.find((pack) => pack.id === s.cursorPack);
+  return (
+    <Row title="Cursor" hint="Point at one to try it on. Over games, movies and browser pages you get your normal cursor." stack>
+      <div class="cursor-picker">
+        <div class="option-grid cursor-grid">
+          <button class="option-card" aria-pressed={!chosen} onClick={() => setSetting("cursorPack", "none")}>
+            <span class="cursor-thumb">
+              <Icon name="cursor" size={22} />
+            </span>
+            <span>Normal</span>
+          </button>
+          {packs?.map((pack) => (
+            <CursorCard key={pack.id} pack={pack} chosen={chosen === pack} />
+          ))}
+        </div>
+        {packs && !packs.length && <p class="muted">Couldn't load the cursors. Try again in a bit.</p>}
+        {chosen && (
+          <p class="muted cursor-credit">
+            {chosen.name} by {chosen.author}
+            {chosen.license && ` (${chosen.license})`},{" "}
+            <a href={chosen.link} target="_blank" rel="noreferrer">
+              from rw-designer.com
+            </a>
+          </p>
+        )}
+      </div>
+    </Row>
+  );
+}
+
 function Effects() {
   const s = settings.value;
   const upload = async (event) => {
@@ -305,6 +376,7 @@ function Effects() {
           <input class="range" type="range" min="10" max="150" value={s.particleDensity} onInput={(event) => setSetting("particleDensity", Number(event.currentTarget.value))} />
         </Row>
       )}
+      <CursorPicker />
       <Row title="Cursor trail" stack>
         <Segmented
           k="cursorTrail"
@@ -425,21 +497,6 @@ function Privacy() {
 function BrowserTab() {
   return (
     <>
-      <Row title="Show ads" hint="Ads keep blackwaves free. They come from third-party ad networks that set their own cookies, and every few clicks one opens in a new tab.">
-        <button
-          class="toggle"
-          role="switch"
-          aria-checked={Boolean(consent.value?.ads)}
-          aria-label="Show ads"
-          onClick={() => {
-            const on = !consent.value?.ads;
-            saveConsent({ ...consent.value, ads: on });
-            // ad scripts can't be unloaded from a running page, so switching off reloads it
-            if (on) toast("ads on, thanks for keeping blackwaves free");
-            else location.reload();
-          }}
-        />
-      </Row>
       <Row title="Search engine">
         <Select k="searchEngine" options={ENGINES} label="Search engine" />
       </Row>
@@ -493,7 +550,7 @@ function Account() {
       <div class="empty">
         <Icon name="cloud" />
         <h3>CloudSync</h3>
-        <p>One account syncs your settings, bookmarks, history, favorites and background across devices, and unlocks chat, coins, the shop and Premium.</p>
+        <p>One account syncs your settings, bookmarks, history, favorites and background across devices, and unlocks chat, coins and the shop.</p>
         <div class="btn-row">
           <button class="btn primary" onClick={() => openAuth("register")}>
             Create account
@@ -518,20 +575,6 @@ function Account() {
       >
         <button class="btn" onClick={() => pull().then(push)}>
           <Icon name="refresh" size={16} /> Sync now
-        </button>
-      </Row>
-      <Row
-        title="blackwaves Premium"
-        hint={
-          user.premium
-            ? user.premiumUntil >= 253402300799000
-              ? "Premium is on. Thank you for the support!"
-              : `Premium is on until ${new Date(user.premiumUntil).toLocaleDateString()}.`
-            : "Extra AI features and priority search."
-        }
-      >
-        <button class={`btn ${user.premium ? "" : "primary"}`} onClick={openPremium}>
-          <Icon name="crown" size={16} /> {user.premium ? "Your perks" : "Get Premium"}
         </button>
       </Row>
       <Row title="Change password" stack>
@@ -632,6 +675,9 @@ function About() {
           </div>
         ))}
       </div>
+
+      <h3 class="set-h">Partners</h3>
+      <Partners />
 
       <h3 class="set-h">Credits</h3>
       <ul class="credits">
