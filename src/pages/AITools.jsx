@@ -5,8 +5,6 @@ import { Icon } from "../components/Icon.jsx";
 import { get } from "../lib/api.js";
 import { streamAi } from "../lib/aistream.js";
 import { storage } from "../lib/storage.js";
-import { me } from "../lib/account.js";
-import { isPremium, openPremium } from "../lib/premium.js";
 
 export const TOOL_INFO = {
   paraphrase: {
@@ -86,7 +84,6 @@ function Highlighted({ before, after }) {
 
 export function AITool({ tool, model, onBusy }) {
   const info = TOOL_INFO[tool];
-  const premium = isPremium();
   const [limits, setLimits] = useState(null);
   const [mode, setMode] = useState(() => storage.get(`aiMode:${tool}`, null));
   const [text, setText] = useState(() => drafts.get(tool) || "");
@@ -98,12 +95,12 @@ export function AITool({ tool, model, onBusy }) {
   const [highlight, setHighlight] = useState(() => storage.get("aiHighlight", true));
   const abort = useRef(null);
 
-  // the styles and the length limit depend on your plan, so ask again when it changes
+  // the styles and the length limit come from the server
   useEffect(() => {
     get("/api/ai/tools")
       .then(setLimits)
       .catch(() => setLimits(null));
-  }, [premium, me.value?.id]);
+  }, []);
 
   useEffect(() => () => abort.current?.abort(), []);
   useEffect(() => onBusy?.(busy), [busy]);
@@ -111,12 +108,11 @@ export function AITool({ tool, model, onBusy }) {
   useEffect(() => storage.set("aiHighlight", highlight), [highlight]);
 
   const modes = limits?.tools?.[tool] || [];
-  const current = modes.find((entry) => entry.id === mode && (premium || !entry.premium)) || modes[0];
+  const current = modes.find((entry) => entry.id === mode) || modes[0];
   const limit = limits?.rewriteChars || 5000;
   const over = text.length > limit;
 
   function pickMode(entry) {
-    if (entry.premium && !premium) return openPremium();
     setMode(entry.id);
     storage.set(`aiMode:${tool}`, entry.id);
   }
@@ -176,22 +172,11 @@ export function AITool({ tool, model, onBusy }) {
           <p>{info.blurb}</p>
         </div>
         <div class="ai-modes chips" role="radiogroup" aria-label="Style">
-          {modes.map((entry) => {
-            const locked = entry.premium && !premium;
-            return (
-              <button
-                key={entry.id}
-                class={`chip ${locked ? "locked" : ""}`}
-                role="radio"
-                aria-checked={current?.id === entry.id}
-                data-tip={locked ? "Comes with Premium" : undefined}
-                onClick={() => pickMode(entry)}
-              >
-                {locked && <Icon name="crown" size={12} />}
-                {MODE_NAMES[entry.id] || entry.id}
-              </button>
-            );
-          })}
+          {modes.map((entry) => (
+            <button key={entry.id} class="chip" role="radio" aria-checked={current?.id === entry.id} onClick={() => pickMode(entry)}>
+              {MODE_NAMES[entry.id] || entry.id}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -213,14 +198,6 @@ export function AITool({ tool, model, onBusy }) {
           <div class="ai-pane-foot">
             <span class={over ? "ai-over" : ""}>
               {countWords(text).toLocaleString()} words · {text.length.toLocaleString()} / {limit.toLocaleString()}
-              {over && !premium && (
-                <>
-                  {" "}
-                  <button class="link" onClick={openPremium}>
-                    Get more with Premium
-                  </button>
-                </>
-              )}
             </span>
             {text && !busy && (
               <button class="btn ghost sm" onClick={() => setText("")}>
