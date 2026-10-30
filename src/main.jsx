@@ -11,6 +11,7 @@ import { loadSecrets, initEasterEggs } from "./lib/easter.js";
 import { loadMusicState } from "./lib/player.js";
 import { initCloak } from "./lib/cloak.js";
 import { initOverlay } from "./lib/fx/overlay.js";
+import { initCursors } from "./lib/cursors.js";
 import { initSearchLight } from "./lib/fx/searchlight.js";
 import { initSheen, refreshLenses } from "./lib/fx/lens.js";
 import { effect } from "@preact/signals";
@@ -19,7 +20,6 @@ import { connect } from "./lib/realtime.js";
 import { refreshMe, me } from "./lib/account.js";
 import { loadConsent, consent } from "./components/Welcome.jsx";
 import { loadServerInfo } from "./components/StatusCorner.jsx";
-import { initAds } from "./lib/ads.js";
 import { App } from "./App.jsx";
 
 async function boot() {
@@ -36,9 +36,9 @@ async function boot() {
   loadSecrets();
   loadMusicState();
   loadConsent();
-  initAds();
   initCloak();
   initOverlay();
+  initCursors();
   initSearchLight();
   initSheen();
   effect(() => {
