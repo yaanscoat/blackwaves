@@ -28,12 +28,6 @@ export const config = {
   memoryBudgetMb: intEnv("MEMORY_BUDGET_MB", 3072),
   // optional http(s) proxy for youtube only, for hosts youtube asks to "sign in"
   youtubeProxy: process.env.YOUTUBE_PROXY || "",
-  // premium: the stripe payment link people pay through, and the signing secret
-  // of the webhook stripe calls when they do (dashboard > developers > webhooks)
-  premiumLink: process.env.PREMIUM_LINK || "https://buy.stripe.com/eVqeVfbkx63GfOlaf91gs00",
-  stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET || "",
-  // how long a one-time payment lasts; 0 means for good. subscriptions last while they're active
-  premiumDays: intEnv("PREMIUM_DAYS", 0),
   tmdbKey: process.env.TMDB_API_KEY || "ebbc810d0c9a9a4a13a264f96897036e",
   adminUsers: (process.env.ADMIN_USERS || "yaanscoat,beery-tomato")
     .split(",")
