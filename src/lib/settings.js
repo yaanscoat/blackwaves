@@ -21,6 +21,7 @@ export const DEFAULTS = {
   background: "tide",
   particles: "dust",
   particleDensity: 50,
+  cursorPack: "none",
   cursorTrail: "off",
   clickSparks: true,
   browserMode: false,
