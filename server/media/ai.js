@@ -2,43 +2,28 @@
 // browser only ever talks to us and we sign the request on the way out, so
 // nothing about the upstream account ever reaches a page. only free models are
 // allowed, and the server checks that itself instead of trusting the page.
-// besides chat there's a paraphraser and a humanizer, and premium accounts get
-// bigger limits, longer replies, custom instructions and every rewrite style.
+// besides chat there's a paraphraser and a humanizer.
 import { publicFetch } from "../lib/net.js";
 import { createCache } from "../lib/cache.js";
 import { HttpError, createLimiter, json, readJson, securityHeaders } from "../lib/http.js";
-import { isPremium } from "../cloudsync/accounts.js";
 import { config } from "../config.js";
 
 const API = "https://openrouter.ai/api/v1";
 const cache = createCache({ max: 4, ttl: 30 * 60 * 1000 });
 
-const PLANS = {
-  free: {
-    perMinute: createLimiter({ windowMs: 60_000, max: 12 }),
-    perDay: createLimiter({ windowMs: 24 * 60 * 60_000, max: 400 }),
-    body: 300 * 1024,
-    turns: 24,
-    perMessage: 12_000,
-    total: 48_000,
-    maxTokens: 6000,
-    // models to try in order, and how many rounds of asking before giving up
-    backups: 3,
-    attempts: 2,
-    rewriteChars: 5000,
-  },
-  premium: {
-    perMinute: createLimiter({ windowMs: 60_000, max: 40 }),
-    perDay: createLimiter({ windowMs: 24 * 60 * 60_000, max: 2500 }),
-    body: 1024 * 1024,
-    turns: 60,
-    perMessage: 60_000,
-    total: 160_000,
-    maxTokens: 16_000,
-    backups: 7,
-    attempts: 4,
-    rewriteChars: 25_000,
-  },
+// limits are per network
+const PLAN = {
+  perMinute: createLimiter({ windowMs: 60_000, max: 12 }),
+  perDay: createLimiter({ windowMs: 24 * 60 * 60_000, max: 400 }),
+  body: 1024 * 1024,
+  turns: 60,
+  perMessage: 60_000,
+  total: 160_000,
+  maxTokens: 16_000,
+  // models to try in order, and how many rounds of asking before giving up
+  backups: 5,
+  attempts: 3,
+  rewriteChars: 25_000,
 };
 
 const TIDE = ["Hi1EbIMXGi9HbIjmBSN", "jDOjkitSPQEu-D6a2WO", "cuRoW8JSMrn3AAibsaw", "r3ahMymkLi1WvCCc2Uh", "I3zkiDC2RXv0MiUWZEG", "Gcw"];
@@ -157,15 +142,13 @@ const TOOLS = {
       standard: { style: "Reword it with fresh phrasing and sentence structure while keeping the meaning, tone and roughly the same length." },
       fluent: { style: "Make it read smoothly and naturally: fix grammar, flow and awkward phrasing, and change only what needs changing." },
       simple: { style: "Rewrite it in plain, simple words and short sentences that anyone can follow." },
-      formal: { premium: true, style: "Rewrite it in a polished, formal and professional tone." },
+      formal: { style: "Rewrite it in a polished, formal and professional tone." },
       academic: {
-        premium: true,
         style: "Rewrite it in a clear academic register suitable for an essay or report: precise wording, objective tone, no slang or contractions.",
       },
-      creative: { premium: true, style: "Rewrite it with vivid, original wording and varied structure. You may reorder and restructure sentences freely." },
-      shorter: { premium: true, style: "Make it as concise as possible. Cut filler and repetition but keep every key point." },
+      creative: { style: "Rewrite it with vivid, original wording and varied structure. You may reorder and restructure sentences freely." },
+      shorter: { style: "Make it as concise as possible. Cut filler and repetition but keep every key point." },
       longer: {
-        premium: true,
         style: "Expand it to roughly one and a half to two times the length by explaining and elaborating on what's already there, in the same voice.",
       },
     },
@@ -182,33 +165,32 @@ const TOOLS = {
       ].join(" "),
     modes: {
       natural: { style: "a natural, everyday voice" },
-      casual: { premium: true, style: "a relaxed, conversational voice, like a message to a friend" },
-      professional: { premium: true, style: "a confident, professional voice, like someone writing at work" },
-      student: { premium: true, style: "the voice of a student writing an assignment: clear and sincere, not overly polished" },
+      casual: { style: "a relaxed, conversational voice, like a message to a friend" },
+      professional: { style: "a confident, professional voice, like someone writing at work" },
+      student: { style: "the voice of a student writing an assignment: clear and sincere, not overly polished" },
     },
   },
 };
 
-/** what the page needs to draw the tools: the styles, which ones need premium, and your limit */
+/** what the page needs to draw the tools: the styles and the length limit */
 function toolInfo(plan) {
   const tools = {};
   for (const [id, tool] of Object.entries(TOOLS)) {
-    tools[id] = Object.entries(tool.modes).map(([mode, entry]) => ({ id: mode, premium: Boolean(entry.premium) }));
+    tools[id] = Object.keys(tool.modes).map((mode) => ({ id: mode }));
   }
   return { tools, rewriteChars: plan.rewriteChars };
 }
 
-async function rewrite(req, res, plan, premium) {
+async function rewrite(req, res, plan) {
   const body = await readJson(req, plan.body);
   const tool = TOOLS[body.tool];
   if (!tool) throw new HttpError(400, "pick paraphrase or humanize");
   const mode = tool.modes[body.mode] || Object.values(tool.modes)[0];
-  if (mode.premium && !premium) throw new HttpError(403, "that style comes with blackwaves Premium");
   const text = String(body.text || "").trim();
   if (!text) throw new HttpError(400, "paste some text first");
   if (text.length > plan.rewriteChars) {
     const limit = plan.rewriteChars.toLocaleString("en-US");
-    throw new HttpError(413, `that's too long: the limit is ${limit} characters${premium ? "" : " (Premium raises it to 25,000)"}`);
+    throw new HttpError(413, `that's too long: the limit is ${limit} characters`);
   }
   const chain = await pickChain(body.model, plan);
   return relay(res, {
@@ -225,13 +207,12 @@ async function rewrite(req, res, plan, premium) {
 
 // ---- chat ----------------------------------------------------------------------------
 
-async function chat(req, res, plan, premium) {
+async function chat(req, res, plan) {
   const body = await readJson(req, plan.body);
   const chain = await pickChain(body.model, plan);
   const messages = cleanMessages(body.messages, plan);
   let system = SYSTEM;
-  // custom instructions are a premium thing, so the server ignores them for everyone else
-  const instructions = premium ? String(body.instructions || "").trim().slice(0, 2000) : "";
+  const instructions = String(body.instructions || "").trim().slice(0, 2000);
   if (instructions) {
     system += `\n\nThe user set these custom instructions for how you respond. Follow them unless they conflict with being safe and honest:\n${instructions}`;
   }
@@ -370,19 +351,16 @@ async function relay(res, { chain, attempts, ...request }) {
   return json(res, lastError?.status === 429 ? 429 : 502, { error: message });
 }
 
-export async function handleAi(req, res, pathname, ip, user) {
-  const premium = isPremium(user);
-  const plan = premium ? PLANS.premium : PLANS.free;
-  // premium limits follow the account; free ones are per network
-  const key = premium ? `u:${user.id}` : ip;
+export async function handleAi(req, res, pathname, ip) {
+  const plan = PLAN;
   try {
     if (pathname === "/api/ai/models" && req.method === "GET") return json(res, 200, { models: await freeModels(), default: AUTO });
     if (pathname === "/api/ai/tools" && req.method === "GET") return json(res, 200, toolInfo(plan));
     if ((pathname === "/api/ai/chat" || pathname === "/api/ai/rewrite") && req.method === "POST") {
-      if (plan.perMinute(key) || plan.perDay(key)) {
-        throw new HttpError(429, `you're sending messages too fast. give it a minute${premium ? "" : ", or get Premium for higher limits"}.`);
+      if (plan.perMinute(ip) || plan.perDay(ip)) {
+        throw new HttpError(429, `you're sending messages too fast. give it a minute.`);
       }
-      return pathname === "/api/ai/chat" ? await chat(req, res, plan, premium) : await rewrite(req, res, plan, premium);
+      return pathname === "/api/ai/chat" ? await chat(req, res, plan) : await rewrite(req, res, plan);
     }
     return json(res, 404, { error: "that endpoint doesn't exist" });
   } catch (error) {
