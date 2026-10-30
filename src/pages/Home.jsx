@@ -2,7 +2,6 @@ import { useEffect, useState } from "preact/hooks";
 import { Icon } from "../components/Icon.jsx";
 import { SearchBox } from "../components/SearchBox.jsx";
 import { Bookmarks } from "../components/Bookmarks.jsx";
-import { NativeAd, SponsorLink } from "../components/Ads.jsx";
 import { randomSearchMessage } from "../data/catalogs.js";
 import { openInBrowser } from "../lib/browser.js";
 import { resolveInput } from "../lib/search.js";
@@ -97,8 +96,6 @@ export function Home() {
           </div>
         )}
       </section>
-      <NativeAd class="home-ad" />
-      <SponsorLink />
     </main>
   );
 }
