@@ -8,7 +8,6 @@ import { Downloads } from "./components/Downloads.jsx";
 import { Welcome } from "./components/Welcome.jsx";
 import { Settings } from "./components/Settings.jsx";
 import { AuthModal } from "./components/AuthModal.jsx";
-import { PremiumModal } from "./components/Premium.jsx";
 import { ProfileCardHost } from "./components/ProfileCard.jsx";
 import { MiniPlayer } from "./components/MiniPlayer.jsx";
 import { Home } from "./pages/Home.jsx";
@@ -122,7 +121,6 @@ export function App() {
       <Toasts />
       <Settings />
       <AuthModal />
-      <PremiumModal />
       <ProfileCardHost />
       {current !== "legal" && <Welcome />}
     </>
