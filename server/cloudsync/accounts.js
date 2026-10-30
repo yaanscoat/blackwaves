@@ -44,15 +44,9 @@ export function isAdmin(user) {
   return Boolean(user) && config.adminUsers.includes(String(user.username).toLowerCase());
 }
 
-/** premium comes from a stripe purchase, see premium.js */
-export function isPremium(user) {
-  return Boolean(user) && user.premium_until > Date.now();
-}
-
 export function badgesFor(user) {
   const badges = [];
   if (isAdmin(user)) badges.push("developer");
-  if (isPremium(user)) badges.push("premium");
   if (user.id <= 100) badges.push("early");
   const owned = parseJson(user.owned, []);
   if (owned.includes("pink-cat-ears")) badges.push("pink-ears");
@@ -98,8 +92,6 @@ export function privateUser(user) {
     dailyStreak: user.daily_streak,
     earnedToday: user.earn_day === today() ? user.earned_today : 0,
     admin: isAdmin(user),
-    premium: isPremium(user),
-    premiumUntil: user.premium_until || 0,
   };
 }
 
