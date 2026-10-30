@@ -221,33 +221,162 @@ img { display: block; max-width: 100%; }
 .select { appearance: none; cursor: pointer; padding-right: 36px; background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 18px) 18px, calc(100% - 13px) 18px; background-size: 5px 5px; background-repeat: no-repeat; }
 .select option { background: var(--surface); color: var(--text); }
 
+/* ---------- dropdowns (components/Dropdown.jsx) -------------------------------- */
+
+.dropdown {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px 0 14px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line-strong);
+  background: rgb(var(--bg-rgb) / 0.5);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.dropdown:hover:not(:disabled) { border-color: rgb(var(--accent-rgb) / 0.5); }
+.dropdown:focus-visible,
+.dropdown.open { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.2); }
+.dropdown:disabled { opacity: 0.55; cursor: default; }
+.dropdown-value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dropdown-lead { flex: none; color: var(--accent); }
+.dropdown-chevron { flex: none; color: var(--muted); transition: transform 0.3s var(--spring); }
+.dropdown.open .dropdown-chevron { transform: rotate(180deg); }
+.dropdown-list {
+  position: fixed;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  border-radius: var(--r-md);
+  outline: none;
+  animation: dropdown-in 0.24s var(--spring);
+  transform-origin: top center;
+}
+.dropdown-list.up { transform-origin: bottom center; animation-name: dropdown-up; }
+@keyframes dropdown-in { from { opacity: 0; transform: translateY(-6px) scale(0.96); } }
+@keyframes dropdown-up { from { opacity: 0; transform: translateY(6px) scale(0.96); } }
+.dropdown-search { display: flex; align-items: center; gap: 8px; flex: none; height: 36px; margin-bottom: 4px; padding: 0 10px; border-radius: 9px; background: rgb(var(--text-rgb) / 0.07); color: var(--muted); }
+.dropdown-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; color: var(--text); font: inherit; font-size: 13.5px; }
+.dropdown-options { display: grid; gap: 1px; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.dropdown-option { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 9px; font-size: 14px; cursor: pointer; transition: background 0.12s; }
+.dropdown-option.active { background: rgb(var(--text-rgb) / 0.09); }
+.dropdown-option[aria-selected="true"] { background: rgb(var(--accent-rgb) / 0.14); }
+.dropdown-option[aria-selected="true"].active { background: rgb(var(--accent-rgb) / 0.22); }
+.dropdown-option[aria-disabled] { opacity: 0.45; cursor: default; }
+.dropdown-option > .icon { flex: none; color: var(--muted); }
+.dropdown-text { display: grid; gap: 1px; flex: 1; min-width: 0; }
+.dropdown-text > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dropdown-text small { font-size: 12px; color: var(--muted); }
+.dropdown-check { flex: none; color: var(--accent); }
+.dropdown-empty { margin: 0; padding: 12px 10px; font-size: 13px; color: var(--muted); }
+
 .field { display: grid; gap: 6px; }
 .field > span { font-size: 13px; color: var(--muted); }
 
+/* switches: a channel cut into the surface with a rail groove down the
+   middle, the accent filling in behind the knob, and a domed knob with grip
+   grooves that roll as it slides and squash while you hold it */
 .toggle {
+  --knob: 20px;
+  --knob-held: 26px;
   position: relative;
-  width: 44px;
+  width: 46px;
   height: 26px;
   flex: none;
+  padding: 0;
   border-radius: 99px;
-  border: 1px solid var(--line-strong);
-  background: rgb(var(--text-rgb) / 0.1);
+  border: 1px solid rgb(0 0 0 / 0.35);
+  background:
+    /* the rail: a dark cut with a lit lower lip */
+    linear-gradient(rgb(0 0 0 / 0.42), rgb(0 0 0 / 0.42)) center calc(50% - 0.5px) / calc(100% - 18px) 1.5px no-repeat,
+    linear-gradient(rgb(255 255 255 / 0.09), rgb(255 255 255 / 0.09)) center calc(50% + 1px) / calc(100% - 18px) 1px no-repeat,
+    linear-gradient(180deg, rgb(0 0 0 / 0.38), rgb(var(--text-rgb) / 0.07) 70%);
+  box-shadow:
+    inset 0 2px 5px rgb(0 0 0 / 0.55),
+    inset 0 -1px 1px rgb(255 255 255 / 0.06),
+    0 1px 0 rgb(255 255 255 / 0.07);
   cursor: pointer;
-  transition: background 0.25s var(--ease);
+  transition: box-shadow 0.35s var(--ease), border-color 0.35s var(--ease);
+}
+/* the accent fill, wiped in from the left so it follows the knob */
+.toggle::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(rgb(0 0 0 / 0.22), rgb(0 0 0 / 0.22)) center calc(50% - 0.5px) / calc(100% - 18px) 1.5px no-repeat,
+    linear-gradient(rgb(255 255 255 / 0.22), rgb(255 255 255 / 0.22)) center calc(50% + 1px) / calc(100% - 18px) 1px no-repeat,
+    linear-gradient(180deg, rgb(255 255 255 / 0.18), transparent 55%),
+    var(--accent);
+  box-shadow: inset 0 2px 5px rgb(0 0 0 / 0.4), inset 0 -2px 4px rgb(255 255 255 / 0.12);
+  clip-path: inset(0 calc(100% - var(--knob) - 4px) 0 0 round 99px);
+  opacity: 0;
+  transition: clip-path 0.45s var(--ease), opacity 0.25s var(--ease);
 }
 .toggle::after {
   content: "";
   position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--text);
-  transition: transform 0.35s var(--spring);
+  top: 2px;
+  left: 2px;
+  width: var(--knob);
+  height: var(--knob);
+  border-radius: 99px;
+  background:
+    /* three grip grooves: a dark cut with a highlight on its edge */
+    repeating-linear-gradient(90deg, rgb(0 0 0 / 0.3) 0 1px, rgb(255 255 255 / 0.75) 1px 2px, transparent 2px 4px) 35% 50% / 10px 9px no-repeat,
+    radial-gradient(circle at 35% 28%, #ffffff, #e3e7ef 45%, #b6bdca 100%);
+  box-shadow:
+    0 2px 4px rgb(0 0 0 / 0.45),
+    0 0 0 0.5px rgb(0 0 0 / 0.25),
+    inset 0 -2px 3px rgb(0 0 0 / 0.18),
+    inset 0 1px 1px rgb(255 255 255 / 0.9);
+  transition:
+    left 0.5s var(--spring),
+    width 0.3s var(--spring),
+    background-position 0.5s var(--ease),
+    box-shadow 0.3s var(--ease);
 }
-.toggle[aria-checked="true"] { background: var(--accent); border-color: transparent; }
-.toggle[aria-checked="true"]::after { transform: translateX(18px); background: var(--bg); }
+.toggle:hover::after {
+  box-shadow:
+    0 3px 7px rgb(0 0 0 / 0.5),
+    0 0 0 0.5px rgb(0 0 0 / 0.25),
+    inset 0 -2px 3px rgb(0 0 0 / 0.18),
+    inset 0 1px 1px rgb(255 255 255 / 0.9);
+}
+.toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.toggle[aria-checked="true"] {
+  border-color: rgb(0 0 0 / 0.25);
+  box-shadow:
+    inset 0 2px 5px rgb(0 0 0 / 0.45),
+    0 1px 0 rgb(255 255 255 / 0.07),
+    0 0 14px -2px rgb(var(--accent-rgb) / 0.55);
+}
+.toggle[aria-checked="true"]::before { clip-path: inset(0 0 0 0 round 99px); opacity: 1; }
+.toggle[aria-checked="true"]::after { left: calc(100% - var(--knob) - 2px); background-position: 65% 50%, 0 0; }
+
+/* hold it down and the knob stretches toward where it's going */
+.toggle:not(:disabled):active::after { width: var(--knob-held); }
+.toggle[aria-checked="true"]:not(:disabled):active::after { left: calc(100% - var(--knob-held) - 2px); }
+.toggle:disabled { cursor: default; }
+
+[data-light="true"] .toggle {
+  border-color: rgb(0 0 0 / 0.14);
+  background:
+    linear-gradient(rgb(0 0 0 / 0.2), rgb(0 0 0 / 0.2)) center calc(50% - 0.5px) / calc(100% - 18px) 1.5px no-repeat,
+    linear-gradient(rgb(255 255 255 / 0.8), rgb(255 255 255 / 0.8)) center calc(50% + 1px) / calc(100% - 18px) 1px no-repeat,
+    linear-gradient(180deg, rgb(0 0 0 / 0.12), rgb(0 0 0 / 0.04) 70%);
+  box-shadow: inset 0 2px 4px rgb(0 0 0 / 0.22), 0 1px 0 rgb(255 255 255 / 0.8);
+}
+[data-light="true"] .toggle[aria-checked="true"] { box-shadow: inset 0 2px 4px rgb(0 0 0 / 0.22), 0 0 12px -3px rgb(var(--accent-rgb) / 0.6); }
 
 .range { width: 100%; accent-color: var(--accent); }
 
