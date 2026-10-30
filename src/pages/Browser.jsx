@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { Icon } from "../components/Icon.jsx";
-import { NativeAd } from "../components/Ads.jsx";
 import { SearchBox } from "../components/SearchBox.jsx";
 import { Bookmarks, useBookmarks } from "../components/Bookmarks.jsx";
 import { Avatar } from "../components/Avatar.jsx";
@@ -156,7 +155,6 @@ function NewTabPage({ tab }) {
       <img class="logo-img newtab-logo" src="/favicon.ico" alt="" />
       <SearchBox big autoFocus placeholder={placeholder} onSubmit={(text) => go(resolveInput(text))} />
       <Bookmarks onOpen={go} />
-      <NativeAd class="newtab-ad" />
     </div>
   );
 }
