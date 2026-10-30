@@ -10,15 +10,14 @@ export const consent = signal(null);
 export function loadConsent() {
   try {
     const saved = JSON.parse(readCookie("bw_consent") || "null");
-    // answers from before ads existed never covered ads, so ask once more
-    consent.value = saved && "ads" in saved ? saved : null;
+    consent.value = saved || null;
   } catch {
     consent.value = null;
   }
 }
 
 export function saveConsent(choices) {
-  const value = { essential: true, presence: Boolean(choices.presence), suggestions: Boolean(choices.suggestions), ads: Boolean(choices.ads), at: Date.now() };
+  const value = { essential: true, presence: Boolean(choices.presence), suggestions: Boolean(choices.suggestions), at: Date.now() };
   writeCookie("bw_consent", JSON.stringify(value));
   consent.value = value;
   setSetting("suggestions", value.suggestions);
@@ -47,7 +46,7 @@ function Choice({ title, body, checked, locked, onChange }) {
 
 export function Welcome() {
   const [custom, setCustom] = useState(false);
-  const [choices, setChoices] = useState({ presence: true, suggestions: true, ads: true });
+  const [choices, setChoices] = useState({ presence: true, suggestions: true });
   if (consent.value) return null;
 
   const legal = (doc) => (event) => {
@@ -58,13 +57,13 @@ export function Welcome() {
   return (
     // closing without picking (esc / clicking outside) means essential only, but never
     // overwrite a choice that one of the buttons just saved
-    <Modal title="Welcome to blackwaves" onClose={() => !consent.value && saveConsent({ presence: false, suggestions: false, ads: false })} class="welcome" hideHead>
+    <Modal title="Welcome to blackwaves" onClose={() => !consent.value && saveConsent({ presence: false, suggestions: false })} class="welcome" hideHead>
       {(close) => (
         <div class="welcome-body">
           <img class="logo-img welcome-logo" src="/favicon.ico" alt="" />
           <h1>Welcome to blackwaves</h1>
           <p class="muted">
-            Games, movies, music, manga, a proxy browser and a chat, all in one tab. Before you dive in, pick which cookies we can use, including the ads that keep blackwaves free.
+            Games, movies, music, manga, a proxy browser and a chat, all in one tab. Before you dive in, pick which cookies we can use.
           </p>
           <div class="consent-list">
             <Choice
@@ -87,22 +86,8 @@ export function Welcome() {
                   checked={choices.suggestions}
                   onChange={(value) => setChoices({ ...choices, suggestions: value })}
                 />
-                <Choice
-                  title="Ads"
-                  body="Ads from our ad partners keep blackwaves free. They use their own cookies, and every few clicks one opens in a new tab."
-                  checked={choices.ads}
-                  onChange={(value) => setChoices({ ...choices, ads: value })}
-                />
               </>
             )}
-          </div>
-          <div class="ads-disclaimer" role="note">
-            <strong>About ads</strong>
-            <p>
-              blackwaves shows ads to stay free. They come from third-party ad networks, not from us: they set their own cookies and we don't pick
-              what they show. Every few clicks an ad opens in a new tab, and some other ads do too. "Essential only" turns ads off, and you can switch
-              them off any time in Settings &gt; Browser.
-            </p>
           </div>
           <div class="welcome-actions">
             {custom ? (
@@ -111,10 +96,10 @@ export function Welcome() {
               </button>
             ) : (
               <>
-                <button class="btn primary" onClick={() => (saveConsent({ presence: true, suggestions: true, ads: true }), close())}>
+                <button class="btn primary" onClick={() => (saveConsent({ presence: true, suggestions: true }), close())}>
                   Accept all
                 </button>
-                <button class="btn" onClick={() => (saveConsent({ presence: false, suggestions: false, ads: false }), close())}>
+                <button class="btn" onClick={() => (saveConsent({ presence: false, suggestions: false }), close())}>
                   Essential only
                 </button>
                 <button class="btn ghost" onClick={() => setCustom(true)}>
