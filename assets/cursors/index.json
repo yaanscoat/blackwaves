@@ -1,0 +1,2505 @@
+[
+ {
+  "id": "4leaf",
+  "name": "4LEAF",
+  "author": "THTH",
+  "link": "https://www.rw-designer.com/cursor-set/4leaf",
+  "license": "Public domain",
+  "roles": {
+   "default": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "default-0.png",
+     "default-1.png",
+     "default-2.png",
+     "default-3.png",
+     "default-4.png",
+     "default-5.png",
+     "default-6.png",
+     "default-7.png",
+     "default-8.png",
+     "default-9.png",
+     "default-10.png",
+     "default-11.png",
+     "default-12.png",
+     "default-13.png",
+     "default-14.png",
+     "default-15.png",
+     "default-2.png",
+     "default-1.png",
+     "default-0.png",
+     "default-1.png",
+     "default-2.png",
+     "default-15.png",
+     "default-14.png",
+     "default-0.png",
+     "default-16.png",
+     "default-17.png",
+     "default-18.png",
+     "default-19.png",
+     "default-20.png",
+     "default-21.png",
+     "default-22.png",
+     "default-23.png",
+     "default-24.png"
+    ],
+    "ms": [
+     367,
+     83,
+     67,
+     50,
+     33,
+     33,
+     33,
+     50,
+     67,
+     150,
+     33,
+     33,
+     33,
+     33,
+     33,
+     17,
+     17,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     67,
+     17,
+     17,
+     17,
+     17,
+     17,
+     17,
+     17,
+     17,
+     17
+    ]
+   },
+   "pointer": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "pointer.png"
+    ]
+   },
+   "text": {
+    "hot": [
+     16,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "text.png"
+    ]
+   },
+   "help": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "help.png"
+    ]
+   },
+   "wait": {
+    "hot": [
+     16,
+     16
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "wait-0.png",
+     "wait-1.png",
+     "wait-2.png",
+     "wait-3.png",
+     "wait-4.png",
+     "wait-5.png",
+     "wait-6.png",
+     "wait-7.png",
+     "wait-8.png",
+     "wait-9.png",
+     "wait-10.png"
+    ],
+    "ms": [
+     17,
+     17,
+     33,
+     50,
+     50,
+     50,
+     50,
+     50,
+     50,
+     50,
+     50
+    ]
+   },
+   "progress": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "progress-0.png",
+     "progress-1.png",
+     "progress-2.png",
+     "progress-3.png",
+     "progress-4.png",
+     "progress-5.png",
+     "progress-6.png",
+     "progress-7.png",
+     "progress-8.png",
+     "progress-9.png"
+    ],
+    "ms": [
+     50,
+     50,
+     50,
+     50,
+     50,
+     50,
+     50,
+     50,
+     50,
+     50
+    ]
+   },
+   "crosshair": {
+    "hot": [
+     16,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "crosshair.png"
+    ]
+   },
+   "move": {
+    "hot": [
+     16,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "move.png"
+    ]
+   },
+   "not-allowed": {
+    "hot": [
+     16,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "not-allowed.png"
+    ]
+   },
+   "ns-resize": {
+    "hot": [
+     16,
+     16
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "ns-resize-0.png",
+     "ns-resize-1.png",
+     "ns-resize-2.png",
+     "ns-resize-3.png",
+     "ns-resize-2.png",
+     "ns-resize-1.png"
+    ],
+    "ms": [
+     67,
+     67,
+     67,
+     67,
+     67,
+     67
+    ]
+   },
+   "ew-resize": {
+    "hot": [
+     16,
+     16
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "ew-resize-0.png",
+     "ew-resize-1.png",
+     "ew-resize-2.png",
+     "ew-resize-3.png",
+     "ew-resize-2.png",
+     "ew-resize-1.png"
+    ],
+    "ms": [
+     67,
+     67,
+     67,
+     67,
+     67,
+     67
+    ]
+   },
+   "nwse-resize": {
+    "hot": [
+     13,
+     13
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "nwse-resize-0.png",
+     "nwse-resize-1.png",
+     "nwse-resize-2.png",
+     "nwse-resize-3.png",
+     "nwse-resize-2.png",
+     "nwse-resize-1.png"
+    ],
+    "ms": [
+     67,
+     67,
+     67,
+     67,
+     67,
+     67
+    ]
+   },
+   "nesw-resize": {
+    "hot": [
+     16,
+     16
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "nesw-resize-0.png",
+     "nesw-resize-1.png",
+     "nesw-resize-2.png",
+     "nesw-resize-3.png",
+     "nesw-resize-2.png",
+     "nesw-resize-1.png"
+    ],
+    "ms": [
+     67,
+     67,
+     67,
+     67,
+     67,
+     67
+    ]
+   }
+  }
+ },
+ {
+  "id": "accessability-lh",
+  "name": "Left-handed classic",
+  "author": "Mr. Zidgel",
+  "link": "https://www.rw-designer.com/cursor-set/accessability-lh",
+  "license": "CC BY",
+  "roles": {
+   "default": {
+    "hot": [
+     14,
+     1
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "default.png"
+    ]
+   },
+   "pointer": {
+    "hot": [
+     18,
+     5
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "pointer.png"
+    ]
+   },
+   "help": {
+    "hot": [
+     14,
+     1
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "help.png"
+    ]
+   },
+   "wait": {
+    "hot": [
+     26,
+     3
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "wait.png"
+    ]
+   },
+   "progress": {
+    "hot": [
+     26,
+     3
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "wait.png"
+    ]
+   }
+  }
+ },
+ {
+  "id": "another-cool-set",
+  "name": "Earth",
+  "author": "dwaxe",
+  "link": "https://www.rw-designer.com/cursor-set/another-cool-set",
+  "license": "CC BY",
+  "roles": {
+   "default": {
+    "hot": [
+     1,
+     1
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "default-0.png",
+     "default-1.png",
+     "default-2.png",
+     "default-3.png",
+     "default-4.png"
+    ],
+    "ms": [
+     3000,
+     83,
+     83,
+     83,
+     83
+    ]
+   },
+   "pointer": {
+    "hot": [
+     1,
+     1
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "pointer-0.png",
+     "pointer-1.png",
+     "pointer-2.png",
+     "pointer-3.png",
+     "pointer-4.png"
+    ],
+    "ms": [
+     3000,
+     83,
+     83,
+     83,
+     83
+    ]
+   },
+   "text": {
+    "hot": [
+     15,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "text-0.png",
+     "text-1.png",
+     "text-2.png",
+     "text-3.png",
+     "text-4.png"
+    ],
+    "ms": [
+     3000,
+     83,
+     83,
+     83,
+     83
+    ]
+   },
+   "help": {
+    "hot": [
+     1,
+     1
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "help-0.png",
+     "help-1.png",
+     "help-2.png",
+     "help-3.png",
+     "help-4.png"
+    ],
+    "ms": [
+     3000,
+     83,
+     83,
+     83,
+     83
+    ]
+   },
+   "wait": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "wait-0.png",
+     "wait-1.png",
+     "wait-2.png",
+     "wait-3.png",
+     "wait-4.png",
+     "wait-5.png",
+     "wait-6.png",
+     "wait-7.png",
+     "wait-8.png",
+     "wait-9.png",
+     "wait-10.png",
+     "wait-11.png",
+     "wait-12.png",
+     "wait-13.png",
+     "wait-14.png",
+     "wait-15.png",
+     "wait-16.png",
+     "wait-17.png",
+     "wait-18.png",
+     "wait-19.png",
+     "wait-20.png",
+     "wait-21.png",
+     "wait-22.png",
+     "wait-23.png",
+     "wait-24.png"
+    ],
+    "ms": [
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33
+    ]
+   },
+   "progress": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "progress-0.png",
+     "progress-1.png",
+     "progress-2.png",
+     "progress-3.png",
+     "progress-4.png",
+     "progress-5.png",
+     "progress-6.png",
+     "progress-7.png",
+     "progress-8.png",
+     "progress-9.png",
+     "progress-10.png",
+     "progress-11.png",
+     "progress-12.png",
+     "progress-13.png",
+     "progress-14.png",
+     "progress-15.png",
+     "progress-16.png",
+     "progress-17.png",
+     "progress-18.png",
+     "progress-19.png",
+     "progress-20.png",
+     "progress-21.png",
+     "progress-22.png",
+     "progress-23.png",
+     "progress-24.png"
+    ],
+    "ms": [
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33
+    ]
+   },
+   "crosshair": {
+    "hot": [
+     15,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "crosshair.png"
+    ]
+   },
+   "move": {
+    "hot": [
+     15,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "move-0.png",
+     "move-1.png",
+     "move-2.png",
+     "move-3.png",
+     "move-4.png"
+    ],
+    "ms": [
+     3000,
+     83,
+     83,
+     83,
+     83
+    ]
+   },
+   "not-allowed": {
+    "hot": [
+     1,
+     1
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "not-allowed-0.png",
+     "not-allowed-1.png",
+     "not-allowed-2.png",
+     "not-allowed-3.png",
+     "not-allowed-4.png"
+    ],
+    "ms": [
+     3000,
+     83,
+     83,
+     83,
+     83
+    ]
+   },
+   "ns-resize": {
+    "hot": [
+     15,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "ns-resize-0.png",
+     "ns-resize-1.png",
+     "ns-resize-2.png",
+     "ns-resize-3.png",
+     "ns-resize-4.png"
+    ],
+    "ms": [
+     3000,
+     83,
+     83,
+     83,
+     83
+    ]
+   },
+   "ew-resize": {
+    "hot": [
+     15,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "ew-resize-0.png",
+     "ew-resize-1.png",
+     "ew-resize-2.png",
+     "ew-resize-3.png",
+     "ew-resize-4.png"
+    ],
+    "ms": [
+     3000,
+     83,
+     83,
+     83,
+     83
+    ]
+   },
+   "nwse-resize": {
+    "hot": [
+     15,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "nwse-resize-0.png",
+     "nwse-resize-1.png",
+     "nwse-resize-2.png",
+     "nwse-resize-3.png",
+     "nwse-resize-4.png"
+    ],
+    "ms": [
+     3000,
+     83,
+     83,
+     83,
+     83
+    ]
+   },
+   "nesw-resize": {
+    "hot": [
+     15,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "nesw-resize-0.png",
+     "nesw-resize-1.png",
+     "nesw-resize-2.png",
+     "nesw-resize-3.png",
+     "nesw-resize-4.png"
+    ],
+    "ms": [
+     3000,
+     83,
+     83,
+     83,
+     83
+    ]
+   }
+  }
+ },
+ {
+  "id": "bgaero",
+  "name": "Black-green Aero",
+  "author": "The Sword of the Heart",
+  "link": "https://www.rw-designer.com/cursor-set/bgaero",
+  "license": "CC BY",
+  "roles": {
+   "default": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "default.png"
+    ]
+   },
+   "pointer": {
+    "hot": [
+     5,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "pointer.png"
+    ]
+   },
+   "text": {
+    "hot": [
+     15,
+     16
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "text.png"
+    ]
+   },
+   "help": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "help.png"
+    ]
+   },
+   "wait": {
+    "hot": [
+     6,
+     6
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "wait-0.png",
+     "wait-1.png",
+     "wait-2.png",
+     "wait-3.png",
+     "wait-4.png",
+     "wait-5.png",
+     "wait-6.png",
+     "wait-7.png",
+     "wait-8.png",
+     "wait-9.png",
+     "wait-10.png",
+     "wait-11.png",
+     "wait-12.png",
+     "wait-13.png",
+     "wait-14.png",
+     "wait-15.png",
+     "wait-16.png",
+     "wait-17.png"
+    ],
+    "ms": [
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33
+    ]
+   },
+   "progress": {
+    "hot": [
+     0,
+     8
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "progress-0.png",
+     "progress-1.png",
+     "progress-2.png",
+     "progress-3.png",
+     "progress-4.png",
+     "progress-5.png",
+     "progress-6.png",
+     "progress-7.png",
+     "progress-8.png",
+     "progress-9.png",
+     "progress-10.png",
+     "progress-11.png",
+     "progress-12.png",
+     "progress-13.png",
+     "progress-14.png",
+     "progress-15.png",
+     "progress-16.png",
+     "progress-17.png"
+    ],
+    "ms": [
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33,
+     33
+    ]
+   },
+   "crosshair": {
+    "hot": [
+     14,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "crosshair.png"
+    ]
+   },
+   "move": {
+    "hot": [
+     15,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "move.png"
+    ]
+   },
+   "not-allowed": {
+    "hot": [
+     13,
+     12
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "not-allowed.png"
+    ]
+   },
+   "ns-resize": {
+    "hot": [
+     15,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "ns-resize.png"
+    ]
+   },
+   "ew-resize": {
+    "hot": [
+     15,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "ew-resize.png"
+    ]
+   },
+   "nwse-resize": {
+    "hot": [
+     15,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "nwse-resize.png"
+    ]
+   },
+   "nesw-resize": {
+    "hot": [
+     15,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "nesw-resize.png"
+    ]
+   }
+  }
+ },
+ {
+  "id": "dove",
+  "name": "Dove",
+  "author": "The Sword of the Heart",
+  "link": "https://www.rw-designer.com/cursor-set/dove",
+  "license": "CC BY",
+  "roles": {
+   "default": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "default.png"
+    ]
+   },
+   "pointer": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "pointer-0.png",
+     "pointer-1.png"
+    ],
+    "ms": [
+     167,
+     167
+    ]
+   },
+   "text": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "text-0.png",
+     "text-1.png"
+    ],
+    "ms": [
+     83,
+     83
+    ]
+   },
+   "help": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "help.png"
+    ]
+   },
+   "wait": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "wait-0.png",
+     "wait-1.png"
+    ],
+    "ms": [
+     167,
+     167
+    ]
+   },
+   "progress": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "progress-0.png",
+     "progress-1.png",
+     "progress-2.png",
+     "progress-3.png",
+     "progress-4.png",
+     "progress-5.png",
+     "progress-6.png",
+     "progress-7.png",
+     "progress-8.png"
+    ],
+    "ms": [
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83
+    ]
+   },
+   "crosshair": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "crosshair-0.png",
+     "crosshair-1.png"
+    ],
+    "ms": [
+     167,
+     167
+    ]
+   },
+   "move": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "move-0.png",
+     "move-1.png",
+     "move-2.png"
+    ],
+    "ms": [
+     167,
+     167,
+     167
+    ]
+   },
+   "not-allowed": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "not-allowed.png"
+    ]
+   },
+   "ns-resize": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "ns-resize-0.png",
+     "ns-resize-1.png"
+    ],
+    "ms": [
+     167,
+     167
+    ]
+   },
+   "ew-resize": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "ew-resize-0.png",
+     "ew-resize-1.png"
+    ],
+    "ms": [
+     167,
+     167
+    ]
+   },
+   "nwse-resize": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "nwse-resize-0.png",
+     "nwse-resize-1.png"
+    ],
+    "ms": [
+     167,
+     167
+    ]
+   },
+   "nesw-resize": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "nesw-resize-0.png",
+     "nesw-resize-1.png"
+    ],
+    "ms": [
+     167,
+     167
+    ]
+   }
+  }
+ },
+ {
+  "id": "fake-rs-items",
+  "name": "Fantasy items",
+  "author": "Dabomb10100",
+  "link": "https://www.rw-designer.com/cursor-set/fake-rs-items",
+  "license": "CC BY",
+  "roles": {
+   "default": {
+    "hot": [
+     1,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "default.png"
+    ]
+   },
+   "pointer": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "pointer.png"
+    ]
+   },
+   "text": {
+    "hot": [
+     1,
+     5
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "text.png"
+    ]
+   },
+   "wait": {
+    "hot": [
+     2,
+     7
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "wait.png"
+    ]
+   },
+   "progress": {
+    "hot": [
+     2,
+     7
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "wait.png"
+    ]
+   },
+   "help": {
+    "hot": [
+     7,
+     2
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "help.png"
+    ]
+   }
+  }
+ },
+ {
+  "id": "greeney",
+  "name": "Greeny",
+  "author": "Kizzume",
+  "link": "https://www.rw-designer.com/cursor-set/greeney",
+  "license": "CC BY",
+  "roles": {
+   "default": {
+    "hot": [
+     1,
+     1
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "default.png"
+    ]
+   },
+   "help": {
+    "hot": [
+     2,
+     1
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "help.png"
+    ]
+   },
+   "wait": {
+    "hot": [
+     3,
+     2
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "wait.png"
+    ]
+   },
+   "progress": {
+    "hot": [
+     3,
+     2
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "progress.png"
+    ]
+   },
+   "crosshair": {
+    "hot": [
+     16,
+     16
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "crosshair.png"
+    ]
+   },
+   "move": {
+    "hot": [
+     16,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "move.png"
+    ]
+   },
+   "not-allowed": {
+    "hot": [
+     16,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "not-allowed.png"
+    ]
+   },
+   "ns-resize": {
+    "hot": [
+     7,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "ns-resize.png"
+    ]
+   },
+   "ew-resize": {
+    "hot": [
+     16,
+     6
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "ew-resize.png"
+    ]
+   },
+   "nwse-resize": {
+    "hot": [
+     15,
+     16
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "nwse-resize.png"
+    ]
+   },
+   "nesw-resize": {
+    "hot": [
+     15,
+     16
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "nesw-resize.png"
+    ]
+   }
+  }
+ },
+ {
+  "id": "red-pointy-sharp",
+  "name": "Reddypoint",
+  "author": "Kizzume",
+  "link": "https://www.rw-designer.com/cursor-set/red-pointy-sharp",
+  "license": "CC BY",
+  "roles": {
+   "default": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "default.png"
+    ]
+   },
+   "pointer": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "pointer.png"
+    ]
+   },
+   "text": {
+    "hot": [
+     15,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "text.png"
+    ]
+   },
+   "help": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "help.png"
+    ]
+   },
+   "wait": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "wait.png"
+    ]
+   },
+   "progress": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "progress.png"
+    ]
+   },
+   "crosshair": {
+    "hot": [
+     15,
+     15
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "crosshair.png"
+    ]
+   },
+   "move": {
+    "hot": [
+     32,
+     27
+    ],
+    "size": [
+     64,
+     64
+    ],
+    "frames": [
+     "move.png"
+    ]
+   },
+   "not-allowed": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "not-allowed.png"
+    ]
+   },
+   "ns-resize": {
+    "hot": [
+     16,
+     16
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "ns-resize.png"
+    ]
+   },
+   "ew-resize": {
+    "hot": [
+     16,
+     13
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "ew-resize.png"
+    ]
+   },
+   "nwse-resize": {
+    "hot": [
+     16,
+     13
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "nwse-resize.png"
+    ]
+   },
+   "nesw-resize": {
+    "hot": [
+     16,
+     16
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "nesw-resize.png"
+    ]
+   }
+  }
+ },
+ {
+  "id": "roblox2026",
+  "name": "Roblox 2026",
+  "author": "blub",
+  "link": "https://www.rw-designer.com/cursor-set/roblox2026",
+  "license": "Public domain",
+  "roles": {
+   "default": {
+    "hot": [
+     9,
+     4
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "default.png"
+    ]
+   },
+   "pointer": {
+    "hot": [
+     13,
+     4
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "pointer.png"
+    ]
+   },
+   "text": {
+    "hot": [
+     14,
+     14
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "text.png"
+    ]
+   },
+   "help": {
+    "hot": [
+     16,
+     16
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "help.png"
+    ]
+   },
+   "crosshair": {
+    "hot": [
+     16,
+     16
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "crosshair.png"
+    ]
+   },
+   "grab": {
+    "hot": [
+     16,
+     16
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "grab.png"
+    ]
+   },
+   "grabbing": {
+    "hot": [
+     16,
+     16
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "grabbing.png"
+    ]
+   },
+   "move": {
+    "hot": [
+     16,
+     16
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "grabbing.png"
+    ]
+   },
+   "not-allowed": {
+    "hot": [
+     16,
+     16
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "not-allowed.png"
+    ]
+   }
+  }
+ },
+ {
+  "id": "stickman",
+  "name": "StickDude",
+  "author": "Mr. Zidgel",
+  "link": "https://www.rw-designer.com/cursor-set/stickman",
+  "license": "CC BY",
+  "roles": {
+   "default": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "default-0.png",
+     "default-1.png",
+     "default-2.png",
+     "default-3.png",
+     "default-4.png",
+     "default-5.png",
+     "default-6.png",
+     "default-7.png",
+     "default-8.png",
+     "default-9.png",
+     "default-10.png",
+     "default-11.png",
+     "default-12.png",
+     "default-11.png",
+     "default-13.png",
+     "default-14.png",
+     "default-13.png",
+     "default-15.png",
+     "default-16.png",
+     "default-17.png",
+     "default-18.png",
+     "default-15.png",
+     "default-19.png",
+     "default-17.png",
+     "default-20.png",
+     "default-11.png",
+     "default-21.png",
+     "default-22.png",
+     "default-21.png",
+     "default-22.png",
+     "default-21.png",
+     "default-22.png",
+     "default-21.png",
+     "default-23.png",
+     "default-24.png",
+     "default-25.png",
+     "default-26.png",
+     "default-27.png",
+     "default-28.png",
+     "default-29.png",
+     "default-30.png",
+     "default-28.png",
+     "default-31.png",
+     "default-28.png",
+     "default-28.png",
+     "default-32.png",
+     "default-28.png",
+     "default-30.png",
+     "default-30.png",
+     "default-33.png",
+     "default-28.png",
+     "default-31.png",
+     "default-28.png",
+     "default-32.png",
+     "default-31.png",
+     "default-32.png",
+     "default-28.png",
+     "default-31.png",
+     "default-32.png",
+     "default-32.png",
+     "default-28.png",
+     "default-31.png",
+     "default-31.png",
+     "default-28.png",
+     "default-28.png",
+     "default-31.png",
+     "default-30.png",
+     "default-34.png",
+     "default-35.png",
+     "default-36.png",
+     "default-37.png",
+     "default-38.png",
+     "default-39.png",
+     "default-40.png",
+     "default-41.png",
+     "default-42.png",
+     "default-43.png",
+     "default-44.png",
+     "default-45.png",
+     "default-46.png",
+     "default-47.png",
+     "default-48.png",
+     "default-49.png",
+     "default-50.png",
+     "default-51.png",
+     "default-52.png",
+     "default-53.png",
+     "default-54.png",
+     "default-53.png",
+     "default-54.png",
+     "default-53.png",
+     "default-54.png",
+     "default-53.png",
+     "default-54.png",
+     "default-55.png",
+     "default-56.png",
+     "default-57.png",
+     "default-58.png",
+     "default-59.png",
+     "default-60.png",
+     "default-61.png",
+     "default-62.png",
+     "default-63.png",
+     "default-64.png",
+     "default-65.png",
+     "default-66.png",
+     "default-65.png",
+     "default-67.png",
+     "default-68.png",
+     "default-69.png",
+     "default-70.png",
+     "default-71.png",
+     "default-72.png",
+     "default-73.png",
+     "default-74.png",
+     "default-73.png",
+     "default-75.png",
+     "default-71.png",
+     "default-72.png",
+     "default-76.png",
+     "default-76.png",
+     "default-76.png",
+     "default-77.png",
+     "default-76.png",
+     "default-78.png",
+     "default-79.png",
+     "default-77.png",
+     "default-76.png",
+     "default-76.png",
+     "default-77.png",
+     "default-77.png",
+     "default-80.png",
+     "default-80.png",
+     "default-80.png",
+     "default-80.png",
+     "default-80.png",
+     "default-81.png",
+     "default-81.png",
+     "default-81.png",
+     "default-80.png",
+     "default-81.png",
+     "default-82.png",
+     "default-81.png",
+     "default-80.png",
+     "default-83.png",
+     "default-84.png",
+     "default-85.png",
+     "default-86.png",
+     "default-87.png",
+     "default-88.png",
+     "default-89.png",
+     "default-90.png",
+     "default-91.png",
+     "default-92.png",
+     "default-93.png",
+     "default-94.png",
+     "default-95.png",
+     "default-96.png",
+     "default-97.png",
+     "default-98.png",
+     "default-99.png",
+     "default-100.png",
+     "default-101.png",
+     "default-95.png",
+     "default-101.png",
+     "default-95.png",
+     "default-101.png",
+     "default-95.png",
+     "default-101.png",
+     "default-102.png",
+     "default-103.png",
+     "default-104.png",
+     "default-105.png",
+     "default-106.png",
+     "default-105.png",
+     "default-106.png",
+     "default-107.png",
+     "default-108.png",
+     "default-109.png",
+     "default-109.png",
+     "default-109.png",
+     "default-110.png",
+     "default-111.png",
+     "default-112.png",
+     "default-113.png",
+     "default-114.png",
+     "default-115.png",
+     "default-116.png",
+     "default-117.png",
+     "default-118.png",
+     "default-119.png",
+     "default-120.png",
+     "default-121.png",
+     "default-122.png",
+     "default-123.png",
+     "default-124.png",
+     "default-125.png",
+     "default-126.png",
+     "default-127.png",
+     "default-128.png",
+     "default-129.png",
+     "default-130.png",
+     "default-131.png",
+     "default-132.png",
+     "default-133.png",
+     "default-134.png",
+     "default-135.png",
+     "default-136.png",
+     "default-137.png",
+     "default-138.png",
+     "default-139.png",
+     "default-140.png",
+     "default-141.png",
+     "default-140.png",
+     "default-139.png",
+     "default-138.png",
+     "default-137.png",
+     "default-136.png",
+     "default-135.png",
+     "default-134.png",
+     "default-133.png",
+     "default-142.png",
+     "default-143.png",
+     "default-144.png",
+     "default-145.png",
+     "default-146.png",
+     "default-147.png",
+     "default-148.png",
+     "default-149.png",
+     "default-3.png",
+     "default-2.png"
+    ],
+    "ms": [
+     2000,
+     2000,
+     833,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     1667,
+     1400,
+     833,
+     833,
+     1183,
+     833,
+     1867,
+     833,
+     1667,
+     833,
+     1667,
+     833,
+     1667,
+     833,
+     1667,
+     50,
+     117,
+     117,
+     117,
+     117,
+     117,
+     117,
+     117,
+     50,
+     50,
+     50,
+     50,
+     50,
+     50,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     2500,
+     1500,
+     117,
+     117,
+     117,
+     1333,
+     167,
+     167,
+     167,
+     167,
+     167,
+     67,
+     67,
+     67,
+     1667,
+     67,
+     67,
+     67,
+     67,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     1667,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     100,
+     1667,
+     1667,
+     1583,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     500,
+     50,
+     50,
+     50,
+     50,
+     50,
+     50,
+     50,
+     50,
+     50,
+     50,
+     50,
+     50,
+     50,
+     1667,
+     1000,
+     1000,
+     1000,
+     1000,
+     1000,
+     1000,
+     1000,
+     750,
+     750,
+     750,
+     750,
+     1250,
+     750,
+     750,
+     750,
+     750,
+     750,
+     167,
+     167,
+     167,
+     167,
+     167,
+     167,
+     167,
+     767,
+     1667,
+     167,
+     167,
+     167,
+     167,
+     2000,
+     1667,
+     3333,
+     33,
+     33,
+     33,
+     83,
+     83,
+     83,
+     1000,
+     1667,
+     1500,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     83,
+     1500,
+     1667,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     1667,
+     1667,
+     1667,
+     2500,
+     67,
+     67,
+     67,
+     67,
+     67,
+     833
+    ]
+   },
+   "pointer": {
+    "hot": [
+     14,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "pointer-0.png",
+     "pointer-1.png",
+     "pointer-2.png",
+     "pointer-3.png",
+     "pointer-4.png",
+     "pointer-5.png",
+     "pointer-6.png",
+     "pointer-7.png",
+     "pointer-8.png",
+     "pointer-7.png",
+     "pointer-6.png",
+     "pointer-5.png",
+     "pointer-4.png",
+     "pointer-3.png",
+     "pointer-2.png",
+     "pointer-1.png",
+     "pointer-0.png"
+    ],
+    "ms": [
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67
+    ]
+   },
+   "help": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "help-0.png",
+     "help-1.png",
+     "help-2.png",
+     "help-3.png",
+     "help-4.png",
+     "help-5.png",
+     "help-6.png"
+    ],
+    "ms": [
+     67,
+     67,
+     67,
+     67,
+     67,
+     67,
+     67
+    ]
+   },
+   "wait": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "wait-0.png",
+     "wait-1.png",
+     "wait-2.png",
+     "wait-3.png",
+     "wait-4.png",
+     "wait-5.png",
+     "wait-6.png",
+     "wait-7.png",
+     "wait-8.png",
+     "wait-9.png",
+     "wait-10.png",
+     "wait-11.png",
+     "wait-12.png",
+     "wait-13.png",
+     "wait-14.png",
+     "wait-15.png",
+     "wait-16.png",
+     "wait-17.png",
+     "wait-11.png",
+     "wait-17.png",
+     "wait-11.png",
+     "wait-17.png",
+     "wait-11.png",
+     "wait-17.png",
+     "wait-18.png",
+     "wait-19.png",
+     "wait-20.png",
+     "wait-21.png",
+     "wait-22.png",
+     "wait-21.png",
+     "wait-22.png"
+    ],
+    "ms": [
+     1000,
+     1000,
+     1000,
+     1000,
+     1000,
+     1000,
+     1000,
+     750,
+     750,
+     750,
+     750,
+     1250,
+     750,
+     750,
+     750,
+     750,
+     750,
+     167,
+     167,
+     167,
+     167,
+     167,
+     167,
+     167,
+     767,
+     1667,
+     167,
+     167,
+     167,
+     167,
+     2000
+    ]
+   },
+   "progress": {
+    "hot": [
+     0,
+     0
+    ],
+    "size": [
+     32,
+     32
+    ],
+    "frames": [
+     "progress-0.png",
+     "progress-1.png",
+     "progress-2.png",
+     "progress-3.png"
+    ],
+    "ms": [
+     83,
+     83,
+     83,
+     167
+    ]
+   }
+  }
+ }
+]
