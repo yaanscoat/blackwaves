@@ -17,7 +17,6 @@
 - Cloudsync
 - Shop for pfp decorations
 - AI chat, Paraphraser and Humanizer (free models)
-- Premium (extra AI features + priority search)
 
 ## Self-hosting
 
@@ -46,9 +45,6 @@ then open http://localhost:8080 and you're finished!
 
 >[!NOTE]
 >blackwaves keeps itself under 3 GB of RAM (tested with 300 people on at once). Change that with `MEMORY_BUDGET_MB`; check usage at `/health?memory`.
-
->[!IMPORTANT]
->**Premium needs one Stripe setting.** In the Stripe dashboard go to Developers > Webhooks, add an endpoint at `https://your-site/api/premium/webhook` with the events `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `customer.subscription.updated`, `customer.subscription.deleted`, `charge.refunded` and `charge.dispute.created`, then copy its signing secret into `STRIPE_WEBHOOK_SECRET`. Without it nobody can get Premium. Optional: `PREMIUM_DAYS` makes a one-time payment last that many days instead of forever, and `PREMIUM_LINK` swaps the payment link.
 
 ## Credits!
 
