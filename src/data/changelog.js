@@ -24,8 +24,9 @@ export const CHANGELOG = [
           "Three new game sources: UGS, CKV and Seraph.",
           "Choose what shows in the top bar under Appearance. Anything you hide moves into the menu button.",
           "blackwaves AI: chat with free AI models (Alt+A). Chats stay on your device.",
+          "Custom cursors: pick from 10 cursor packs in Settings > Effects, animated ones included.",
           "Paraphraser and Humanizer in blackwaves AI: reword text in different styles, or make stiff, robotic writing sound like a person wrote it, with the changed words highlighted.",
-          "blackwaves Premium for CloudSync accounts: priority search, higher AI limits and longer answers, custom instructions, file attachments, every rewrite style and a crown badge.",
+          "Custom instructions, file attachments and more rewrite styles in blackwaves AI, free for everyone.",
           "Much lighter server: downloads are put together on your device, pages and game files are cached by your browser, and the server keeps itself under 3 GB of memory even with 300 people on at once.",
           "New icons from Font Awesome, plus a round of UI polish.",
           "Music no longer hits YouTube's \"sign in to confirm you're not a bot\" wall on most servers, songs play all the way through again, and if YouTube still refuses, the same song plays from SoundCloud.",
@@ -93,19 +94,25 @@ export const TEAM = [
   { name: "beery-tomato", role: "Also made blackwaves", url: "https://github.com/beery-tomato" },
 ];
 
+// logos live in assets/partners. crop = the box around the logo in image
+// pixels, background = the png's own colour so the card edges disappear.
+// url is optional
+export const PARTNERS = [
+  { name: "opensearch", image: "/assets/partners/opensea.png", size: [2000, 2000], crop: [0, 760, 2000, 1384], background: "#f6f4f0" },
+  { name: "DP Unblocked", image: "/assets/partners/DP.png", size: [2000, 2000], crop: [189, 567, 1576, 1343], background: "#ff3131" },
+];
+
 export const CREDITS = [
-  { name: "lyra by gayq", what: "the codebase blackwaves 3.0 is built on", url: "https://github.com/gayq/lyra" },
-  { name: "x8rr/movies", what: "movies & shows API", url: "https://github.com/x8rr/movies" },
-  { name: "x8rr/manga", what: "manga API (MangaDex + MangaPill)", url: "https://github.com/x8rr/manga" },
-  { name: "x8rr/stratus-api", what: "cloud gaming catalog", url: "https://github.com/x8rr/stratus-api" },
-  { name: "edideaur/monochrome", what: "where blackwaves music started", url: "https://github.com/edideaur/monochrome" },
-  { name: "YouTube.js by LuanRT", what: "YouTube Music search and playback", url: "https://github.com/LuanRT/YouTube.js" },
-  { name: "SoundCloud", what: "the other half of music search", url: "https://soundcloud.com" },
-  { name: "TMDB", what: "movie and show metadata", url: "https://www.themoviedb.org" },
-  { name: "Mercury Workshop", what: "Scramjet, Wisp, epoxy and libcurl", url: "https://github.com/MercuryWorkshop" },
-  { name: "x8rr/sapphire", what: "the base of lyra's extension runtime", url: "https://github.com/x8rr/sapphire" },
-  { name: "gn-math, Selenite, Truffled, Edurocks, wasm.rip, Velara, gmshelf", what: "game sources", url: "https://github.com/gn-math" },
-  { name: "Font Awesome Free", what: "every icon (CC BY 4.0)", url: "https://fontawesome.com" },
-  { name: "Lexend", what: "the only font we use", url: "https://www.lexend.com" },
-  { name: "oneko", what: "the cat (you'll find it)", url: "https://github.com/adryd325/oneko.js" },
+  { name: "lyra by gayq", what: "the base", url: "https://github.com/gayq/lyra" },
+  { name: "x8rr", what: "movie, manga and cloud gaming APIs", url: "https://github.com/x8rr" },
+  { name: "Mercury Workshop", what: "the proxy", url: "https://github.com/MercuryWorkshop" },
+  { name: "YouTube.js", what: "music", url: "https://github.com/LuanRT/YouTube.js" },
+  { name: "SoundCloud", what: "more music", url: "https://soundcloud.com" },
+  { name: "monochrome", what: "where music started", url: "https://github.com/edideaur/monochrome" },
+  { name: "TMDB", what: "movie info", url: "https://www.themoviedb.org" },
+  { name: "gn-math & co.", what: "games", url: "https://github.com/gn-math" },
+  { name: "Font Awesome", what: "icons (CC BY 4.0)", url: "https://fontawesome.com" },
+  { name: "Lexend", what: "the font", url: "https://www.lexend.com" },
+  { name: "rw-designer.com", what: "cursors", url: "https://www.rw-designer.com/cursor-library" },
+  { name: "oneko", what: "the cat", url: "https://github.com/adryd325/oneko.js" },
 ];
