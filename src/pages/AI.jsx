@@ -3,6 +3,7 @@
 // else); the server only relays them.
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { Icon } from "../components/Icon.jsx";
+import { Dropdown } from "../components/Dropdown.jsx";
 import { Modal } from "../components/Modal.jsx";
 import { Markdown } from "../lib/md.jsx";
 import { get } from "../lib/api.js";
@@ -11,7 +12,6 @@ import { storage } from "../lib/storage.js";
 import { me } from "../lib/account.js";
 import { toast } from "../lib/notify.js";
 import { navigate, route, segments } from "../lib/router.js";
-import { isPremium, openPremium, premiumOnly } from "../lib/premium.js";
 import { AITool, TOOL_INFO } from "./AITools.jsx";
 import "../styles/ai.css";
 
@@ -187,24 +187,6 @@ function Instructions({ onClose }) {
   );
 }
 
-function PremiumCard() {
-  if (isPremium()) {
-    return (
-      <button class="ai-premium-card on" onClick={openPremium}>
-        <Icon name="crown" size={15} /> Premium is on
-      </button>
-    );
-  }
-  return (
-    <button class="ai-premium-card" onClick={openPremium}>
-      <strong>
-        <Icon name="crown" size={15} /> Get Premium
-      </strong>
-      <span>Longer answers, custom instructions, files, every rewrite style and priority search.</span>
-    </button>
-  );
-}
-
 export function AI() {
   const [chats, setChats] = useState(() => storage.get("aiChats", []));
   const [activeId, setActiveId] = useState(() => storage.get("aiChats", [])[0]?.id || null);
@@ -224,7 +206,6 @@ export function AI() {
 
   const [, sub] = segments(route.value);
   const tool = TOOL_INFO[sub] ? sub : "chat";
-  const premium = isPremium();
 
   const active = chats.find((chat) => chat.id === activeId) || null;
   const messages = active?.messages || [];
@@ -270,7 +251,7 @@ export function AI() {
     const schedule = () => (pending ||= requestAnimationFrame(flush));
     flush();
     try {
-      const instructions = premium ? storage.get("aiInstructions", "") : "";
+      const instructions = storage.get("aiInstructions", "");
       await streamAi(
         "/api/ai/chat",
         { model, instructions, messages: history.map((message) => ({ role: message.role, content: message.role === "user" ? forModel(message) : message.content })) },
@@ -400,7 +381,6 @@ export function AI() {
             </div>
           ))}
         </div>
-        <PremiumCard />
       </aside>
 
       <section class="ai-main glass">
@@ -408,25 +388,23 @@ export function AI() {
           <button class="btn ghost icon-only sm ai-list-toggle" aria-label="Chats and tools" onClick={() => setListOpen(!listOpen)}>
             <Icon name="list" size={17} />
           </button>
-          <label class="ai-model">
-            <Icon name="ai" size={16} />
-            <select value={model} onChange={(event) => setModel(event.currentTarget.value)} aria-label="Model" disabled={working}>
-              {models.map((entry) => (
-                <option key={entry.id} value={entry.id}>
-                  {entry.id === "auto" ? entry.name : `${entry.name} (${entry.maker})`}
-                </option>
-              ))}
-            </select>
-            <Icon name="down" size={13} />
-          </label>
+          <Dropdown
+            class="ai-model"
+            label="Model"
+            icon="ai"
+            value={model}
+            onChange={setModel}
+            disabled={working}
+            options={models.map((entry) => ({ value: entry.id, label: entry.name, hint: entry.id === "auto" ? undefined : entry.maker }))}
+          />
           <div class="ai-head-actions">
             {tool === "chat" && (
               <>
                 <button
-                  class={`btn ghost icon-only sm ${premium && storage.get("aiInstructions", "") ? "lit" : ""}`}
+                  class={`btn ghost icon-only sm ${storage.get("aiInstructions", "") ? "lit" : ""}`}
                   aria-label="Custom instructions"
-                  data-tip={premium ? "Custom instructions" : "Custom instructions (Premium)"}
-                  onClick={premiumOnly(() => setEditing(true))}
+                  data-tip="Custom instructions"
+                  onClick={() => setEditing(true)}
                 >
                   <Icon name="sliders" size={16} />
                 </button>
@@ -479,11 +457,11 @@ export function AI() {
                 event.preventDefault();
                 send();
               }}
-              onDragOver={(event) => premium && event.preventDefault()}
+              onDragOver={(event) => event.preventDefault()}
               onDrop={(event) => {
                 if (!event.dataTransfer?.files?.length) return;
                 event.preventDefault();
-                premiumOnly(() => attach(event.dataTransfer.files))();
+                attach(event.dataTransfer.files);
               }}
             >
               <div class="ai-input">
@@ -493,8 +471,8 @@ export function AI() {
                     type="button"
                     class="ai-attach"
                     aria-label="Attach a file"
-                    data-tip={premium ? "Attach a text file" : "Attach files (Premium)"}
-                    onClick={premiumOnly(() => picker.current?.click())}
+                    data-tip="Attach a text file"
+                    onClick={() => picker.current?.click()}
                   >
                     <Icon name="attach" size={16} />
                   </button>
@@ -515,7 +493,7 @@ export function AI() {
                     value={draft}
                     placeholder="Message blackwaves AI"
                     aria-label="Message"
-                    maxLength={premium ? 60000 : 12000}
+                    maxLength={60000}
                     onInput={(event) => {
                       setDraft(event.currentTarget.value);
                       event.currentTarget.style.height = "auto";
