@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { Icon } from "../components/Icon.jsx";
+import { Dropdown } from "../components/Dropdown.jsx";
 import { get } from "../lib/api.js";
 import { navigate, route, segments } from "../lib/router.js";
 import { storage } from "../lib/storage.js";
@@ -8,7 +9,6 @@ import "../styles/media.css";
 import "../styles/player.css";
 import { VideoPlayer } from "../components/VideoPlayer.jsx";
 import { downloadHls } from "../lib/hlsdownload.js";
-import { NativeAd } from "../components/Ads.jsx";
 
 const img = (path, size = "w342") => (path ? `/api/movies/img/${size}${path}` : "");
 
@@ -445,13 +445,14 @@ function Detail({ type, id, autoplay }) {
         <section class="episodes">
           <div class="section-title">
             <h2>Episodes</h2>
-            <select class="select season-select" value={season} onChange={(event) => (setSeason(Number(event.currentTarget.value)), setEpisode(1))} aria-label="Season">
-              {seasons.map((entry) => (
-                <option key={entry.season_number} value={entry.season_number}>
-                  {entry.name}
-                </option>
-              ))}
-            </select>
+            <Dropdown
+              class="season-select"
+              label="Season"
+              align="end"
+              value={season}
+              onChange={(value) => (setSeason(value), setEpisode(1))}
+              options={seasons.map((entry) => ({ value: entry.season_number, label: entry.name, hint: entry.episode_count ? `${entry.episode_count} episodes` : undefined }))}
+            />
           </div>
           <div class="episode-list">
             {(seasonData.data?.episodes || []).map((entry) => (
@@ -511,7 +512,6 @@ export function Movies() {
               <p>Search anything, pick a player, press play.</p>
             </div>
           </div>
-          <NativeAd class="page-ad" />
           <Browse onOpen={open} />
         </>
       )}
