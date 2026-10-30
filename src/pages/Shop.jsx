@@ -1,6 +1,6 @@
 import { useState } from "preact/hooks";
 import { Icon } from "../components/Icon.jsx";
-import { NativeAd } from "../components/Ads.jsx";
+import { Dropdown } from "../components/Dropdown.jsx";
 import { Avatar } from "../components/Avatar.jsx";
 import { Modal } from "../components/Modal.jsx";
 import { ProfileBody } from "../components/ProfileCard.jsx";
@@ -107,8 +107,6 @@ export function Shop() {
           )}
         </div>
       </div>
-
-      <NativeAd class="page-ad" />
       <details class="earn glass">
         <summary>
           How do I get coins?
@@ -134,11 +132,19 @@ export function Shop() {
             </button>
           ))}
         </div>
-        <select class="select shop-sort" value={sort} onChange={(event) => setSort(event.currentTarget.value)} aria-label="Sort">
-          <option value="rarity">Rarest first</option>
-          <option value="low">Cheapest first</option>
-          <option value="high">Priciest first</option>
-        </select>
+        <Dropdown
+          class="shop-sort"
+          label="Sort"
+          icon="sliders"
+          align="end"
+          value={sort}
+          onChange={setSort}
+          options={[
+            { value: "rarity", label: "Rarest first" },
+            { value: "low", label: "Cheapest first" },
+            { value: "high", label: "Priciest first" },
+          ]}
+        />
       </div>
 
       {items.length === 0 ? (
