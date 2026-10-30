@@ -76,11 +76,6 @@ function Message({ message, grouped, self, onReply, onEdit }) {
               </button>
               {message.author.title && <span class="msg-title">{message.author.title}</span>}
               {message.author.badges?.includes("developer") && <span class="msg-dev">dev</span>}
-              {message.author.badges?.includes("premium") && (
-                <span class="msg-premium" data-tip="blackwaves Premium">
-                  <Icon name="crown" size={11} />
-                </span>
-              )}
               <span class="faint small">{time(message.createdAt)}</span>
             </div>
           )}
