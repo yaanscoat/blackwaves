@@ -24,7 +24,6 @@ const LOADERS = {
   movies: () => import("./pages/Movies.jsx").then((m) => m.Movies),
   music: () => import("./pages/Music.jsx").then((m) => m.Music),
   manga: () => import("./pages/Manga.jsx").then((m) => m.Manga),
-  cloud: () => import("./pages/Cloud.jsx").then((m) => m.Cloud),
   chat: () => import("./pages/Chat.jsx").then((m) => m.Chat),
   ai: () => import("./pages/AI.jsx").then((m) => m.AI),
   shop: () => import("./pages/Shop.jsx").then((m) => m.Shop),
