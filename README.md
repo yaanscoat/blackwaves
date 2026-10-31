@@ -12,7 +12,6 @@
 - Chatroom
 - Shop
 - Over 4000 Games
-- Cloud Gaming [BETA] (150 Titles 4 free)
 - Manga
 - Cloudsync
 - Shop for pfp decorations
@@ -51,7 +50,6 @@ then open http://localhost:8080 and you're finished!
 * lyra by gayq the codebase  that **ALL** of blackwaves is built on
 * x8rr/movies - movies & shows API
 * x8rr/manga manga API - MangaDex + MangaPill
-* x8rr/stratus-api - cloud gaming catalog
 * edideaur/monochrome - where blackwaves music started
 * YouTube.js by LuanRT - YouTube Music search and playback
 * SoundCloud - the other half of music search
