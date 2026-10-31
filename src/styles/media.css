@@ -161,26 +161,3 @@
 .reader-pages img { width: min(900px, 100%); min-height: 200px; background: rgb(var(--text-rgb) / 0.04); }
 .reader-next { margin: 24px 0; }
 
-/* ---------- cloud ---------- */
-.cloud-offline { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-radius: var(--r-md); margin-bottom: 16px; }
-.offline-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--danger); box-shadow: 0 0 12px var(--danger); flex: none; }
-.cloud-offline strong { font-weight: 500; }
-.cloud-grid { --card-min: 210px; margin-top: 16px; }
-.cloud-card {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  padding: 0;
-  border: 1px solid var(--line);
-  border-radius: var(--r-md);
-  overflow: hidden;
-  background: rgb(var(--text-rgb) / 0.05);
-  cursor: pointer;
-  text-align: left;
-  transition: transform 0.35s var(--spring);
-}
-.cloud-card img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.85); }
-.cloud-card:hover { transform: translateY(-4px); }
-.cloud-name { position: absolute; inset: auto 0 0; padding: 26px 12px 10px; background: linear-gradient(transparent, rgb(0 0 0 / 0.85)); color: #fff; font-size: 14px; }
-.cloud-detail { display: grid; gap: 14px; }
-.cloud-detail img { width: 100%; border-radius: var(--r-md); }
-.cloud-detail .btn { justify-self: start; }
