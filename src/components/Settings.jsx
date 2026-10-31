@@ -505,10 +505,13 @@ function BrowserTab() {
           k="transport"
           label="Transport"
           options={[
-            { id: "epoxy", name: "epoxy (default)" },
-            { id: "libcurl", name: "libcurl" },
+            { id: "epoxy", name: "epoxy" },
+            { id: "libcurl", name: "libcurl (default)" },
           ]}
-          onPick={(value) => switchTransport(value).then(() => toast(`switched to ${value}`))}
+          onPick={(value) => {
+            setSetting("transportPicked", true);
+            switchTransport(value).then(() => toast(`switched to ${value}`));
+          }}
         />
       </Row>
       <Row title="Confirm before closing" hint="Ask before you close the tab while blackwaves is open.">
@@ -700,7 +703,6 @@ function About() {
           ["M", "Movies"],
           ["U", "Music"],
           ["R", "Manga"],
-          ["L", "Cloud gaming"],
           ["C", "Chat"],
           ["S", "Shop"],
           [",", "Settings"],
