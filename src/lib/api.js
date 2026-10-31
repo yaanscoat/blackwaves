@@ -30,7 +30,7 @@ export async function api(path, { method = "GET", body, signal } = {}) {
 
 // answers that are the same for everyone get remembered on this device for a
 // few minutes, so flicking between pages doesn't keep asking the server again
-const SHAREABLE = /^\/api\/(movies\/(?!hls)|manga\/|music\/(home|search|charts|album|artist)|ai\/models|cloud\/)/;
+const SHAREABLE = /^\/api\/(movies\/(?!hls)|manga\/|music\/(home|search|charts|album|artist)|ai\/models)/;
 const MEMO_TTL = 5 * 60 * 1000;
 const memo = new Map();
 
