@@ -10,9 +10,13 @@ export const serverInfo = signal(null);
 export async function loadServerInfo() {
   try {
     const response = await fetch("/api/info");
+    if (!response.ok) throw new Error(`info: ${response.status}`);
     serverInfo.value = await response.json();
     if (!online.value) online.value = serverInfo.value.online;
-  } catch {}
+  } catch {
+    serverInfo.value = { offline: true };
+    setTimeout(loadServerInfo, 30_000);
+  }
 }
 
 function flag(code) {
@@ -26,7 +30,8 @@ export function StatusCorner() {
   const s = settings.value;
   if (!s.showLocation && !s.showOnline) return null;
   const location = info?.location;
-  const place = location ? [location.region, location.country].filter(Boolean).join(", ") : "finding the server...";
+  const place = location ? [location.region, location.country].filter(Boolean).join(", ") : info?.offline ? "server offline" : "finding the server...";
+  const showOnline = s.showOnline && !info?.offline;
 
   const poke = () => {
     const now = Date.now();
@@ -47,8 +52,8 @@ export function StatusCorner() {
           <span>{place}</span>
         </span>
       )}
-      {s.showLocation && s.showOnline && <span class="status-sep" />}
-      {s.showOnline && (
+      {s.showLocation && showOnline && <span class="status-sep" />}
+      {showOnline && (
         <button class="status-item status-online" onClick={poke} data-tip="People on blackwaves right now" data-tip-pos="up">
           <span class="live-dot" />
           <span>{online.value.toLocaleString()} online</span>
