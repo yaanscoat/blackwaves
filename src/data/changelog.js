@@ -19,7 +19,7 @@ export const CHANGELOG = [
           "Credits is now About, with the version, this changelog and the team.",
           "An online counter next to the server location.",
           "New default bookmarks: YouTube, Spotify, Snapchat, GitHub and Wikipedia.",
-          "Music from YouTube Music and SoundCloud (Spotify-style, with liked songs, looping and downloads), manga and cloud gaming pages, a Discord-style chat with channels and DMs, profiles, coins and a shop for decorations and titles.",
+          "Music from YouTube Music and SoundCloud (Spotify-style, with liked songs, looping and downloads), a manga page, a Discord-style chat with channels and DMs, profiles, coins and a shop for decorations and titles.",
           "Artist profiles in Music: popular songs, every album, single and song, an About section and similar artists. Click any artist name to open one, and follow artists to keep them in your library.",
           "Three new game sources: UGS, CKV and Seraph.",
           "Choose what shows in the top bar under Appearance. Anything you hide moves into the menu button.",
@@ -44,6 +44,9 @@ export const CHANGELOG = [
           "Your CloudSync login is no longer sent to websites you open through the proxy.",
           "The proxy can no longer be used to reach the server's private network.",
           "Removed leftover ad and analytics scripts.",
+          "Games that pick what to load from their address, like everything on gn-math, open the game again instead of the site's game list.",
+          "YouTube, Twitch and Spotify load properly in the browser: libcurl is the new default transport.",
+          "The server location says \"server offline\" when the server can't be reached, instead of searching forever.",
         ],
       },
     ],
@@ -104,7 +107,7 @@ export const PARTNERS = [
 
 export const CREDITS = [
   { name: "lyra by gayq", what: "the base", url: "https://github.com/gayq/lyra" },
-  { name: "x8rr", what: "movie, manga and cloud gaming APIs", url: "https://github.com/x8rr" },
+  { name: "x8rr", what: "movie and manga APIs", url: "https://github.com/x8rr" },
   { name: "Mercury Workshop", what: "the proxy", url: "https://github.com/MercuryWorkshop" },
   { name: "YouTube.js", what: "music", url: "https://github.com/LuanRT/YouTube.js" },
   { name: "SoundCloud", what: "more music", url: "https://soundcloud.com" },
