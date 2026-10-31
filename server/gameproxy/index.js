@@ -23,6 +23,12 @@ const BLOCKLIST = [
   "pubmatic.com",
   "clarity.ms",
   "hotjar.com",
+  "accuracyinstalled.com",
+  "portalfluently.com",
+  "protrafficinspector.com",
+  "zoologyfibre.com",
+  "accountut.com",
+  "flushpersist.com",
 ];
 
 const DROP_RESPONSE_HEADERS = new Set([
@@ -440,12 +446,34 @@ export async function proxyGame(req, res, { target, token, cover = false }) {
 }
 
 /** entry point for /!!/... and /!cover!/... */
+/**
+ * pages read their settings from location.search (gn-math picks the game from
+ * ?id=), but a query inside the token isn't in the address the page sees. so
+ * page loads get sent to /!!/<token without the query>/?id=858
+ */
+function pageWithQuery(req, target) {
+  if (req.method !== "GET" || !["document", "iframe", "frame"].includes(req.headers["sec-fetch-dest"])) return null;
+  const url = new URL(target);
+  if (!url.search) return null;
+  const query = url.search;
+  url.search = "";
+  url.hash = "";
+  return proxyUrl(url.href) + query;
+}
+
 export function handlePrefixed(req, res, pathname, search) {
   const cover = pathname.startsWith(COVER_PREFIX);
   const prefix = cover ? COVER_PREFIX : PROXY_PREFIX;
   const raw = pathname.slice(prefix.length) + search;
   const resolved = resolveToken(raw) || resolveFromReferer(req, "/" + raw);
   if (!resolved) return errorResponse(res, 400, "that game link is broken", req);
+  if (!cover && !search) {
+    const moved = pageWithQuery(req, resolved.url);
+    if (moved) {
+      res.writeHead(302, securityHeaders({ Location: moved, "Cache-Control": "no-store" }));
+      return res.end();
+    }
+  }
   return proxyGame(req, res, { target: resolved.url, token: resolved.token, cover });
 }
 
