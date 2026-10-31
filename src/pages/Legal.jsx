@@ -3,7 +3,7 @@ import { navigate, route, segments } from "../lib/router.js";
 import { DISCORD } from "../data/catalogs.js";
 import "../styles/social.css";
 
-const UPDATED = "October 30, 2026";
+const UPDATED = "October 31, 2026";
 
 const DOCS = {
   privacy: {
@@ -14,7 +14,7 @@ const DOCS = {
       ["CloudSync accounts", "If you make an account, we store your username, a hashed password (scrypt), your profile, coins, shop items, the data you choose to sync, and the chat messages you send. You can delete your account and all of that in Settings > CloudSync."],
       ["Chat", "Messages in public channels can be read by anyone using blackwaves. Direct messages are only shown to the two people in them, but they are stored on our server and are not end-to-end encrypted. Don't share anything sensitive."],
       ["The proxy", "Pages you open through the browser or the game proxy are fetched through our server. We don't log which sites you visit. Your blackwaves login cookie is never forwarded to them."],
-      ["Third parties", "Movies, music, manga, AI and cloud gaming data come from TMDB, embed players, YouTube Music, SoundCloud, OpenRouter, MangaDex and MangaPill. Messages you send to blackwaves AI, text you paraphrase or humanize and files you attach to a chat are passed through our server to OpenRouter and the model provider that answers. We don't keep them. Embed players load from their own servers and have their own policies."],
+      ["Third parties", "Movies, music, manga and AI data come from TMDB, embed players, YouTube Music, SoundCloud, OpenRouter, MangaDex and MangaPill. Messages you send to blackwaves AI, text you paraphrase or humanize and files you attach to a chat are passed through our server to OpenRouter and the model provider that answers. We don't keep them. Embed players load from their own servers and have their own policies."],
       ["Contact", `Questions? Find us on Discord: ${DISCORD}`],
     ],
   },
