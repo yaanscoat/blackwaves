@@ -27,7 +27,7 @@ export const DEFAULTS = {
   browserMode: false,
   bookmarksBar: true,
   searchEngine: "duckduckgo",
-  transport: "epoxy",
+  transport: "libcurl",
   gameSource: "gn-math",
   cloak: "none",
   focusCloak: false,
@@ -44,7 +44,11 @@ export const DEFAULTS = {
 export const settings = signal({ ...DEFAULTS });
 
 export function loadSettings() {
-  settings.value = { ...DEFAULTS, ...(storage.get("settings") || {}) };
+  const saved = storage.get("settings") || {};
+  settings.value = { ...DEFAULTS, ...saved };
+  // every save stored the whole object, so old settings say epoxy even if nobody
+  // picked it. epoxy blanks youtube and others, so only keep a real choice.
+  if (!saved.transportPicked) settings.value = { ...settings.value, transport: DEFAULTS.transport };
 }
 
 export function setSetting(key, value) {
