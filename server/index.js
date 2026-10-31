@@ -31,7 +31,6 @@ import { handleFallback, handleGameSocket, handlePrefixed, refererIsGame } from 
 import { handleMovies } from "./media/movies.js";
 import { handleManga } from "./media/manga/index.js";
 import { handleMusic } from "./media/music.js";
-import { handleCloud } from "./media/cloud.js";
 import { handleAi } from "./media/ai.js";
 import { SHOP_ITEMS } from "../shared/shop.js";
 import { tuneWisp } from "./lib/wisp-tuning.js";
@@ -98,7 +97,7 @@ async function serveScramjet(req, res) {
   res.end(req.method === "HEAD" ? undefined : patchedScramjet);
 }
 
-const APP_ROUTES =/^\/(home|browser|games|movies|music|manga|cloud|chat|ai|shop|profile|legal|settings|u)?(\/.*)?$/;
+const APP_ROUTES =/^\/(home|browser|games|movies|music|manga|chat|ai|shop|profile|legal|settings|u)?(\/.*)?$/;
 
 let vite = null;
 
@@ -265,7 +264,6 @@ async function dispatch(req, res, url, ip, user) {
   if (pathname.startsWith("/api/movies/")) return handleMovies(req, res, pathname, searchParams);
   if (pathname.startsWith("/api/manga/")) return handleManga(req, res, pathname, searchParams);
   if (pathname.startsWith("/api/music/")) return handleMusic(req, res, pathname, searchParams);
-  if (pathname.startsWith("/api/cloud/")) return handleCloud(req, res, pathname, searchParams);
   if (pathname.startsWith("/api/ai/")) return handleAi(req, res, pathname, ip);
 
   for (const entry of routes) {
