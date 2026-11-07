@@ -1,0 +1,102 @@
+{
+  "name": "parse-domain",
+  "version": "8.4.0",
+  "description": "Splits a hostname into subdomains, domain and (effective) top-level domains",
+  "keywords": [
+    "domain",
+    "parse",
+    "sanitize",
+    "sub-domain",
+    "tld",
+    "top-level",
+    "url"
+  ],
+  "homepage": "https://github.com/peerigon/parse-domain#readme",
+  "bugs": {
+    "url": "https://github.com/peerigon/parse-domain/issues"
+  },
+  "license": "MIT",
+  "author": "peerigon <developers@peerigon.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/peerigon/parse-domain.git"
+  },
+  "bin": {
+    "parse-domain-update": "./dist/bin/update.js"
+  },
+  "files": [
+    "dist",
+    "serialized-tries",
+    "CHANGELOG.md",
+    "README.md"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/main.js",
+  "types": "./dist/main.d.ts",
+  "exports": {
+    ".": "./dist/main.js",
+    "./update": "./dist/bin/update.js"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "test": "run-p test:*",
+    "test:suite": "vitest run --coverage",
+    "test:format": "oxfmt --check .",
+    "test:lint": "eslint --max-warnings 0 --cache .",
+    "test:types": "tsc --noEmit",
+    "test:jsr": "jsr publish --dry-run --allow-dirty",
+    "vitest": "vitest",
+    "build": "run-s build:*",
+    "build:cleanup": "rimraf dist",
+    "build:tsc": "tsc -p ./tsconfig.build.json",
+    "build:update": "node ./dist/bin/update.js",
+    "prepare": "run-p prepare:*",
+    "prepare:husky": "husky",
+    "prepare:build": "npm run build",
+    "update:psl-fixture": "npm run node -- ./src/scripts/update-psl-fixture.ts",
+    "update:dependencies": "updtr",
+    "node": "node --no-warnings --loader ts-node/esm/transpile-only",
+    "release": "semantic-release"
+  },
+  "dependencies": {
+    "is-ip": "^5.0.1"
+  },
+  "devDependencies": {
+    "@djankies/vitest-mcp": "0.5.1",
+    "@eslint/mcp": "0.3.9",
+    "@peerigon/configs": "^21.2.0",
+    "@secretlint/secretlint-rule-preset-recommend": "^13.0.2",
+    "@types/node": "^26.1.1",
+    "@vitest/coverage-v8": "^4.1.9",
+    "eslint": "^9.39.2",
+    "husky": "^9.1.7",
+    "jsr": "^0.14.3",
+    "lint-staged": "^17.1.1",
+    "nock": "^14.0.10",
+    "npm-run-all2": "^9.0.2",
+    "oxfmt": "^0.59.0",
+    "pin-github-action": "^3.4.0",
+    "rimraf": "^6.0.1",
+    "secretlint": "^13.0.4",
+    "semantic-release": "^25.0.3",
+    "ts-lsp-mcp": "0.1.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3",
+    "updtr": "^4.1.0",
+    "vitest": "^4.1.9"
+  },
+  "overrides": {
+    "oxlint-tsgolint": "^0.24.0"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "24.18.0",
+      "onFail": "error"
+    }
+  }
+}

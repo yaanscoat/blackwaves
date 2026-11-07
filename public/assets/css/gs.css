@@ -1,0 +1,110 @@
+.games-page {
+  padding: 100px 20px 40px;
+  text-align: center;
+  position: relative;
+}
+
+.games-page h1 {
+  animation: fadeIn 2s ease;
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.games-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; 
+  align-items: flex-start; 
+  align-content: flex-start;
+  gap: 20px; 
+  max-width: 80%; 
+  margin: 0 auto; 
+}
+
+.content.games-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  text-align: center;
+}
+
+.game-card {
+  background-color: #08080894;
+  border-radius: 25px;
+  padding: 15px 20px;
+  cursor: pointer;
+  user-select: none;
+  text-align: center;
+  border: 1px solid #ffffff21;
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s;
+  width: 180px;
+  height: 250px; 
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  overflow: hidden;
+  animation: fadeIn 2s ease;
+}
+
+.game-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+}
+
+.game-card h2 {
+  font-size: 1rem;
+  margin: 10px 0;
+  color: #fff;
+}
+
+.game-card p {
+  font-size: 1rem;
+  color: #ccc;
+}
+
+.games-search-bar {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  color: #a8a8a8;
+  animation: fadeIn 2s ease;
+}
+
+#gameSearchInput {
+  padding: 12px 30px;
+  border: 1px solid #ffffff1a;
+  background-image: url('/assets/images/icons/search.png');
+  background-size: 35px 35px;
+  background-position: 10px center;
+  background-repeat: no-repeat;
+  padding-left: 45px;
+  border-radius: 20px;
+  background-color: #08080894;
+  outline: none;
+  color: #a8a8a8;
+  font-size: 14px;
+  width: 300px;
+  max-width: 80%;
+  transition: all 0.3s ease;
+}
+
+#gameSearchInput::placeholder {
+  color: #a8a8a8;
+}
+
+#gameSearchInput:focus {
+  border: 1px solid rgba(255, 255, 255, 0.281);
+}
+
+#gameSearchInput:hover {
+  border: 1px solid rgba(255, 255, 255, 0.281);
+}

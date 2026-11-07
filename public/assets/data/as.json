@@ -1,0 +1,54 @@
+{
+    "apps": [
+        {
+            "icon": "/assets/images/as/crazygames.jpg",
+            "title": "Crazy Games",
+            "link": "https://crazygames.com"
+        },
+        {
+            "icon": "/assets/images/as/youtube.jpg",
+            "title": "YouTube",
+            "link": "https://youtube.com"
+        },
+        {
+            "icon": "/assets/images/as/github.jpg",
+            "title": "GitHub",
+            "link": "https://github.com"
+        },
+        {
+            "icon": "/assets/images/as/google.jpg",
+            "title": "Google",
+            "link": "https://google.com"
+        },
+        {
+            "icon": "/assets/images/as/reddit.jpg",
+            "title": "Reddit",
+            "link": "https://reddit.com"
+        },
+        {
+            "icon": "/assets/images/as/spotify.jpg",
+            "title": "Spotify",
+            "link": "https://spotify.com"
+        },
+        {
+            "icon": "/assets/images/as/discord.jpg",
+            "title": "Discord",
+            "link": "https://discord.com"
+        },
+        {
+            "icon": "/assets/images/as/x.jpg",
+            "title": "X",
+            "link": "https://x.com"
+        },
+        {
+            "icon": "/assets/images/as/twitch.jpg",
+            "title": "Twitch",
+            "link": "https://twitch.tv"
+        },
+        {
+            "icon": "/assets/images/as/steam.jpg",
+            "title": "Steam",
+            "link": "https://store.steampowered.com"
+        }
+    ]
+}

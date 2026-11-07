@@ -1,0 +1,2319 @@
+{
+  "games": [
+    {
+      "icon": "assets/images/gs/geometrydash.jpg",
+      "title": "Geometry Dash",
+      "link": "https://geometrydashonline.io/geometry-dash-online/"
+    },
+    {
+      "icon": "assets/images/gs/papascooperia.jpg",
+      "title": "Papa Scooperia",
+      "link": "https://papas-games.io/papas-scooperia/"
+    },
+    {
+      "icon": "assets/images/gs/bloxdio.jpg",
+      "title": "Bloxdio",
+      "link": "https://games.crazygames.com/en_US/bloxdhop-io/index.html"
+    },
+    {
+      "icon": "assets/images/gs/bulletforce.jpg",
+      "title": "Bullet Force",
+      "link": "https://games.crazygames.com/en_US/bullet-force-multiplayer/index.html"
+    },
+    {
+      "icon": "assets/images/gs/shellshockers.jpg",
+      "title": "Shell Shockers",
+      "link": "https://games.crazygames.com/en_US/shellshockersio/index.html"
+    },
+    {
+      "icon": "assets/images/gs/evowarsio.jpg",
+      "title": "EvoWarsio",
+      "link": "https://games.crazygames.com/en_US/evowarsio/index.html"
+    },
+    {
+      "icon": "assets/images/gs/krunkerio.jpg",
+      "title": "Krunkerio",
+      "link": "https://games.crazygames.com/en_US/krunker-io/index.html"
+    },
+    {
+      "icon": "assets/images/gs/warbrokersio.jpg",
+      "title": "War Brokers",
+      "link": "https://games.crazygames.com/en_US/war-brokers-io/index.html"
+    },
+    {
+      "icon": "assets/images/gs/rocketbotroyale.jpg",
+      "title": "Rocket Bot Royale",
+      "link": "https://games.crazygames.com/en_US/rocket-bot-royale/index.html"
+    },
+    {
+      "icon": "assets/images/gs/ships3d.jpg",
+      "title": "Ships 3D",
+      "link": "https://games.crazygames.com/en_US/ships-3d/index.html"
+    },
+    {
+      "icon": "assets/images/gs/crazystuntcarsmultiplayer.jpg",
+      "title": "Crazy Stunt Cars Multiplayer",
+      "link": "https://games.crazygames.com/en_US/crazy-stunt-cars-multiplayer/index.html"
+    },
+    {
+      "icon": "assets/images/gs/skillwarz.jpg",
+      "title": "SkillWarz",
+      "link": "https://games.crazygames.com/en_US/skillwarz/index.html"
+    },
+    {
+      "icon": "assets/images/gs/kirkaio.jpg",
+      "title": "Kirkaio",
+      "link": "https://games.crazygames.com/en_US/kirka-io/index.html"
+    },
+    {
+      "icon": "assets/images/gs/voxiomio.jpg",
+      "title": "Voxiomio",
+      "link": "https://games.crazygames.com/en_US/voxiom-io/index.html"
+    },
+    {
+      "icon": "assets/images/gs/minigiantsio.jpg",
+      "title": "MiniGiantsio",
+      "link": "https://games.crazygames.com/en_US/minigiants-io/index.html"
+    },
+    {
+      "icon": "assets/images/gs/warnationsio.jpg",
+      "title": "WarNationsio",
+      "link": "https://games.crazygames.com/en_US/war-nations-io/index.html"
+    },
+    {
+      "icon": "assets/images/gs/scavengerhuntmultiplayer.jpg",
+      "title": "Scavenger Hunt Multiplayer",
+      "link": "https://games.crazygames.com/en_US/scavenger-hunt---multiplayer/index.html"
+    },
+    {
+      "icon": "assets/images/gs/strikerdummies.jpg",
+      "title": "Striker Dummies",
+      "link": "https://games.crazygames.com/en_US/striker-dummies/index.html"
+    },
+    {
+      "icon": "assets/images/gs/minicarball.jpg",
+      "title": "Mini Car Ball",
+      "link": "https://games.crazygames.com/en_US/mini-car-ball/index.html"
+    },
+    {
+      "icon": "assets/images/gs/1.webp",
+      "title": "1",
+      "link": "https://truffled.lol/games/1/index.html"
+    },
+    {
+      "icon": "assets/images/gs/12.webp",
+      "title": "1 on 1 Soccer",
+      "link": "https://truffled.lol/games/1on1soccer/index.html"
+    },
+    {
+      "icon": "assets/images/gs/1v1.webp",
+      "title": "1v1.lol",
+      "link": "https://truffled.lol/gamefile/1v1.html"
+    },
+    {
+      "icon": "assets/images/gs/minus3.webp",
+      "title": "-3",
+      "link": "https://truffled.lol/games/minus3/index.html"
+    },
+    {
+      "icon": "assets/images/gs/10.webp",
+      "title": "10 Minutes Till Dawn",
+      "link": "https://truffled.lol/games/10minutestilldawn/index.html"
+    },
+    {
+      "icon": "assets/images/gs/20mtd.webp",
+      "title": "20 Minutes Till Dawn",
+      "link": "https://truffled.lol/games/20minutesbog/index.html"
+    },
+    {
+      "icon": "assets/images/gs/30.webp",
+      "title": "30",
+      "link": "https://truffled.lol/games/30dolar/index.html"
+    },
+    {
+      "icon": "assets/images/gs/2048.webp",
+      "title": "2048",
+      "link": "https://truffled.lol/games/2048/index.html"
+    },
+    {
+      "icon": "assets/images/gs/achieve.webp",
+      "title": "Achievement Unlocked",
+      "link": "https://truffled.lol/games/achieveunlocked/index.html"
+    },
+    {
+      "icon": "assets/images/gs/au2.webp",
+      "title": "Achievement Unlocked 2",
+      "link": "https://truffled.lol/games/achivement2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/au3.webp",
+      "title": "Achievement Unlocked 3",
+      "link": "https://truffled.lol/games/achivement3/index.html"
+    },
+    {
+      "icon": "assets/images/gs/adofai.webp",
+      "title": "ADOFAI",
+      "link": "https://truffled.lol/games/a-dance-of-fire-and-ice/index.html"
+    },
+    {
+      "icon": "assets/images/gs/adventure.webp",
+      "title": "Adventure Capitalist",
+      "link": "https://truffled.lol/games/adventure/index.html"
+    },
+    {
+      "icon": "assets/images/gs/blackhole.webp",
+      "title": "A Game About Feeding A Blackhole",
+      "link": "https://truffled.lol/gamefile/blackhole.html"
+    },
+    {
+      "icon": "assets/images/gs/alien.webp",
+      "title": "Alien Hominid",
+      "link": "https://truffled.lol/games/alien/index.html"
+    },
+    {
+      "icon": "assets/images/gs/amaze.webp",
+      "title": "Amaze",
+      "link": "https://truffled.lol/games/amaze/index.html"
+    },
+    {
+      "icon": "assets/images/gs/among.webp",
+      "title": "Among us",
+      "link": "https://truffled.lol/games/sussy/index.html"
+    },
+    {
+      "icon": "assets/images/gs/angry.webp",
+      "title": "Angry Birds",
+      "link": "https://truffled.lol/gamefile/Angrybirds.html"
+    },
+    {
+      "icon": "assets/images/gs/ab2.webp",
+      "title": "Angry Birds 2",
+      "link": "https://truffled.lol/games/angrybirds2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/angrybirdsonline.webp",
+      "title": "Angry Birds Online",
+      "link": "https://truffled.lol/gamefile/angrybirdsonline.html"
+    },
+    {
+      "icon": "assets/images/gs/acww.webp",
+      "title": "Animal Crossing Wild World",
+      "link": "https://truffled.lol/gamefile/acww.html"
+    },
+    {
+      "icon": "assets/images/gs/anton.webp",
+      "title": "Antonblast",
+      "link": "https://truffled.lol/games/antonblast/runner.html"
+    },
+    {
+      "icon": "assets/images/gs/worldcup.webp",
+      "title": "A Small World Cup",
+      "link": "https://truffled.lol/gamefile/aswc.html"
+    },
+    {
+      "icon": "assets/images/gs/qq.webp",
+      "title": "-b",
+      "link": "https://truffled.lol/games/minusbog/index.html"
+    },
+    {
+      "icon": "assets/images/gs/badice1.webp",
+      "title": "Bad Icecream 1",
+      "link": "https://truffled.lol/gamefile/badice1.html"
+    },
+    {
+      "icon": "assets/images/gs/badice2.webp",
+      "title": "Bad Icecream 2",
+      "link": "https://truffled.lol/gamefile/badice2.html"
+    },
+    {
+      "icon": "assets/images/gs/badice3.webp",
+      "title": "Bad Icecream 3",
+      "link": "https://truffled.lol/gamefile/badice3.html"
+    },
+    {
+      "icon": "assets/images/gs/badp.webp",
+      "title": "Bad Piggies",
+      "link": "https://truffled.lol/gamefile/piggies.html"
+    },
+    {
+      "icon": "assets/images/gs/badt.webp",
+      "title": "Bad time Simulator",
+      "link": "https://truffled.lol/games/bts/index.html"
+    },
+    {
+      "icon": "assets/images/gs/baldi.webp",
+      "title": "Baldi's Basics",
+      "link": "https://truffled.lol/games/baldis-basics/index.html"
+    },
+    {
+      "icon": "assets/images/gs/bbudc.webp",
+      "title": "Baldi's Basics Ultra Decompile",
+      "link": "https://truffled.lol/gamefile/baldidecomp.html"
+    },
+    {
+      "icon": "assets/images/gs/bfs.webp",
+      "title": "Baldi's Fun New School Plus Ultimate Edition",
+      "link": "https://truffled.lol/games/bfs/"
+    },
+    {
+      "icon": "assets/images/gs/banjokazooie.webp",
+      "title": "Banjo Kazooie",
+      "link": "https://truffled.lol/gamefile/banjokazooie.html"
+    },
+    {
+      "icon": "assets/images/gs/bartbash.webp",
+      "title": "Bart Bash",
+      "link": "https://truffled.lol/gamefile/bartbash.html"
+    },
+    {
+      "icon": "assets/images/gs/bart.webp",
+      "title": "Bart Blast",
+      "link": "https://truffled.lol/gamefile/bart.html"
+    },
+    {
+      "icon": "assets/images/gs/basebros.webp",
+      "title": "Baseball Bros",
+      "link": "https://truffled.lol/games/baseballbros/index.html"
+    },
+    {
+      "icon": "assets/images/gs/basketstars.webp",
+      "title": "Basketball stars",
+      "link": "https://truffled.lol/games/basketballstars/index.html"
+    },
+    {
+      "icon": "assets/images/gs/basketbro.webp",
+      "title": "Basket Bros",
+      "link": "https://truffled.lol/gamefile/basket.html"
+    },
+    {
+      "icon": "assets/images/gs/basket.webp",
+      "title": "Basket Random",
+      "link": "https://truffled.lol/games/basket-random/index.html"
+    },
+    {
+      "icon": "assets/images/gs/bee.webp",
+      "title": "Bee Movie Game",
+      "link": "https://truffled.lol/games/beemovie/index.html"
+    },
+    {
+      "icon": "assets/images/gs/bfdia5b.webp",
+      "title": "Bfdia 5b",
+      "link": "https://truffled.lol/games/bfdia 5b/index.html"
+    },
+    {
+      "icon": "assets/images/gs/btt.webp",
+      "title": "Big Tower Tiny Square",
+      "link": "https://truffled.lol/games/btts/index.html"
+    },
+    {
+      "icon": "assets/images/gs/bit.webp",
+      "title": "Bitlife",
+      "link": "https://truffled.lol/games/bitlife/index.html"
+    },
+    {
+      "icon": "assets/images/gs/bhf.webp",
+      "title": "Black Hole Fishing",
+      "link": "https://truffled.lol/games/bhf/single.html"
+    },
+    {
+      "icon": "assets/images/gs/blackjack.webp",
+      "title": "Black Jack",
+      "link": "https://truffled.lol/gamefile/BlackJack.html"
+    },
+    {
+      "icon": "assets/images/gs/unnamed.webp",
+      "title": "Block Blast",
+      "link": "https://truffled.lol/games/block-blast/index.html"
+    },
+    {
+      "icon": "assets/images/gs/blo5.webp",
+      "title": "Bloons TD5",
+      "link": "https://truffled.lol/games/btd5/index.html"
+    },
+    {
+      "icon": "assets/images/gs/blo6.webp",
+      "title": "Bloons TD6",
+      "link": "https://truffled.lol/games/btd6/index.html"
+    },
+    {
+      "icon": "assets/images/gs/bloonstdb2.webp",
+      "title": "Bloons TD Battles 2",
+      "link": "https://nowgg.fun/apps/ninja-kiwi/1403/bloons-td-battles-2.html"
+    },
+    {
+      "icon": "assets/images/gs/bloons.webp",
+      "title": "Bloon TD1",
+      "link": "https://truffled.lol/games/bloonstd/index.html"
+    },
+    {
+      "icon": "assets/images/gs/blo2.webp",
+      "title": "Bloon TD2",
+      "link": "https://truffled.lol/games/bloonstd2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/blo3.webp",
+      "title": "Bloon TD3",
+      "link": "https://truffled.lol/games/btd3/index.html"
+    },
+    {
+      "icon": "assets/images/gs/btd4.webp",
+      "title": "Bloon TD4",
+      "link": "https://truffled.lol/gamefile/bloonstd4.html"
+    },
+    {
+      "icon": "assets/images/gs/bloxorz.webp",
+      "title": "Bloxors",
+      "link": "https://truffled.lol/games/bloxors/index.html"
+    },
+    {
+      "icon": "assets/images/gs/bomberman.webp",
+      "title": "Bombmerman",
+      "link": "https://truffled.lol/gamefile/bomberman.html"
+    },
+    {
+      "icon": "assets/images/gs/bomberman2.webp",
+      "title": "Bombmerman 2",
+      "link": "https://truffled.lol/gamefile/bomberman2.html"
+    },
+    {
+      "icon": "assets/images/gs/bonkio.webp",
+      "title": "Bonk.io",
+      "link": "https://bonk.io/"
+    },
+    {
+      "icon": "assets/images/gs/boxing.webp",
+      "title": "Boxing Random",
+      "link": "https://truffled.lol/gamefile/boxing.html"
+    },
+    {
+      "icon": "assets/images/gs/burrito.webp",
+      "title": "Burrito Bison",
+      "link": "https://truffled.lol/games/burrito/index.html"
+    },
+    {
+      "icon": "assets/images/gs/bbe.webp",
+      "title": "Burrito Bison Revenge",
+      "link": "https://truffled.lol/gamefile/bbe.html"
+    },
+    {
+      "icon": "assets/images/gs/cod4mw.webp",
+      "title": "Call of Duty 4 Modern Warfare",
+      "link": "https://truffled.lol/games/cod4mw/index.html"
+    },
+    {
+      "icon": "assets/images/gs/codmobile.webp",
+      "title": "Call of Duty Mobile",
+      "link": "https://nowgg.fun/apps/a/10008/b.html"
+    },
+    {
+      "icon": "assets/images/gs/catgoesfishing.webp",
+      "title": "Cat Goes Fishing",
+      "link": "https://truffled.lol/games/catfish/index.html"
+    },
+    {
+      "icon": "assets/images/gs/chess.webp",
+      "title": "Chess.com",
+      "link": "https://chess.com"
+    },
+    {
+      "icon": "assets/images/gs/clover.webp",
+      "title": "Clover Pit",
+      "link": "https://truffled.lol/gamefile/cloverpit.html"
+    },
+    {
+      "icon": "assets/images/gs/coffee.webp",
+      "title": "Coffee Talk",
+      "link": "https://truffled.lol/games/coffee/index.html"
+    },
+    {
+      "icon": "assets/images/gs/cookie.webp",
+      "title": "Cookie Clicker",
+      "link": "https://truffled.lol/games/cookie-clicker/index.html"
+    },
+    {
+      "icon": "assets/images/gs/crk.webp",
+      "title": "Cookie Run Kingdom",
+      "link": "https://nowgg.fun/apps/a/10019/b.html"
+    },
+    {
+      "icon": "assets/images/gs/cookingmama.webp",
+      "title": "Cooking Mama",
+      "link": "https://truffled.lol/gamefile/cookingmama.html"
+    },
+    {
+      "icon": "assets/images/gs/cookingmama2.webp",
+      "title": "Cooking Mama 2",
+      "link": "https://truffled.lol/gamefile/cookingmama2.html"
+    },
+    {
+      "icon": "assets/images/gs/cookingmama3.webp",
+      "title": "Cooking Mama 3",
+      "link": "https://truffled.lol/gamefile/cookingmama3.html"
+    },
+    {
+      "icon": "assets/images/gs/cs08.webp",
+      "title": "Counter Stike 0.8",
+      "link": "https://truffled.lol/games/psp/cs/index.html"
+    },
+    {
+      "icon": "assets/images/gs/crash1.webp",
+      "title": "Crash Bandicoot 1",
+      "link": "https://truffled.lol/gamefile/crash1.html"
+    },
+    {
+      "icon": "assets/images/gs/crash2.webp",
+      "title": "Crash Bandicoot 2",
+      "link": "https://truffled.lol/gamefile/crash2.html"
+    },
+    {
+      "icon": "assets/images/gs/crash3.webp",
+      "title": "Crash Bandicoot 3",
+      "link": "https://truffled.lol/gamefile/crash3.html"
+    },
+    {
+      "icon": "assets/images/gs/balls.webp",
+      "title": "Crazy Balls",
+      "link": "https://truffled.lol/gamefile/balls.html"
+    },
+    {
+      "icon": "assets/images/gs/crossy.webp",
+      "title": "Crossy Roads",
+      "link": "https://truffled.lol/gamefile/crossy.html"
+    },
+    {
+      "icon": "assets/images/gs/csbox.webp",
+      "title": "Csgo Clicker",
+      "link": "https://truffled.lol/games/csgo-clicker/index.html"
+    },
+    {
+      "icon": "assets/images/gs/cut1.webp",
+      "title": "Cut The Rope",
+      "link": "https://truffled.lol/gamefile/cut.html"
+    },
+    {
+      "icon": "assets/images/gs/cut2.webp",
+      "title": "Cut The Rope Holiday",
+      "link": "https://truffled.lol/gamefile/hol.html"
+    },
+    {
+      "icon": "assets/images/gs/time.webp",
+      "title": "Cut The Rope : Time Travel",
+      "link": "https://truffled.lol/gamefile/time.html"
+    },
+    {
+      "icon": "assets/images/gs/dadish.webp",
+      "title": "Dadish",
+      "link": "https://truffled.lol/gamefile/dadish.html"
+    },
+    {
+      "icon": "assets/images/gs/dadish2.webp",
+      "title": "Dadish 2",
+      "link": "https://truffled.lol/gamefile/dadish2.html"
+    },
+    {
+      "icon": "assets/images/gs/dadish3.webp",
+      "title": "Dadish 3",
+      "link": "https://truffled.lol/gamefile/dadish3.html"
+    },
+    {
+      "icon": "assets/images/gs/dadish3d.webp",
+      "title": "Dadish 3d",
+      "link": "https://truffled.lol/gamefile/dadish3d.html"
+    },
+    {
+      "icon": "assets/images/gs/daily.webp",
+      "title": "Dadish Daily",
+      "link": "https://truffled.lol/gamefile/daily.html"
+    },
+    {
+      "icon": "assets/images/gs/dan.webp",
+      "title": "Danganronpa",
+      "link": "https://truffled.lol/games/danganronpa/index.html"
+    },
+    {
+      "icon": "assets/images/gs/deadta.webp",
+      "title": "Dead Tapes",
+      "link": "https://truffled.lol/games/deadtapesfinal/index.html"
+    },
+    {
+      "icon": "assets/images/gs/death.webp",
+      "title": "Death Run 3D",
+      "link": "https://truffled.lol/games/death-run-3d/index.html"
+    },
+    {
+      "icon": "assets/images/gs/diablo.webp",
+      "title": "Diablo",
+      "link": "https://truffled.lol/games/diablo/index.html"
+    },
+    {
+      "icon": "assets/images/gs/dino.webp",
+      "title": "Dinosaur",
+      "link": "https://truffled.lol/games/dinosaur/index.html"
+    },
+    {
+      "icon": "assets/images/gs/doge.webp",
+      "title": "Doge Miner",
+      "link": "https://truffled.lol/gamefile/Doge Miner.html"
+    },
+    {
+      "icon": "assets/images/gs/dogeminer2.webp",
+      "title": "Doge Miner 2",
+      "link": "https://truffled.lol/gamefile/dm2.html"
+    },
+    {
+      "icon": "assets/images/gs/doodle.webp",
+      "title": "Doodle Jump",
+      "link": "https://truffled.lol/gamefile/Doodle Jump.html"
+    },
+    {
+      "icon": "assets/images/gs/doom.webp",
+      "title": "Doom",
+      "link": "https://truffled.lol/games/doom/index.html"
+    },
+    {
+      "icon": "assets/images/gs/doom2.webp",
+      "title": "Doom 2",
+      "link": "https://truffled.lol/gamefile/doom2.html"
+    },
+    {
+      "icon": "assets/images/gs/doom3.webp",
+      "title": "Doom 3",
+      "link": "https://truffled.lol/games/doom3/index.html"
+    },
+    {
+      "icon": "assets/images/gs/doom64.webp",
+      "title": "Doom 64",
+      "link": "https://truffled.lol/gamefile/doom64.html"
+    },
+    {
+      "icon": "assets/images/gs/dread.webp",
+      "title": "Dreadhead Parkour",
+      "link": "https://truffled.lol/gamefile/dread.html"
+    },
+    {
+      "icon": "assets/images/gs/driftboss.webp",
+      "title": "Drift Boss",
+      "link": "https://truffled.lol/games/drift-boss/index.html"
+    },
+    {
+      "icon": "assets/images/gs/hunt.webp",
+      "title": "Drift Hunter",
+      "link": "https://truffled.lol/gamefile/drift.html"
+    },
+    {
+      "icon": "assets/images/gs/drive.webp",
+      "title": "Drive Mad",
+      "link": "https://truffled.lol/games/drive-mad/index.html"
+    },
+    {
+      "icon": "assets/images/gs/drmario.webp",
+      "title": "Dr. Mario",
+      "link": "https://truffled.lol/gamefile/drmario.html"
+    },
+    {
+      "icon": "assets/images/gs/duck1.webp",
+      "title": "Duck Life 1",
+      "link": "https://truffled.lol/games/ducklife1/index.html"
+    },
+    {
+      "icon": "assets/images/gs/duck2.webp",
+      "title": "Duck Life 2",
+      "link": "https://truffled.lol/games/ducklife2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/duck3.webp",
+      "title": "Duck Life 3",
+      "link": "https://truffled.lol/games/ducklife3/index.html"
+    },
+    {
+      "icon": "assets/images/gs/duck4.webp",
+      "title": "Duck Life 4",
+      "link": "https://truffled.lol/games/ducklife4/index.html"
+    },
+    {
+      "icon": "assets/images/gs/duck5.webp",
+      "title": "Duck Life 5",
+      "link": "https://truffled.lol/games/ducklife5/index.html"
+    },
+    {
+      "icon": "assets/images/gs/ducklife6.webp",
+      "title": "Duck Life 6",
+      "link": "https://truffled.lol/games/ducklife6/index.html"
+    },
+    {
+      "icon": "assets/images/gs/ducklife7.webp",
+      "title": "Duck Life 7",
+      "link": "https://truffled.lol/games/ducklife7/index.html"
+    },
+    {
+      "icon": "assets/images/gs/dumb.webp",
+      "title": "Dumb Ways To Die",
+      "link": "https://truffled.lol/games/dumb/index.html"
+    },
+    {
+      "icon": "assets/images/gs/dune.webp",
+      "title": "Dune",
+      "link": "https://truffled.lol/games/dune/index.html"
+    },
+    {
+      "icon": "assets/images/gs/easportsmobile.webp",
+      "title": "EA SPORTS FC MOBILE 24 SOCCER",
+      "link": "https://nowgg.fun/apps/electronic-arts/1353/ea-sports-fc-mobile-24-soccer.html"
+    },
+    {
+      "icon": "assets/images/gs/eggycar.webp",
+      "title": "Eggy Car",
+      "link": "https://truffled.lol/gamefile/eggycar.html"
+    },
+    {
+      "icon": "assets/images/gs/emily.webp",
+      "title": "Emily Is Away",
+      "link": "https://truffled.lol/games/emily/index.html"
+    },
+    {
+      "icon": "assets/images/gs/endo1.webp",
+      "title": "Endoparasitic",
+      "link": "https://truffled.lol/games/endoparasitic/index.html"
+    },
+    {
+      "icon": "assets/images/gs/endo2.webp",
+      "title": "Endoparasitic 2",
+      "link": "https://truffled.lol/games/endoparasitic2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/road.webp",
+      "title": "Escape Road",
+      "link": "https://truffled.lol/gamefile/escape.html"
+    },
+    {
+      "icon": "assets/images/gs/escape2.webp",
+      "title": "Escape Road 2",
+      "link": "https://truffled.lol/gamefile/road2.html"
+    },
+    {
+      "icon": "assets/images/gs/escape3.webp",
+      "title": "Escape Road 3",
+      "link": "https://truffled.lol/gamefile/escape3.html"
+    },
+    {
+      "icon": "assets/images/gs/roadcity.webp",
+      "title": "Escape Road City 2",
+      "link": "https://truffled.lol/gamefile/roadcity2.html"
+    },
+    {
+      "icon": "assets/images/gs/super-falling-fred.webp",
+      "title": "Falling Fred",
+      "link": "https://truffled.lol/games/falling/index.html"
+    },
+    {
+      "icon": "assets/images/gs/fallout.webp",
+      "title": "Fallout",
+      "link": "https://truffled.lol/gamefile/falloutt.html"
+    },
+    {
+      "icon": "assets/images/gs/fpa1.webp",
+      "title": "Fancy Pants Adventures",
+      "link": "https://truffled.lol/games/fancypantsadventures/index.html"
+    },
+    {
+      "icon": "assets/images/gs/fancy2.webp",
+      "title": "Fancy Pants Adventures 2",
+      "link": "https://truffled.lol/games/fancypantsadventures2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/fpa3.webp",
+      "title": "Fancy Pants Adventures 3",
+      "link": "https://truffled.lol/gamefile/fpa3.html"
+    },
+    {
+      "icon": "assets/images/gs/ffvii.webp",
+      "title": "Final Fantasy VII",
+      "link": "https://truffled.lol/gamefile/ffvii.html"
+    },
+    {
+      "icon": "assets/images/gs/fire1.webp",
+      "title": "Fireboy and Watergirl",
+      "link": "https://truffled.lol/games/watergirl-1/index.html"
+    },
+    {
+      "icon": "assets/images/gs/fire2.webp",
+      "title": "Fireboy and Watergirl 2",
+      "link": "https://truffled.lol/games/watergirl-2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/fire3.webp",
+      "title": "Fireboy and Watergirl 3",
+      "link": "https://truffled.lol/games/watergirl-3/index.html"
+    },
+    {
+      "icon": "assets/images/gs/fire4.webp",
+      "title": "Fireboy and Watergirl 4",
+      "link": "https://truffled.lol/games/watergirl-4/index.html"
+    },
+    {
+      "icon": "assets/images/gs/fister.webp",
+      "title": "Fister",
+      "link": "https://fister.fun"
+    },
+    {
+      "icon": "assets/images/gs/fnac.webp",
+      "title": "Five Nights At Candys",
+      "link": "https://truffled.lol/gamefile/fnac.html"
+    },
+    {
+      "icon": "assets/images/gs/fnac2.webp",
+      "title": "Five Nights At Candys 2",
+      "link": "https://truffled.lol/gamefile/fnac2.html"
+    },
+    {
+      "icon": "assets/images/gs/flapp.webp",
+      "title": "Flappy bird",
+      "link": "https://truffled.lol/games/flappybird/index.html"
+    },
+    {
+      "icon": "assets/images/gs/splash-webp.webp",
+      "title": "FNAF",
+      "link": "https://truffled.lol/games/fnaf/index.html"
+    },
+    {
+      "icon": "assets/images/gs/fnaf2.webp",
+      "title": "FNAF2",
+      "link": "https://truffled.lol/games/2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/3f.webp",
+      "title": "FNAF3",
+      "link": "https://truffled.lol/games/3/index.html"
+    },
+    {
+      "icon": "assets/images/gs/fnaf4.webp",
+      "title": "FNAF4",
+      "link": "https://truffled.lol/games/fnaf4/index.html"
+    },
+    {
+      "icon": "assets/images/gs/hollowween.webp",
+      "title": "FNAF4 Halloween",
+      "link": "https://truffled.lol/gamefile/ween.html"
+    },
+    {
+      "icon": "assets/images/gs/sister.webp",
+      "title": "FNAF Sisters Location",
+      "link": "https://truffled.lol/gamefile/fnafs.html"
+    },
+    {
+      "icon": "assets/images/gs/custom.webp",
+      "title": "FNAF Ultimate Custom Night",
+      "link": "https://truffled.lol/gamefile/fnafu.html"
+    },
+    {
+      "icon": "assets/images/gs/fnafworld.webp",
+      "title": "FNAF World",
+      "link": "https://truffled.lol/gamefile/fnafw.html"
+    },
+    {
+      "icon": "assets/images/gs/fne.webp",
+      "title": "FNAF World Refreshed",
+      "link": "https://truffled.lol/games/fnw/index.html"
+    },
+    {
+      "icon": "assets/images/gs/fnaw.webp",
+      "title": "FNAW",
+      "link": "https://truffled.lol/gamefile/fnaw.html"
+    },
+    {
+      "icon": "assets/images/gs/fnf.webp",
+      "title": "FNF, Friday Night Funkin",
+      "link": "https://truffled.lol/games/fnf/fnfog.html"
+    },
+    {
+      "icon": "assets/images/gs/footbros.webp",
+      "title": "Football Bros",
+      "link": "https://truffled.lol/games/footballbros/index.html"
+    },
+    {
+      "icon": "assets/images/gs/fortnite.webp",
+      "title": "Fortnite",
+      "link": "https://nowgg.fun/apps/aptoide/5874/aptoide.html?deep_link=aptoidesearch://com.epicgames.fortnite"
+    },
+    {
+      "icon": "assets/images/gs/aethos.webp",
+      "title": "Friday Night Funkin Aethos",
+      "link": "https://truffled.lol/games/fnf/aethos.html"
+    },
+    {
+      "icon": "assets/images/gs/atrocity.webp",
+      "title": "Friday Night Funkin Atrocity",
+      "link": "https://truffled.lol/games/fnf/atrocity.html"
+    },
+    {
+      "icon": "assets/images/gs/bfdi26.webp",
+      "title": "Friday Night Funkin BFDI 26",
+      "link": "https://truffled.lol/games/fnf/bfdi26.html"
+    },
+    {
+      "icon": "assets/images/gs/bopcity.webp",
+      "title": "Friday Night Funkin Bop City",
+      "link": "https://truffled.lol/games/fnf/bopcity.html"
+    },
+    {
+      "icon": "assets/images/gs/ffabfdi.webp",
+      "title": "Friday Night Funkin For A BFDI",
+      "link": "https://truffled.lol/games/fnf/ffabfdi.html"
+    },
+    {
+      "icon": "assets/images/gs/garcello.webp",
+      "title": "Friday Night Funkin Garcello",
+      "link": "https://truffled.lol/games/fnf/garcello.html"
+    },
+    {
+      "icon": "assets/images/gs/getdigging.webp",
+      "title": "Friday Night Funkin Get Digging",
+      "link": "https://truffled.lol/games/fnf/getdigging.html"
+    },
+    {
+      "icon": "assets/images/gs/miku.webp",
+      "title": "Friday Night Funkin Hatsune Miku",
+      "link": "https://truffled.lol/games/fnf/miku.html"
+    },
+    {
+      "icon": "assets/images/gs/hex.webp",
+      "title": "Friday Night Funkin Hex",
+      "link": "https://truffled.lol/games/fnf/hex.html"
+    },
+    {
+      "icon": "assets/images/gs/infinite.webp",
+      "title": "Friday Night Funkin Horkglorpgloop",
+      "link": "https://truffled.lol/games/fnf/horkglorpgloop.html"
+    },
+    {
+      "icon": "assets/images/gs/kapi.webp",
+      "title": "Friday Night Funkin Kapi",
+      "link": "https://truffled.lol/games/fnf/kapi.html"
+    },
+    {
+      "icon": "assets/images/gs/mario.webp",
+      "title": "Friday Night Funkin Mario Madness",
+      "link": "https://truffled.lol/games/fnf/mariomadness.html"
+    },
+    {
+      "icon": "assets/images/gs/nonsense.webp",
+      "title": "Friday Night Funkin Nonsense",
+      "link": "https://truffled.lol/games/fnf/nonsense.html"
+    },
+    {
+      "icon": "assets/images/gs/rewrite.webp",
+      "title": "Friday Night Funkin Rewrite",
+      "link": "https://truffled.lol/games/fnf/rewrite.html"
+    },
+    {
+      "icon": "assets/images/gs/rewrite2.webp",
+      "title": "Friday Night Funkin Rewrite 2",
+      "link": "https://truffled.lol/games/fnf/rewrite2.html"
+    },
+    {
+      "icon": "assets/images/gs/ron.webp",
+      "title": "Friday Night Funkin Ron",
+      "link": "https://truffled.lol/games/fnf/ron.html"
+    },
+    {
+      "icon": "assets/images/gs/shaggy.webp",
+      "title": "Friday Night Funkin Shaggy",
+      "link": "https://truffled.lol/games/fnf/shaggy.html"
+    },
+    {
+      "icon": "assets/images/gs/sxm.webp",
+      "title": "Friday Night Funkin Shaggy X Matt",
+      "link": "https://truffled.lol/games/fnf/shaggyxmatt.html"
+    },
+    {
+      "icon": "assets/images/gs/shucksv2.webp",
+      "title": "Friday Night Funkin Shucks V2",
+      "link": "https://truffled.lol/games/fnf/shucksv2.html"
+    },
+    {
+      "icon": "assets/images/gs/tricky.webp",
+      "title": "Friday Night Funkin Tricky",
+      "link": "https://truffled.lol/games/fnf/tricky.html"
+    },
+    {
+      "icon": "assets/images/gs/twiddle.webp",
+      "title": "Friday Night Funkin TWIDDLEFINGER",
+      "link": "https://truffled.lol/games/fnf/TWIDDLEFINGER.html"
+    },
+    {
+      "icon": "assets/images/gs/tord.webp",
+      "title": "Friday Night Funkin Vs. Tord",
+      "link": "https://truffled.lol/games/fnf/tord.html"
+    },
+    {
+      "icon": "assets/images/gs/whitty.webp",
+      "title": "Friday Night Funkin Whitty",
+      "link": "https://truffled.lol/games/fnf/whitty.html"
+    },
+    {
+      "icon": "assets/images/gs/zardy.webp",
+      "title": "Friday Night Funkin Zardy",
+      "link": "https://truffled.lol/games/fnf/zardy.html"
+    },
+    {
+      "icon": "assets/images/gs/ninja.webp",
+      "title": "Fruit Ninja",
+      "link": "https://truffled.lol/games/fruitninja/index.html"
+    },
+    {
+      "icon": "assets/images/gs/fused240.webp",
+      "title": "Fused240",
+      "link": "https://truffled.lol/games/fused240/index.html"
+    },
+    {
+      "icon": "assets/images/gs/gachalife.webp",
+      "title": "Gacha Life",
+      "link": "https://truffled.lol/gamefile/life.html"
+    },
+    {
+      "icon": "assets/images/gs/gachaverse.webp",
+      "title": "Gacha Verse",
+      "link": "https://truffled.lol/gamefile/verse.html"
+    },
+    {
+      "icon": "assets/images/gs/genshin.webp",
+      "title": "Genshin Impact",
+      "link": "https://nowgg.fun/apps/cognosphere-pte-ltd-/1773/genshin-impact.html"
+    },
+    {
+      "icon": "assets/images/gs/geoguess.webp",
+      "title": "Geoguessr",
+      "link": "https://www.geoguessr.com/"
+    },
+    {
+      "icon": "assets/images/gs/getaway.webp",
+      "title": "Getaway Shootout",
+      "link": "https://truffled.lol/games/getaway-shootout/index.html"
+    },
+    {
+      "icon": "assets/images/gs/glad.webp",
+      "title": "Gladihoppers",
+      "link": "https://truffled.lol/gamefile/Gladihoppers.html"
+    },
+    {
+      "icon": "assets/images/gs/goober.webp",
+      "title": "Goober Dash",
+      "link": "https://gooberdash.winterpixel.io/"
+    },
+    {
+      "icon": "assets/images/gs/google.webp",
+      "title": "Google Baseball",
+      "link": "https://truffled.lol/gamefile/gbase.html"
+    },
+    {
+      "icon": "assets/images/gs/granny.webp",
+      "title": "Granny",
+      "link": "https://truffled.lol/gamefile/granny.html"
+    },
+    {
+      "icon": "assets/images/gs/gran2.webp",
+      "title": "Granny 2",
+      "link": "https://truffled.lol/gamefile/Granny 2.html"
+    },
+    {
+      "icon": "assets/images/gs/gran3.webp",
+      "title": "Granny 3",
+      "link": "https://truffled.lol/games/granny3/index.html"
+    },
+    {
+      "icon": "assets/images/gs/gravity.webp",
+      "title": "Gravity run",
+      "link": "https://truffled.lol/games/gravity-run/index.html"
+    },
+    {
+      "icon": "assets/images/gs/grey.webp",
+      "title": "Greybox",
+      "link": "https://truffled.lol/games/graybox/index.html"
+    },
+    {
+      "icon": "assets/images/gs/gta.webp",
+      "title": "GTA I",
+      "link": "https://truffled.lol/games/gta/index.html"
+    },
+    {
+      "icon": "assets/images/gs/gta2.webp",
+      "title": "GTA II",
+      "link": "https://truffled.lol/games/gta2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/gta3.webp",
+      "title": "GTA III",
+      "link": "https://truffled.lol/gamefile/gta3.html"
+    },
+    {
+      "icon": "assets/images/gs/gtasan.webp",
+      "title": "GTA San Andreas",
+      "link": "https://truffled.lol/games/gtasan/index.html"
+    },
+    {
+      "icon": "assets/images/gs/gun.webp",
+      "title": "Gun Mayhem",
+      "link": "https://truffled.lol/games/funmayhem/index.html"
+    },
+    {
+      "icon": "assets/images/gs/gun2.webp",
+      "title": "Gun Mayhem 2",
+      "link": "https://truffled.lol/games/funmayhem2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/gun3.webp",
+      "title": "Gun Mayhem Redux",
+      "link": "https://truffled.lol/games/funmayhemredux/index.html"
+    },
+    {
+      "icon": "assets/images/gs/guns.webp",
+      "title": "Gunspin",
+      "link": "https://truffled.lol/games/gunspin/index.html"
+    },
+    {
+      "icon": "assets/images/gs/halflife.webp",
+      "title": "Half life",
+      "link": "https://truffled.lol/games/hl-main/index.html"
+    },
+    {
+      "icon": "assets/images/gs/hlof.webp",
+      "title": "Half life: Opposing Force",
+      "link": "https://truffled.lol/gamefile/hlof.html"
+    },
+    {
+      "icon": "assets/images/gs/happy.webp",
+      "title": "Happy Wheels",
+      "link": "https://truffled.lol/games/happywheels/index.html"
+    },
+    {
+      "icon": "assets/images/gs/hobo.webp",
+      "title": "Hobo 1",
+      "link": "https://truffled.lol/gamefile/hobo1.html"
+    },
+    {
+      "icon": "assets/images/gs/hobo2.webp",
+      "title": "Hobo 2",
+      "link": "https://truffled.lol/gamefile/hobo2.html"
+    },
+    {
+      "icon": "assets/images/gs/hobo3.webp",
+      "title": "Hobo 3",
+      "link": "https://truffled.lol/gamefile/hobo3.html"
+    },
+    {
+      "icon": "assets/images/gs/hobo4.webp",
+      "title": "Hobo 4",
+      "link": "https://truffled.lol/gamefile/hobo4.html"
+    },
+    {
+      "icon": "assets/images/gs/hobo5.webp",
+      "title": "Hobo 5",
+      "link": "https://truffled.lol/gamefile/hobo5.html"
+    },
+    {
+      "icon": "assets/images/gs/hobo6.webp",
+      "title": "Hobo 6",
+      "link": "https://truffled.lol/gamefile/hobo6.html"
+    },
+    {
+      "icon": "assets/images/gs/hobo7.webp",
+      "title": "Hobo 7",
+      "link": "https://truffled.lol/gamefile/hobo7.html"
+    },
+    {
+      "icon": "assets/images/gs/honkai.webp",
+      "title": "Honkai: Star Rail",
+      "link": "https://nowgg.fun/apps/cognosphere-pte-ltd/1591/honkai-star-rail.html"
+    },
+    {
+      "icon": "assets/images/gs/house.webp",
+      "title": "House Of Hazards",
+      "link": "https://truffled.lol/games/houseofhazards/index.html"
+    },
+    {
+      "icon": "assets/images/gs/icebaby2.webp",
+      "title": "Ice Baby Quest 2",
+      "link": "https://truffled.lol/games/icebaby2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/idle.webp",
+      "title": "Idle Breakout",
+      "link": "https://truffled.lol/games/idle-breakout/index.html"
+    },
+    {
+      "icon": "assets/images/gs/intospace1.webp",
+      "title": "Into Space 1",
+      "link": "https://truffled.lol/games/is1/index.html"
+    },
+    {
+      "icon": "assets/images/gs/intospace2.webp",
+      "title": "Into Space 2",
+      "link": "https://truffled.lol/games/is2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/intospace3.webp",
+      "title": "Into Space 3",
+      "link": "https://truffled.lol/games/is3/index.html"
+    },
+    {
+      "icon": "assets/images/gs/jelly.webp",
+      "title": "Jelly Drift",
+      "link": "https://truffled.lol/gamefile/jelly.html"
+    },
+    {
+      "icon": "assets/images/gs/jet.webp",
+      "title": "Jetpack Joyride",
+      "link": "https://truffled.lol/games/jetpackjoyride/index.html"
+    },
+    {
+      "icon": "assets/images/gs/jumbo.webp",
+      "title": "Jumbo Mario",
+      "link": "https://truffled.lol/games/JumboMario/index.html"
+    },
+    {
+      "icon": "assets/images/gs/kil.webp",
+      "title": "Klifur",
+      "link": "https://truffled.lol/games/kilfur/index.html"
+    },
+    {
+      "icon": "assets/images/gs/knife.webp",
+      "title": "Knife Hit",
+      "link": "https://truffled.lol/games/knifehit/index.html"
+    },
+    {
+      "icon": "assets/images/gs/krunker.webp",
+      "title": "Krunker",
+      "link": "https://truffled.lol/games/krunker/index.html"
+    },
+    {
+      "icon": "assets/images/gs/labear.webp",
+      "title": "La Madriguera",
+      "link": "https://truffled.lol/games/lamadriguera/index.html"
+    },
+    {
+      "icon": "assets/images/gs/learn1.webp",
+      "title": "Learn To Fly",
+      "link": "https://truffled.lol/games/learntofly/index.html"
+    },
+    {
+      "icon": "assets/images/gs/learn2.webp",
+      "title": "Learn To Fly 2",
+      "link": "https://truffled.lol/games/learntofly2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/learn3.webp",
+      "title": "Learn To Fly 3",
+      "link": "https://truffled.lol/games/ltf3/index.html"
+    },
+    {
+      "icon": "assets/images/gs/learni.webp",
+      "title": "Learn To Fly Idle",
+      "link": "https://truffled.lol/games/learntoflyidle/index.html"
+    },
+    {
+      "icon": "assets/images/gs/legostarwars.webp",
+      "title": "Lego Star Wars",
+      "link": "https://truffled.lol/gamefile/legostarwars.html"
+    },
+    {
+      "icon": "assets/images/gs/level.webp",
+      "title": "Level Devil",
+      "link": "https://truffled.lol/games/lvldevil/index.html"
+    },
+    {
+      "icon": "assets/images/gs/limbo.webp",
+      "title": "Limbo",
+      "link": "https://truffled.lol/games/limbo/index.html"
+    },
+    {
+      "icon": "assets/images/gs/line.webp",
+      "title": "Line Rider",
+      "link": "https://truffled.lol/games/linerider/index.html"
+    },
+    {
+      "icon": "assets/images/gs/lil.webp",
+      "title": "Little Alchemy",
+      "link": "https://truffled.lol/games/littlealchemy/index.html"
+    },
+    {
+      "icon": "assets/images/gs/little2.webp",
+      "title": "Little Alchemy 2",
+      "link": "https://truffled.lol/gamefile/little2.html"
+    },
+    {
+      "icon": "assets/images/gs/lbp.webp",
+      "title": "Little Big Planet",
+      "link": "https://truffled.lol/games/lbp/index.html"
+    },
+    {
+      "icon": "assets/images/gs/lolbeans.webp",
+      "title": "Lolbeans.io",
+      "link": "https://lolbeans.io/"
+    },
+    {
+      "icon": "assets/images/gs/machineparty.webp",
+      "title": "Machine Party",
+      "link": "https://truffled.lol/games/mp/index.html"
+    },
+    {
+      "icon": "assets/images/gs/madden24.webp",
+      "title": "Madden NFL 24 Mobile Football",
+      "link": "https://nowgg.fun/apps/electronic-arts/1731/madden-nfl-24-mobile-football.html"
+    },
+    {
+      "icon": "assets/images/gs/madnessaccelerant.webp",
+      "title": "Madness Accelerant",
+      "link": "https://truffled.lol/gamefile/madnessaccelerant.html"
+    },
+    {
+      "icon": "assets/images/gs/madnessambulation.webp",
+      "title": "Madness Ambulation",
+      "link": "https://truffled.lol/games/madnessambulation/madnessambulation.html"
+    },
+    {
+      "icon": "assets/images/gs/madnesscombatdefense.webp",
+      "title": "Madness Combat Defense",
+      "link": "https://truffled.lol/gamefile/madnesscombatdefense.html"
+    },
+    {
+      "icon": "assets/images/gs/madnesscfpsfbhd.webp",
+      "title": "Madness Combat FPS Fueled by Hot Dogs",
+      "link": "https://truffled.lol/gamefile/madnesscfpsfbhd.html"
+    },
+    {
+      "icon": "assets/images/gs/madnessgemini.webp",
+      "title": "Madness Gemini",
+      "link": "https://truffled.lol/gamefile/madnessgemini.html"
+    },
+    {
+      "icon": "assets/images/gs/madnesshydraulic.webp",
+      "title": "Madness Hydraulic",
+      "link": "https://truffled.lol/gamefile/madnesshydraulic.html"
+    },
+    {
+      "icon": "assets/images/gs/madnessinteractive.webp",
+      "title": "Madness Interactive",
+      "link": "https://truffled.lol/gamefile/madnessinteractive.html"
+    },
+    {
+      "icon": "assets/images/gs/madness.webp",
+      "title": "Madness Melee",
+      "link": "https://truffled.lol/games/bogtruffled/index.html"
+    },
+    {
+      "icon": "assets/images/gs/madnessoffcolor.webp",
+      "title": "Madness Off Color",
+      "link": "https://truffled.lol/gamefile/madnessoffcolor.html"
+    },
+    {
+      "icon": "assets/images/gs/madnesspremediation.webp",
+      "title": "Madness Premediation",
+      "link": "https://truffled.lol/gamefile/madnesspremediation.html"
+    },
+    {
+      "icon": "assets/images/gs/madnesscombatnexus.webp",
+      "title": "Madness Project Nexus",
+      "link": "https://truffled.lol/gamefile/madnesscombatnexus.html"
+    },
+    {
+      "icon": "assets/images/gs/madnessretaliation.webp",
+      "title": "Madness Retaliation",
+      "link": "https://truffled.lol/gamefile/madnessretaliation.html"
+    },
+    {
+      "icon": "assets/images/gs/mk7.webp",
+      "title": "Mario Kart 7",
+      "link": "https://truffled.lol/games/mk7/index.html"
+    },
+    {
+      "icon": "assets/images/gs/mk64.webp",
+      "title": "Mario Kart 64",
+      "link": "https://truffled.lol/games/mk64/index.html"
+    },
+    {
+      "icon": "assets/images/gs/mkds.webp",
+      "title": "Mario Kart DS",
+      "link": "https://truffled.lol/games/mkds/index.html"
+    },
+    {
+      "icon": "assets/images/gs/marioparty1.webp",
+      "title": "Mario Party 1",
+      "link": "https://truffled.lol/gamefile/marioparty.html"
+    },
+    {
+      "icon": "assets/images/gs/marioparty2.webp",
+      "title": "Mario Party 2",
+      "link": "https://truffled.lol/gamefile/marioparty2.html"
+    },
+    {
+      "icon": "assets/images/gs/marioparty3.webp",
+      "title": "Mario Party 3",
+      "link": "https://truffled.lol/gamefile/marioparty3.html"
+    },
+    {
+      "icon": "assets/images/gs/megaman.webp",
+      "title": "Megaman",
+      "link": "https://truffled.lol/gamefile/megaman.html"
+    },
+    {
+      "icon": "assets/images/gs/melon.webp",
+      "title": "Melon Playground",
+      "link": "https://truffled.lol/games/melon-playground/index.html"
+    },
+    {
+      "icon": "assets/images/gs/melonsandbox.webp",
+      "title": "Melon Sandbox",
+      "link": "https://truffled.lol/games/melon-playground/index.html"
+    },
+    {
+      "icon": "assets/images/gs/rot.webp",
+      "title": "Merge Rot",
+      "link": "https://truffled.lol/games/mergerot/index.html"
+    },
+    {
+      "icon": "assets/images/gs/mc.webp",
+      "title": "Minecraft",
+      "link": "https://truffled.lol/games/minecraft/"
+    },
+    {
+      "icon": "assets/images/gs/minese.webp",
+      "title": "Minesweeper Mania",
+      "link": "https://truffled.lol/gamefile/minesweepermania.html"
+    },
+    {
+      "icon": "assets/images/gs/monster.webp",
+      "title": "Monster Tracks",
+      "link": "https://truffled.lol/games/monster-tracks/index.html"
+    },
+    {
+      "icon": "assets/images/gs/moto.webp",
+      "title": "Moto X3M",
+      "link": "https://truffled.lol/games/motox3m/index.html"
+    },
+    {
+      "icon": "assets/images/gs/msm.webp",
+      "title": "My Singing Monsters",
+      "link": "https://nowgg.fun/apps/big-blue/8811/singing-monsters.html"
+    },
+    {
+      "icon": "assets/images/gs/mytear.webp",
+      "title": "My teardrop, daniel",
+      "link": "https://truffled.lol/gamefile/mytear.html"
+    },
+    {
+      "icon": "assets/images/gs/nazi.webp",
+      "title": "Nazi Zombies: Portable",
+      "link": "https://truffled.lol/gamefile/nzp.html"
+    },
+    {
+      "icon": "assets/images/gs/nsmb.webp",
+      "title": "New Super Mario Bros",
+      "link": "https://truffled.lol/games/nsmb/index.html"
+    },
+    {
+      "icon": "assets/images/gs/ngon.webp",
+      "title": "n-gon",
+      "link": "https://truffled.lol/games/n-gon/index.html"
+    },
+    {
+      "icon": "assets/images/gs/noomiclone.webp",
+      "title": "Noomiclone",
+      "link": "https://truffled.lol/games/noomi/"
+    },
+    {
+      "icon": "assets/images/gs/omnomrun.webp",
+      "title": "Om Nom Run",
+      "link": "https://truffled.lol/gamefile/omnomrun.html"
+    },
+    {
+      "icon": "assets/images/gs/orange.webp",
+      "title": "Orange Roulette",
+      "link": "https://truffled.lol/gamefile/orange.html"
+    },
+    {
+      "icon": "assets/images/gs/oshi.webp",
+      "title": "Oshi Oshi Punch",
+      "link": "https://truffled.lol/gamefile/onshi.html"
+    },
+    {
+      "icon": "assets/images/gs/osu.webp",
+      "title": "Osu!",
+      "link": "https://truffled.lol/games/osu/index.html"
+    },
+    {
+      "icon": "assets/images/gs/ovo.webp",
+      "title": "OvO",
+      "link": "https://truffled.lol/games/ovo/index.html"
+    },
+    {
+      "icon": "assets/images/gs/ovo2.webp",
+      "title": "OvO 2",
+      "link": "https://truffled.lol/games/OvO2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/ovodi.webp",
+      "title": "OvO Dimensions",
+      "link": "https://truffled.lol/games/OvoDimensions/index.html"
+    },
+    {
+      "icon": "assets/images/gs/pacman.webp",
+      "title": "Pacman",
+      "link": "https://truffled.lol/games/pacman/index.html"
+    },
+    {
+      "icon": "assets/images/gs/pacmanworld.webp",
+      "title": "Pacman World",
+      "link": "https://truffled.lol/gamefile/pacmanw.html"
+    },
+    {
+      "icon": "assets/images/gs/pacmanworld2.webp",
+      "title": "Pacman World 2",
+      "link": "https://truffled.lol/gamefile/pacmanw2.html"
+    },
+    {
+      "icon": "assets/images/gs/paintgal.webp",
+      "title": "Paint Gal Adventures",
+      "link": "https://truffled.lol/games/paintbog/Paint Gal Adventures.html"
+    },
+    {
+      "icon": "assets/images/gs/bake.webp",
+      "title": "Papas Bakeria",
+      "link": "https://truffled.lol/games/papasbakeria/index.html"
+    },
+    {
+      "icon": "assets/images/gs/burger.webp",
+      "title": "Papas Burgeria",
+      "link": "https://truffled.lol/games/papasburgeria/index.html"
+    },
+    {
+      "icon": "assets/images/gs/cheese.webp",
+      "title": "Papas Cheeseria",
+      "link": "https://truffled.lol/games/papascheeseria/index.html"
+    },
+    {
+      "icon": "assets/images/gs/donut.webp",
+      "title": "Papas Donuteria",
+      "link": "https://truffled.lol/games/papasdonuteria/index.html"
+    },
+    {
+      "icon": "assets/images/gs/freeze.webp",
+      "title": "Papas Freezeria",
+      "link": "https://truffled.lol/games/papasfreezeria/index.html"
+    },
+    {
+      "icon": "assets/images/gs/pizza.webp",
+      "title": "Papas Pizzaeria",
+      "link": "https://truffled.lol/games/papaspizza/index.html"
+    },
+    {
+      "icon": "assets/images/gs/paperio2.webp",
+      "title": "Paperio 2",
+      "link": "https://truffled.lol/games/paperio2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/papermario.webp",
+      "title": "Paper Mario",
+      "link": "https://truffled.lol/gamefile/papermario.html"
+    },
+    {
+      "icon": "assets/images/gs/papers.webp",
+      "title": "Papers, Please",
+      "link": "https://truffled.lol/gamefile/papers.html"
+    },
+    {
+      "icon": "assets/images/gs/rapper.webp",
+      "title": "Parappa The Rapper",
+      "link": "https://truffled.lol/games/paps/index.html"
+    },
+    {
+      "icon": "assets/images/gs/parappa2.webp",
+      "title": "Parappa The Rapper 2",
+      "link": "https://truffled.lol/games/parappa2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/peggle.webp",
+      "title": "Peggle",
+      "link": "https://truffled.lol/gamefile/Peggle.html"
+    },
+    {
+      "icon": "assets/images/gs/pegdeluxe.webp",
+      "title": "Peggle Deluxe",
+      "link": "https://truffled.lol/games/pegg/deluxe/index.html"
+    },
+    {
+      "icon": "assets/images/gs/pegextreme.webp",
+      "title": "Peggle Extreme",
+      "link": "https://truffled.lol/games/pegg/extreme/index.html"
+    },
+    {
+      "icon": "assets/images/gs/pegnights.webp",
+      "title": "Peggle Nights",
+      "link": "https://truffled.lol/games/pegg/nights/index.html"
+    },
+    {
+      "icon": "assets/images/gs/pegwow.webp",
+      "title": "Peggle WoW Edition",
+      "link": "https://truffled.lol/games/pegg/wow/index.html"
+    },
+    {
+      "icon": "assets/images/gs/pegoo.webp",
+      "title": "Pego (Prototype)",
+      "link": "https://truffled.lol/games/pegg/pego/index.html"
+    },
+    {
+      "icon": "assets/images/gs/pixelgun.webp",
+      "title": "Pixel Gun 3D",
+      "link": "https://truffled.lol/games/pixl/index.html"
+    },
+    {
+      "icon": "assets/images/gs/pts.webp",
+      "title": "Pizza Tower: Scoutdigo",
+      "link": "https://truffled.lol/gamefile/pts.html"
+    },
+    {
+      "icon": "assets/images/gs/pizza3.webp",
+      "title": "Pizzatron 3000",
+      "link": "https://truffled.lol/games/pizza/index.html"
+    },
+    {
+      "icon": "assets/images/gs/plagueinc.webp",
+      "title": "Plague Inc.",
+      "link": "https://truffled.lol/games/PlagueInc/index.html"
+    },
+    {
+      "icon": "assets/images/gs/pvz.webp",
+      "title": "Plants VS Zombies",
+      "link": "https://truffled.lol/gamefile/pvs.html"
+    },
+    {
+      "icon": "assets/images/gs/pvz2.webp",
+      "title": "Plants VS Zombies Garden Endless",
+      "link": "https://truffled.lol/games/pvzge/index.html"
+    },
+    {
+      "icon": "assets/images/gs/pokemonacademy.webp",
+      "title": "Pokemon Academy Life Forever",
+      "link": "https://truffled.lol/gamefile/pokemonacademy.html"
+    },
+    {
+      "icon": "assets/images/gs/blue.webp",
+      "title": "Pokemon Blue",
+      "link": "https://truffled.lol/gamefile/blue.html"
+    },
+    {
+      "icon": "assets/images/gs/crystal.webp",
+      "title": "Pokemon Crystal",
+      "link": "https://truffled.lol/gamefile/blob.html"
+    },
+    {
+      "icon": "assets/images/gs/em.webp",
+      "title": "Pokemon Emerald",
+      "link": "https://truffled.lol/gamefile/em.html"
+    },
+    {
+      "icon": "assets/images/gs/gold.webp",
+      "title": "Pokemon Gold",
+      "link": "https://truffled.lol/gamefile/gold.html"
+    },
+    {
+      "icon": "assets/images/gs/pokemonfirered.webp",
+      "title": "Pokemon Red",
+      "link": "https://truffled.lol/gamefile/red.html"
+    },
+    {
+      "icon": "assets/images/gs/pokestad.webp",
+      "title": "Pokemon Stadium",
+      "link": "https://truffled.lol/gamefile/pokestad.html"
+    },
+    {
+      "icon": "assets/images/gs/pokestad2.webp",
+      "title": "Pokemon Stadium 2",
+      "link": "https://truffled.lol/gamefile/pokestad2.html"
+    },
+    {
+      "icon": "assets/images/gs/poly.webp",
+      "title": "Polytrack",
+      "link": "https://truffled.lol/games/polytrack/index.html"
+    },
+    {
+      "icon": "assets/images/gs/portal.webp",
+      "title": "Portal",
+      "link": "https://truffled.lol/games/portal/index.html"
+    },
+    {
+      "icon": "assets/images/gs/p2.webp",
+      "title": "Portal 2",
+      "link": "https://truffled.lol/games/portal2/portal2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/prodigy.webp",
+      "title": "Prodigy",
+      "link": "https://truffled.lol/games/prodigy/select/index.html"
+    },
+    {
+      "icon": "assets/images/gs/pubgmobile.webp",
+      "title": "PUBG Mobile: Aftermath",
+      "link": "https://nowgg.fun/apps/proxima-beta/2609/pubg-mobile-resistance.html"
+    },
+    {
+      "icon": "assets/images/gs/quake.webp",
+      "title": "Quake",
+      "link": "https://truffled.lol/games/quake/index.html"
+    },
+    {
+      "icon": "assets/images/gs/quakeii.webp",
+      "title": "Quake II",
+      "link": "https://truffled.lol/games/quakeii/index.html"
+    },
+    {
+      "icon": "assets/images/gs/quakeiii.webp",
+      "title": "Quake III",
+      "link": "https://truffled.lol/games/quakeiii/Quake3.htm"
+    },
+    {
+      "icon": "assets/images/gs/rabbidalive.webp",
+      "title": "Rabbids Alive And Kicking",
+      "link": "https://truffled.lol/games/rabbidsa/index.html"
+    },
+    {
+      "icon": "assets/images/gs/rabbidstravel.webp",
+      "title": "Rabbids Travel In Time",
+      "link": "https://truffled.lol/games/rabbidst/index.html"
+    },
+    {
+      "icon": "assets/images/gs/raft1.webp",
+      "title": "Raft Wars",
+      "link": "https://truffled.lol/games/raft-wars/index.html"
+    },
+    {
+      "icon": "assets/images/gs/raft2.webp",
+      "title": "Raft Wars 2",
+      "link": "https://truffled.lol/games/raft-wars-2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/archer.webp",
+      "title": "Ragdoll Archers",
+      "link": "https://truffled.lol/games/ragdoll-archers/index.html"
+    },
+    {
+      "icon": "assets/images/gs/hit.webp",
+      "title": "Ragdoll Hit",
+      "link": "https://truffled.lol/games/ragdoll/index.html"
+    },
+    {
+      "icon": "assets/images/gs/raldi.webp",
+      "title": "Raldi's Crack House",
+      "link": "https://truffled.lol/games/raldi/index.html"
+    },
+    {
+      "icon": "assets/images/gs/rayman.webp",
+      "title": "Rayman",
+      "link": "https://truffled.lol/gamefile/rayman.html"
+    },
+    {
+      "icon": "assets/images/gs/res1.webp",
+      "title": "Resident Evil 1",
+      "link": "https://truffled.lol/gamefile/res1.html"
+    },
+    {
+      "icon": "assets/images/gs/res2.webp",
+      "title": "Resident Evil 2",
+      "link": "https://truffled.lol/gamefile/res2.html"
+    },
+    {
+      "icon": "assets/images/gs/retro.webp",
+      "title": "Retro Bowl",
+      "link": "https://truffled.lol/games/retro-bowl/index.html"
+    },
+    {
+      "icon": "assets/images/gs/retroc.webp",
+      "title": "Retro Bowl College",
+      "link": "https://truffled.lol/games/rbcollege/index.html"
+    },
+    {
+      "icon": "assets/images/gs/rhythm.webp",
+      "title": "Rhythm Heaven",
+      "link": "https://truffled.lol/gamefile/rhythm.html"
+    },
+    {
+      "icon": "assets/images/gs/rhythmhell.webp",
+      "title": "Rhythm Hell",
+      "link": "https://truffled.lol/games/rhythm-hell/index.html"
+    },
+    {
+      "icon": "assets/images/gs/riddle1.webp",
+      "title": "Riddle School",
+      "link": "https://truffled.lol/games/riddleschool/index.html"
+    },
+    {
+      "icon": "assets/images/gs/riddle2.webp",
+      "title": "Riddle School 2",
+      "link": "https://truffled.lol/games/sriddleschool2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/riddle3.webp",
+      "title": "Riddle School 3",
+      "link": "https://truffled.lol/games/riddleschool3/index.html"
+    },
+    {
+      "icon": "assets/images/gs/riddle4.webp",
+      "title": "Riddle School 4",
+      "link": "https://truffled.lol/games/riddleschool4/index.html"
+    },
+    {
+      "icon": "assets/images/gs/riddle5.webp",
+      "title": "Riddle School 5",
+      "link": "https://truffled.lol/games/riddleschool5/index.html"
+    },
+    {
+      "icon": "assets/images/gs/riddletr.webp",
+      "title": "Riddle School Transfer",
+      "link": "https://truffled.lol/games/riddleschooltransfer/index.html"
+    },
+    {
+      "icon": "assets/images/gs/riddletr2.webp",
+      "title": "Riddle School Transfer 2",
+      "link": "https://truffled.lol/games/riddleschooltransfer2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/roblox.webp",
+      "title": "Roblox",
+      "link": "https://nowgg.fun/apps/a/19900/b.html"
+    },
+    {
+      "icon": "assets/images/gs/rrs.webp",
+      "title": "Rocket League Sideswipe",
+      "link": "https://nowgg.fun/apps/psyonix-studios/4656/rocket-league.html"
+    },
+    {
+      "icon": "assets/images/gs/roof2.webp",
+      "title": "Rooftop Snipers",
+      "link": "https://truffled.lol/games/rooftop-snipers/index.html"
+    },
+    {
+      "icon": "assets/images/gs/roof1.webp",
+      "title": "Rooftop Snipers 2",
+      "link": "https://truffled.lol/games/rooftop-snipers-2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/run1.webp",
+      "title": "Run",
+      "link": "https://truffled.lol/gamefile/run.html"
+    },
+    {
+      "icon": "assets/images/gs/run2.webp",
+      "title": "Run 2",
+      "link": "https://truffled.lol/gamefile/run2.html"
+    },
+    {
+      "icon": "assets/images/gs/run3.webp",
+      "title": "Run 3",
+      "link": "https://truffled.lol/gamefile/run3.html"
+    },
+    {
+      "icon": "assets/images/gs/sand.webp",
+      "title": "Sandboxels",
+      "link": "https://truffled.lol/gamefile/Sandboxels.html"
+    },
+    {
+      "icon": "assets/images/gs/path.webp",
+      "title": "Scary Path",
+      "link": "https://truffled.lol/games/scary-path/index.html"
+    },
+    {
+      "icon": "assets/images/gs/scary.webp",
+      "title": "Scary Teacher 3D",
+      "link": "https://truffled.lol/gamefile/scary.html"
+    },
+    {
+      "icon": "assets/images/gs/ski.webp",
+      "title": "Skibidi Shooter",
+      "link": "https://truffled.lol/games/skibidi-shooter/index.html"
+    },
+    {
+      "icon": "assets/images/gs/skiing.webp",
+      "title": "Skiing Fred",
+      "link": "https://truffled.lol/games/skiing/index.html"
+    },
+    {
+      "icon": "assets/images/gs/skribblio.webp",
+      "title": "Skribbl.io",
+      "link": "https://skribbl.io/"
+    },
+    {
+      "icon": "assets/images/gs/slienthill.webp",
+      "title": "Slient Hill",
+      "link": "https://truffled.lol/gamefile/slienthill.html"
+    },
+    {
+      "icon": "assets/images/gs/slope.webp",
+      "title": "Slope",
+      "link": "https://truffled.lol/games/slope/index.html"
+    },
+    {
+      "icon": "assets/images/gs/slow.webp",
+      "title": "Slowroads",
+      "link": "https://truffled.lol/games/slowroads/index.html"
+    },
+    {
+      "icon": "assets/images/gs/smashkarts.webp",
+      "title": "Smash Karts",
+      "link": "https://truffled.lol/games/smashkarts/index.html"
+    },
+    {
+      "icon": "assets/images/gs/snowio.webp",
+      "title": "Snow Battle",
+      "link": "https://truffled.lol/gamefile/snow.html"
+    },
+    {
+      "icon": "assets/images/gs/snow.webp",
+      "title": "Snow Rider 3D",
+      "link": "https://truffled.lol/games/snowrider3D-main/index.html"
+    },
+    {
+      "icon": "assets/images/gs/soccer.webp",
+      "title": "Soccer Bros",
+      "link": "https://truffled.lol/games/soccerbros/index.html"
+    },
+    {
+      "icon": "assets/images/gs/soccerra.webp",
+      "title": "Soccer Random",
+      "link": "https://truffled.lol/games/soccer-random/index.html"
+    },
+    {
+      "icon": "assets/images/gs/solar.webp",
+      "title": "Solar Smash",
+      "link": "https://truffled.lol/gamefile/solar.html"
+    },
+    {
+      "icon": "assets/images/gs/soli.webp",
+      "title": "Solitaire",
+      "link": "https://truffled.lol/games/solitaire/index.html"
+    },
+    {
+      "icon": "assets/images/gs/sonic1.webp",
+      "title": "Sonic 1",
+      "link": "https://truffled.lol/games/sonic/index.html"
+    },
+    {
+      "icon": "assets/images/gs/sonic2.webp",
+      "title": "Sonic 2",
+      "link": "https://truffled.lol/games/sonic2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/sonic3.webp",
+      "title": "Sonic 3",
+      "link": "https://truffled.lol/games/sonic3/sonic3.html"
+    },
+    {
+      "icon": "assets/images/gs/sonic3dblast.webp",
+      "title": "Sonic 3D Blast",
+      "link": "https://truffled.lol/gamefile/sonic3dblast.html"
+    },
+    {
+      "icon": "assets/images/gs/sonic4.webp",
+      "title": "Sonic 4",
+      "link": "https://truffled.lol/games/sonic4/index.html"
+    },
+    {
+      "icon": "assets/images/gs/soniccd.webp",
+      "title": "Sonic CD",
+      "link": "https://truffled.lol/games/soniccd/soniccd.html"
+    },
+    {
+      "icon": "assets/images/gs/sonicexe.webp",
+      "title": "Sonic EXE",
+      "link": "https://truffled.lol/gamefile/sonicexe.html"
+    },
+    {
+      "icon": "assets/images/gs/sonicjam.webp",
+      "title": "Sonic Jam",
+      "link": "https://truffled.lol/gamefile/sonicjam.html"
+    },
+    {
+      "icon": "assets/images/gs/sonicr.webp",
+      "title": "Sonic R",
+      "link": "https://truffled.lol/gamefile/sonicr.html"
+    },
+    {
+      "icon": "assets/images/gs/robo.webp",
+      "title": "Sonic Robo Blast 2",
+      "link": "https://truffled.lol/games/srb2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/kart.webp",
+      "title": "Sonic Robo Blast 2 KART",
+      "link": "https://truffled.lol/games/kart/index.html"
+    },
+    {
+      "icon": "assets/images/gs/swn.webp",
+      "title": "Sonic World Next",
+      "link": "https://truffled.lol/games/swn/index.html"
+    },
+    {
+      "icon": "assets/images/gs/space.webp",
+      "title": "Space Waves",
+      "link": "https://truffled.lol/gamefile/spacewaves.html"
+    },
+    {
+      "icon": "assets/images/gs/monk.webp",
+      "title": "Spank the monkey, bogs favorites",
+      "link": "https://truffled.lol/gamefile/monkey.html"
+    },
+    {
+      "icon": "assets/images/gs/speed.webp",
+      "title": "Speed Stars",
+      "link": "https://truffled.lol/games/speed-stars/index.html"
+    },
+    {
+      "icon": "assets/images/gs/spelunkyclassic.webp",
+      "title": "Spelunky Classic HD",
+      "link": "https://truffled.lol/gamefile/spelunky.html"
+    },
+    {
+      "icon": "assets/images/gs/stickman.webp",
+      "title": "Stickman Hook",
+      "link": "https://truffled.lol/games/stickman-hook/index.html"
+    },
+    {
+      "icon": "assets/images/gs/stickwar.webp",
+      "title": "Stick War: Legacy",
+      "link": "https://truffled.lol/gamefile/stickwar.html"
+    },
+    {
+      "icon": "assets/images/gs/stumbleguys.webp",
+      "title": "Stumble Guys",
+      "link": "https://nowgg.fun/apps/a/10011/b.html"
+    },
+    {
+      "icon": "assets/images/gs/sub.webp",
+      "title": "Subway Surfers",
+      "link": "https://truffled.lol/games/subway-surfers/index.html"
+    },
+    {
+      "icon": "assets/images/gs/superhot.webp",
+      "title": "Super Hot",
+      "link": "https://truffled.lol/games/superhot/index.html"
+    },
+    {
+      "icon": "assets/images/gs/sm64.webp",
+      "title": "Super Mario 64, SM64",
+      "link": "https://truffled.lol/games/sm64/index.html"
+    },
+    {
+      "icon": "assets/images/gs/sm64coop.webp",
+      "title": "Super Mario 64 Coop DX",
+      "link": "https://truffled.lol/games/sm64coop/sm64coopdx.html"
+    },
+    {
+      "icon": "assets/images/gs/smb.webp",
+      "title": "Super Mario Bros",
+      "link": "https://truffled.lol/gamefile/smb.html"
+    },
+    {
+      "icon": "assets/images/gs/smg.webp",
+      "title": "Super Mario Galaxy",
+      "link": "https://truffled.lol/games/smg/index.html"
+    },
+    {
+      "icon": "assets/images/gs/smgds.webp",
+      "title": "Super Mario Galaxy DS",
+      "link": "https://truffled.lol/gamefile/smgds.html"
+    },
+    {
+      "icon": "assets/images/gs/meat.webp",
+      "title": "Super Meat Boy",
+      "link": "https://truffled.lol/games/meatboy/index.html"
+    },
+    {
+      "icon": "assets/images/gs/monkb.webp",
+      "title": "Super Monkey Ball 1 & 2",
+      "link": "https://truffled.lol/gamefile/monk.html"
+    },
+    {
+      "icon": "assets/images/gs/supermonkey.webp",
+      "title": "Super Monkey Ball JR",
+      "link": "https://truffled.lol/gamefile/supermonkey.html"
+    },
+    {
+      "icon": "assets/images/gs/superoliverworld.webp",
+      "title": "Super Oliver World",
+      "link": "https://truffled.lol/gamefile/superoliverworld.html"
+    },
+    {
+      "icon": "assets/images/gs/ssm.webp",
+      "title": "Super Smash Bros",
+      "link": "https://truffled.lol/gamefile/ssm.html"
+    },
+    {
+      "icon": "assets/images/gs/supersmash.webp",
+      "title": "Super Smash Flash",
+      "link": "https://truffled.lol/gamefile/ssf.html"
+    },
+    {
+      "icon": "assets/images/gs/ssf2.webp",
+      "title": "Super Smash Flash 2",
+      "link": "https://truffled.lol/gamefile/ssf2.html"
+    },
+    {
+      "icon": "assets/images/gs/supertuxkart.webp",
+      "title": "Super Tux Kart",
+      "link": "https://truffled.lol/games/supertuxkart/SuperTuxKart.html"
+    },
+    {
+      "icon": "assets/images/gs/taiko.webp",
+      "title": "Taiko No Tatsujini",
+      "link": "https://truffled.lol/games/psp/tja/index.html"
+    },
+    {
+      "icon": "assets/images/gs/tanukisunset.webp",
+      "title": "Tanuki Sunset",
+      "link": "https://truffled.lol/games/tanukisunset/index.html"
+    },
+    {
+      "icon": "assets/images/gs/ten.webp",
+      "title": "Ten Basket",
+      "link": "https://truffled.lol/games/ten-basket/index.html"
+    },
+    {
+      "icon": "assets/images/gs/tet.webp",
+      "title": "Tetris",
+      "link": "https://truffled.lol/games/tetris/index.html"
+    },
+    {
+      "icon": "assets/images/gs/tetriss.webp",
+      "title": "Tetrisweeper",
+      "link": "https://truffled.lol/games/tetrisweeper/"
+    },
+    {
+      "icon": "assets/images/gs/tboiw.webp",
+      "title": "The Binding Of Isaac Wrath Of The Lamb",
+      "link": "https://truffled.lol/gamefile/tboiw.html"
+    },
+    {
+      "icon": "assets/images/gs/boilambeternal.webp",
+      "title": "The Binding Of Isaac Wrath Of The Lamb: Eternal",
+      "link": "https://truffled.lol/gamefile/boilambeternal.html"
+    },
+    {
+      "icon": "assets/images/gs/tboi.webp",
+      "title": "The Binding Of Issac",
+      "link": "https://truffled.lol/games/binding-of-isaac/index.html"
+    },
+    {
+      "icon": "assets/images/gs/quiz.webp",
+      "title": "The Impossible Quiz",
+      "link": "https://truffled.lol/games/theimpossiblequiz/index.html"
+    },
+    {
+      "icon": "assets/images/gs/impos2.webp",
+      "title": "The Impossible Quiz 2",
+      "link": "https://truffled.lol/games/iq2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/tloz.webp",
+      "title": "The Legend of Zelda Ocarina of Time",
+      "link": "https://truffled.lol/gamefile/tloz.html"
+    },
+    {
+      "icon": "assets/images/gs/tpdusk.webp",
+      "title": "The Legend of Zelda: Twilight Princess",
+      "link": "https://truffled.lol/games/dusk/index.html"
+    },
+    {
+      "icon": "assets/images/gs/ting.webp",
+      "title": "There Is No Game",
+      "link": "https://truffled.lol/games/there-is-no-game/index.html"
+    },
+    {
+      "icon": "assets/images/gs/simsmobile.webp",
+      "title": "The Sims Mobile",
+      "link": "https://nowgg.fun/apps/electronic-arts/2155/the-sims-mobile.html"
+    },
+    {
+      "icon": "assets/images/gs/tim1.webp",
+      "title": "Time Shooter 1",
+      "link": "https://truffled.lol/gamefile/time1.html"
+    },
+    {
+      "icon": "assets/images/gs/tim2.webp",
+      "title": "Time Shooter 2",
+      "link": "https://truffled.lol/games/timeshooter2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/tim3.webp",
+      "title": "Time Shooter 3",
+      "link": "https://truffled.lol/games/timeshoot3/index.html"
+    },
+    {
+      "icon": "assets/images/gs/tiny.webp",
+      "title": "Tiny Fishing",
+      "link": "https://truffled.lol/games/tiny-fishing/index.html"
+    },
+    {
+      "icon": "assets/images/gs/tomb.webp",
+      "title": "Tomb Of The Mask",
+      "link": "https://truffled.lol/games/tombofthemask/index.html"
+    },
+    {
+      "icon": "assets/images/gs/tomo.webp",
+      "title": "Tomodachi Collection",
+      "link": "https://truffled.lol/gamefile/tomo.html"
+    },
+    {
+      "icon": "assets/images/gs/ttt.webp",
+      "title": "Toss The Turtle",
+      "link": "https://truffled.lol/games/tosstheturtle/index.html"
+    },
+    {
+      "icon": "assets/images/gs/touhou1.webp",
+      "title": "Touhou 1 Touhou-Reiiden",
+      "link": "https://truffled.lol/gamefile/touhou.html"
+    },
+    {
+      "icon": "assets/images/gs/touhou2.webp",
+      "title": "Touhou 2 Touhou-Fuumaroku",
+      "link": "https://truffled.lol/gamefile/touhou2.html"
+    },
+    {
+      "icon": "assets/images/gs/touhou3.webp",
+      "title": "Touhou 3 Touhou-Yumejikuu",
+      "link": "https://truffled.lol/gamefile/touhou3.html"
+    },
+    {
+      "icon": "assets/images/gs/touhou4.webp",
+      "title": "Touhou 4 Touhou-Gensokyou",
+      "link": "https://truffled.lol/gamefile/touhou4.html"
+    },
+    {
+      "icon": "assets/images/gs/touhou5.webp",
+      "title": "Touhou 5 Touhou-Kaikidan",
+      "link": "https://truffled.lol/gamefile/touhou5.html"
+    },
+    {
+      "icon": "assets/images/gs/tube.webp",
+      "title": "Tube Jumpers",
+      "link": "https://truffled.lol/gamefile/tube.html"
+    },
+    {
+      "icon": "assets/images/gs/tung.webp",
+      "title": "Tung Tung Horror",
+      "link": "https://truffled.lol/gamefile/tung.html"
+    },
+    {
+      "icon": "assets/images/gs/jammer.webp",
+      "title": "Um Jammer Lammy",
+      "link": "https://truffled.lol/gamefile/jemmer.html"
+    },
+    {
+      "icon": "assets/images/gs/vengoio.webp",
+      "title": "Venge.io",
+      "link": "https://iogamesio.org/vengeio.embed"
+    },
+    {
+      "icon": "assets/images/gs/vex.webp",
+      "title": "Vex",
+      "link": "https://truffled.lol/games/vex/index.html"
+    },
+    {
+      "icon": "assets/images/gs/vex2.webp",
+      "title": "Vex 2",
+      "link": "https://truffled.lol/gamefile/vex2.html"
+    },
+    {
+      "icon": "assets/images/gs/vex3.webp",
+      "title": "Vex 3",
+      "link": "https://truffled.lol/games/vex3/index.html"
+    },
+    {
+      "icon": "assets/images/gs/vex4.webp",
+      "title": "Vex 4",
+      "link": "https://truffled.lol/games/vex4/index.html"
+    },
+    {
+      "icon": "assets/images/gs/vex5.webp",
+      "title": "Vex 5",
+      "link": "https://truffled.lol/games/vex5/index.html"
+    },
+    {
+      "icon": "assets/images/gs/vex6.webp",
+      "title": "Vex 6",
+      "link": "https://truffled.lol/gamefile/vex6.html"
+    },
+    {
+      "icon": "assets/images/gs/vex7.webp",
+      "title": "Vex 7",
+      "link": "https://truffled.lol/gamefile/vex7.html"
+    },
+    {
+      "icon": "assets/images/gs/vex8.webp",
+      "title": "Vex 8",
+      "link": "https://truffled.lol/gamefile/vex8.html"
+    },
+    {
+      "icon": "assets/images/gs/splash.webp",
+      "title": "Volley Random",
+      "link": "https://truffled.lol/games/volley-random/index.html"
+    },
+    {
+      "icon": "assets/images/gs/wariowarediy.webp",
+      "title": "Warioware D.I.Y",
+      "link": "https://truffled.lol/gamefile/wariowarediy.html"
+    },
+    {
+      "icon": "assets/images/gs/webdashers.webp",
+      "title": "Webdashers",
+      "link": "https://truffled.lol/gamefile/gd.html"
+    },
+    {
+      "icon": "assets/images/gs/wbwwb.webp",
+      "title": "We Become What We behold",
+      "link": "https://truffled.lol/gamefile/wbwwb.html"
+    },
+    {
+      "icon": "assets/images/gs/WIJ.webp",
+      "title": "Woody's Incredible Journey To The Escape From Eternal Terror",
+      "link": "https://truffled.lol/games/WIJ/index.html"
+    },
+    {
+      "icon": "assets/images/gs/world.webp",
+      "title": "Wordle",
+      "link": "https://truffled.lol/games/wordle-unlimited/index.html"
+    },
+    {
+      "icon": "assets/images/gs/wrdd.webp",
+      "title": "Worlds Hardest Game",
+      "link": "https://truffled.lol/gamefile/twhg.html"
+    },
+    {
+      "icon": "assets/images/gs/the-worlds-hardest-game-2.webp",
+      "title": "Worlds Hardest Game 2",
+      "link": "https://truffled.lol/games/worlds-hardest-game-2/index.html"
+    },
+    {
+      "icon": "assets/images/gs/3.webp",
+      "title": "Worlds Hardest Game 3",
+      "link": "https://truffled.lol/games/worlds-hardest-game-3/index.html"
+    },
+    {
+      "icon": "assets/images/gs/whg4.webp",
+      "title": "Worlds Hardest Game 4",
+      "link": "https://truffled.lol/games/worlds-hardest-game-4/index.html"
+    },
+    {
+      "icon": "assets/images/gs/yoked.webp",
+      "title": "Yoked",
+      "link": "https://truffled.lol/gamefile/yoked.html"
+    },
+    {
+      "icon": "assets/images/gs/zombs.webp",
+      "title": "Zombs Royale",
+      "link": "https://zombsroyale.io/"
+    },
+    {
+      "icon": "assets/images/gs/zuma.webp",
+      "title": "Zuma",
+      "link": "https://truffled.lol/games/zuma/index.html"
+    }
+  ]
+}

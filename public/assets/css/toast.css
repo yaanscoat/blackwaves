@@ -1,0 +1,72 @@
+.toast {
+    position: fixed;
+    top: 20px;
+    right: -300px;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 15px;
+    color: white;
+    font-weight: bold;
+    z-index: 9999;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, right 0.5s ease-in-out;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.toast.success {
+    background-color: #000000b7;
+    backdrop-filter: blur(10px);
+}
+.toast.error {
+    background-color: #000000b7;
+    backdrop-filter: blur(10px);
+}
+.toast a {
+    margin-left: 5px;
+    display: inline-block;
+}
+.toast.show {
+    animation: slideIn 0.5s forwards;
+}
+.toast.hide {
+    animation: slideOut 0.5s forwards;
+}
+.toast.auto-remove {
+    animation: slideOut 0.5s forwards;
+    animation-delay: 3s;
+}
+.toast .toast-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 10px;
+    transition: 0.3s;
+}
+.toast-close:hover {
+    color: #f44336;
+}
+@keyframes slideIn {
+    0% {
+        right: -300px;
+        opacity: 0;
+   }
+    100% {
+        right: 20px;
+        opacity: 1;
+   }
+}
+@keyframes slideOut {
+    0% {
+        right: 20px;
+        opacity: 1;
+   }
+    100% {
+        right: -300px;
+        opacity: 0;
+   }
+}

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta property="og:title" content="BlackWaves - Games" />
+  <meta name="theme-color" content="#b6b6b6" />
+  <meta name="msapplication-TileColor" content="#b6b6b6" />
+  <meta property="og:image" content="/favicon.ico" />
+  <meta property="og:description" content="BlackWaves. A sleek and minimalist web proxy made by yaanscoat." />
+  <title>BlackWaves</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="/assets/css/index.css">
+  <link rel="stylesheet" href="/assets/css/settings.css">
+  <link rel="stylesheet" href="/assets/css/toast.css">
+  <link rel="stylesheet" href="/assets/css/gs.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+</head>
+<body>
+  <script src="/baremux/index.js" defer></script>
+  <script src="/scram/scramjet.all.js" defer></script>
+  <script src="/assets/js/toast.js" defer></script>
+  <script src="/assets/js/load.js" defer></script>
+  <script src="/assets/js/eruda.js" defer></script>
+  <script src="/assets/js/loader.js" defer></script>
+  <script src="/assets/js/settings.js" defer></script>
+  <script src="/assets/js/greeting.js" defer></script>
+  <script src="/assets/js/index.js" defer></script>
+  <script src="/assets/js/gs.js" defer></script>
+  <div class="relative flex flex-col h-[100vh] items-center justify-center bg-black transition-bg">
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="god-rays absolute -inset-[10px] opacity-50"></div>
+    </div>
+  </div>
+  <div class="navbar">
+    <ul class="nav-buttons">
+      <li><a id="backIcon" href="#"><i class="fas fa-arrow-left"></i></a></li>
+      <li><a id="refreshIcon" href="#"><i class="fas fa-redo-alt"></i></a></li>
+      <li><a id="forwardIcon" href="#"><i class="fas fa-arrow-right"></i></a></li>
+      <li>
+        <div class="search-containersmall">
+          <div class="small-searchbar" style="position: relative;">
+            <i id="lockIcon" class="fa-solid fa-lock"></i>
+            <input type="text" id="searchInputt" 
+                   placeholder="Search for a query or enter a URL..." autocomplete="off" 
+                   style="padding-left: 40px;">
+          </div>
+        </div>            
+      </li>
+      <li><a id="erudaIcon" href="#"><i class="fas fa-code"></i></a></li>
+      <li><a id="fullscreenIcon" href="#"><i class="fas fa-expand"></i></a></li>
+      <li><a href="/"><i class="fas fa-times"></i></a></li>
+    </ul>
+  </div>  
+  <div class="top-bar">
+    <img src="favicon.ico" class="favicon">
+    <span id="blackwaves">BlackWaves</span>
+    <a href="/" id="home">Home</a>
+    <a href="/gs" id="games">Games</a>
+    <a href="/as" id="apps">Apps</a>
+    <a href="#" id="movies">Movies</a>
+    <a href="#" id="settings-icon">
+      <i class="settings-icon fas fa-gear"></i>
+    </a>
+  </div> 
+
+  <div id="settings-menu" class="settings-menu"></div>
+
+  <div class="loading-screen">
+    <svg width="94" height="96" viewBox="0 0 74 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M54.1638 34H6.05016C3.82151 34 2.02752 35.8118 2.09701 36.9704C2.31522 45.0354 2.99406 59.4748 5.000 68C8.1425 81.3557 14.3711 89.7736 16.8971 92.769C17.581 93.58 18.59598 94 19.65686 94H40.0436C41.278 94 42.4386 93.4319 43.1318 92.4104C45.353 88.2493 50.4623 81.1414 55 68C57.9514 59.6376 58.168 45.1775 58.0881 37.8312C58.0638 34.4518 56.3078 34 54.1638 34Z" stroke="var(--secondary)" stroke-width="4"/>
+      <path d="M58 47C58 47 69 41 71 51C72.1972 56.9852 68.4066 63.0766 64 65.7426C58.911 68.8216 56 68 56 68" stroke-width="4"/>
+      <path id="teabag" fill-rule="evenodd" clip-rule="evenodd" d="M32 50V34H28V50H24C20.6863 50 18 52.3431 18 56V68C18 71.3137 20.6863 74 24 74H36C39.3137 74 42 71.3137 42 68V56C42 52.3431 39.3137 50 36 50H32ZM22 56C22 55.2239 22.2239 55 24 55H36C37.7761 55 38 55.2239 38 56V68C38 68.7761 37.7761 69 36 69H24C22.2239 69 22 68.7761 22 68V56Z"/>
+      <path id="steamL" d="M34 2C34 2 34 9 28 13C22 17 22 24 22 24" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke="var(--secondary)"/>
+      <path id="steamR" d="M42 12C42 12 42 16.4545 38 19C34 21.5455 34 26 34 26" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>    
+    <div class="loading-text">discord.gg/y2X5RtTSe</div>
+  </div>  
+
+  <div class="content games-page">
+    <h1>Games</h1>
+       <div class="games-search-bar">
+        <input type="text" id="gameSearchInput" placeholder="Search games..." autocomplete="off" />
+      </div>
+    <div class="games-grid">
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay"></div>
+  <div id="namePrompt" class="popup">
+    <div class="input-container">
+      <label for="userName">Please enter a name so we know what to call you:</label>
+      <div class="input-wrapper">
+        <input type="text" id="userName" placeholder="Your name" autocomplete="off" />
+      </div>
+      <button id="doneButton" onclick="submitName()" disabled>
+        <i class="fas fa-check"></i> Done
+      </button>
+    </div>
+  </div>
+
+  <div id="erudaLoadingScreen" style="display: none;">Eruda is loading...</div>
+  <iframe id="cool-iframe" class="iframe"></iframe>
+</body>
+</html>

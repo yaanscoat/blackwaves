@@ -1,0 +1,32 @@
+{
+    "name": "blackwaves",
+    "version": "1.0.0",
+    "description": "A sleek and minimalist web proxy made by yaanscoat.",
+    "type": "module",
+    "engines": {
+        "node": ">=18.0.0"
+    },
+    "scripts": {
+        "start": "node index.mjs",
+        "dev": "nodemon index.mjs"
+    },
+    "author": "yaanscoat",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/yaanscoat/blackwaves.git"
+    },
+    "license": "GPL-3.0",
+    "dependencies": {
+        "@mercuryworkshop/bare-mux": "^2.1.9",
+        "@mercuryworkshop/epoxy-transport": "^2.1.29",
+        "@mercuryworkshop/libcurl-transport": "^1.5.2",
+        "@mercuryworkshop/scramjet": "^1.1.0",
+        "@mercuryworkshop/wisp-js": "^0.5.2",
+        "compression": "^1.8.2",
+        "express": "^5.3.0",
+        "ws": "^8.22.0"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.10"
+    }
+}

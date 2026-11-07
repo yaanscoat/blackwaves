@@ -1,0 +1,21 @@
+{
+  "name": "libcurl.js",
+  "version": "0.7.4",
+  "description": "A port of libcurl to WebAssembly, for proxying HTTPS requests from the browser with full TLS encryption",
+  "main": "libcurl.mjs",
+  "exports": {
+    ".": "./libcurl.mjs",
+    "./bundled": "./libcurl_full.mjs",
+    "./libcurl.wasm": "./libcurl.wasm"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ading2210/libcurl.js.git"
+  },
+  "author": "ading2210",
+  "license": "LGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/ading2210/libcurl.js/issues"
+  },
+  "homepage": "https://github.com/ading2210/libcurl.js"
+}
