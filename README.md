@@ -1,5 +1,5 @@
 # BlackWaves.
-A sleek and minimalist web proxy made by **yaanscoat**.
+A sleek and minimalist web proxy.
 
 [![Join our Discord](https://invidget.switchblade.xyz/y2X5RtTSe)](https://discord.gg/y2X5RtTSe)
 
@@ -36,7 +36,7 @@ You **cannot** deploy BlackWaves on static hosting services (like GitHub Pages),
 3. Run the commands below:
 
 ```bash
-sudo git clone https://github.com/yaanscoat/blackwaves
+git clone https://github.com/yaanscoat/blackwaves
 
 cd blackwaves
 
@@ -44,7 +44,7 @@ npm i
 npm start
 ```
 
-Then, open localhost:8000 and you're done!
+Then, open [https://localhost:8000](https://localhost:8000) and you're done!
 
 ## License
 
