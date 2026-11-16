@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="midnight" data-motion="full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="blackwaves" />
+  <meta property="og:image" content="/favicon.ico" />
+  <meta name="theme-color" content="#050507" />
+  <meta name="description" content="blackwaves. A sleek web proxy by yaanscoat." />
+  <title>blackwaves</title>
+  <link rel="icon" id="bw-favicon" type="image/x-icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400&family=Sniglet:wght@400&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/index.css">
+  <link rel="stylesheet" href="/assets/css/settings.css">
+  <link rel="stylesheet" href="/assets/css/toast.css">
+  <script src="/assets/js/config.js"></script>
+  <script src="/assets/js/themes.js"></script>
+  <script src="/assets/js/cloak.js"></script>
+</head>
+<body>
+  <canvas id="seasonal-canvas" aria-hidden="true"></canvas>
+  <div id="seasonal-decor" aria-hidden="true"></div>
+  <div class="backdrop-glow" aria-hidden="true"></div>
+
+  <!-- Home -->
+  <header class="top-bar" id="top-bar">
+    <a href="#" class="brand" id="nav-home" aria-label="blackwaves home">
+      <img src="/favicon.ico" alt="" class="brand-icon">
+      <span>blackwaves</span>
+    </a>
+    <nav class="top-links">
+      <a href="#" id="nav-games"><i class="fa-solid fa-gamepad"></i><span>Games</span></a>
+      <a href="#" id="nav-movies"><i class="fa-solid fa-film"></i><span>Movies</span></a>
+      <a href="#" id="nav-ai"><i class="fa-solid fa-wand-magic-sparkles"></i><span>AI</span></a>
+    </nav>
+    <a class="icon-btn" href="https://discord.gg/rH2bMPPNq" target="_blank" rel="noopener" aria-label="Discord" title="Discord"><i class="fa-brands fa-discord"></i></a>
+    <button class="icon-btn" id="settings-open" aria-label="Settings"><i class="fa-solid fa-gear"></i></button>
+  </header>
+
+  <main class="home" id="home">
+    <h1 class="hero-title" id="hero-title">blackwaves</h1>
+    <p class="greeting" id="greeting"></p>
+    <div class="search-bar">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="search-input" placeholder="Search the web or enter a URL" autocomplete="off" spellcheck="false">
+      <span class="engine-chip" id="engine-chip"></span>
+    </div>
+    <button class="resume-tabs" id="resume-tabs" hidden><i class="fa-solid fa-layer-group"></i><span></span></button>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-left" id="ping-display"><i class="fa-solid fa-signal"></i> <span>Connecting...</span></div>
+    <div class="footer-center">blackwaves &middot; made by <a href="https://github.com/yaanscoat" target="_blank" rel="noopener">yaanscoat</a> &middot; <a href="https://discord.gg/rH2bMPPNq" target="_blank" rel="noopener"><i class="fa-brands fa-discord"></i> Discord</a></div>
+    <div class="footer-right">
+      <span class="status-pill" id="client-counter" title="Active clients"><span class="live-dot"></span><span id="client-count">-</span> online</span>
+      <span class="status-pill" id="server-location" title="Server location"><i class="fa-solid fa-location-dot"></i><span id="location-text">Locating...</span></span>
+    </div>
+  </footer>
+
+  <!-- Games -->
+  <section class="games-view" id="games-view" hidden>
+    <div class="games-header">
+      <button class="icon-btn" id="games-close" aria-label="Back"><i class="fa-solid fa-arrow-left"></i></button>
+      <h2>Games</h2>
+      <div class="games-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="games-search" placeholder="Search games" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="bw-dropdown" id="games-source"></div>
+    </div>
+    <p class="games-count" id="games-count"></p>
+    <div class="games-grid" id="games-grid"></div>
+  </section>
+
+  <!-- blackwaves AI -->
+  <section class="ai-view" id="ai-view" hidden>
+    <aside class="ai-sidebar">
+      <div class="ai-side-head">
+        <button class="icon-btn small" id="ai-close" aria-label="Back"><i class="fa-solid fa-arrow-left"></i></button>
+        <span><i class="fa-solid fa-wand-magic-sparkles"></i> blackwaves AI</span>
+      </div>
+      <button class="new-tab-btn" id="ai-new"><i class="fa-solid fa-plus"></i><span>New chat</span></button>
+      <div class="ai-chats" id="ai-chats"></div>
+      <button class="rail-btn" id="ai-zola" title="Open Zola in a tab"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>Open Zola</span></button>
+    </aside>
+    <div class="ai-main">
+      <header class="ai-header"><div class="bw-dropdown" id="ai-model"></div></header>
+      <div class="ai-messages" id="ai-messages"></div>
+      <form class="ai-composer" id="ai-form" autocomplete="off">
+        <textarea id="ai-input" rows="1" placeholder="Message blackwaves AI" spellcheck="true"></textarea>
+        <button class="ai-send" id="ai-send" type="submit" title="Send"><i class="fa-solid fa-arrow-up"></i></button>
+      </form>
+      <p class="ai-foot">Free models via OpenRouter. AI can make mistakes, so double-check important stuff.</p>
+    </div>
+  </section>
+
+  <!-- Proxy browser: vertical tabs -->
+  <div class="browser" id="browser" hidden>
+    <aside class="tab-rail" id="tab-rail">
+      <div class="rail-head">
+        <button class="rail-brand" id="rail-home" title="Home"><img src="/favicon.ico" alt=""><span>blackwaves</span></button>
+        <button class="icon-btn small" id="rail-collapse" aria-label="Collapse tabs" title="Collapse"><i class="fa-solid fa-angles-left"></i></button>
+      </div>
+      <button class="new-tab-btn" id="new-tab" title="New tab (Alt+T)"><i class="fa-solid fa-plus"></i><span>New tab</span></button>
+      <div class="tab-list" id="tab-list" role="tablist" aria-orientation="vertical"></div>
+      <div class="rail-foot">
+        <button class="rail-btn" id="rail-games" title="Games"><i class="fa-solid fa-gamepad"></i><span>Games</span></button>
+        <button class="rail-btn" id="rail-ai" title="blackwaves AI"><i class="fa-solid fa-wand-magic-sparkles"></i><span>AI</span></button>
+        <button class="rail-btn" id="rail-downloads" title="Downloads"><i class="fa-solid fa-download"></i><span>Downloads</span><span class="dl-badge" id="downloads-badge" hidden></span></button>
+        <button class="rail-btn" id="rail-settings" title="Settings"><i class="fa-solid fa-gear"></i><span>Settings</span></button>
+        <a class="rail-btn" href="https://discord.gg/rH2bMPPNq" target="_blank" rel="noopener" title="Discord"><i class="fa-brands fa-discord"></i><span>Discord</span></a>
+      </div>
+    </aside>
+    <div class="browser-main">
+      <div class="navbar" id="navbar">
+        <button class="nav-btn" id="nav-back" aria-label="Back"><i class="fa-solid fa-arrow-left"></i></button>
+        <button class="nav-btn" id="nav-forward" aria-label="Forward"><i class="fa-solid fa-arrow-right"></i></button>
+        <button class="nav-btn" id="nav-reload" aria-label="Reload"><i class="fa-solid fa-rotate-right"></i></button>
+        <div class="url-bar">
+          <i class="fa-solid fa-lock" id="lock-icon"></i>
+          <input type="text" id="url-input" autocomplete="off" spellcheck="false">
+          <span class="protocol-badge" id="protocol-badge"></span>
+        </div>
+        <button class="nav-btn" id="nav-extensions" aria-label="Extensions"><i class="fa-solid fa-puzzle-piece"></i></button>
+        <button class="nav-btn" id="nav-eruda" aria-label="Developer tools"><i class="fa-solid fa-code"></i></button>
+        <button class="nav-btn" id="nav-fullscreen" aria-label="Fullscreen"><i class="fa-solid fa-expand"></i></button>
+      </div>
+      <div class="page-progress" id="page-progress"></div>
+      <div class="ext-popover" id="ext-popover" hidden></div>
+      <div class="ext-popover downloads-panel" id="downloads-panel" hidden></div>
+      <div class="frames" id="frames"></div>
+
+      <!-- Loader (covers the page area of the active tab) -->
+      <div class="loading-screen" id="loading-screen" hidden>
+        <svg class="loader-waves" viewBox="0 0 120 40" aria-hidden="true">
+          <path d="M0 20 Q15 8 30 20 T60 20 T90 20 T120 20" />
+          <path d="M0 28 Q15 16 30 28 T60 28 T90 28 T120 28" />
+        </svg>
+        <div class="loading-text" id="loading-text">Loading...</div>
+        <div class="loading-sub" id="loading-sub"></div>
+        <div class="loading-bar"><span id="loading-bar-fill"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New tab prompt -->
+  <div class="newtab-overlay" id="newtab-overlay" hidden>
+    <form class="newtab-box" id="newtab-form" autocomplete="off">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="newtab-input" placeholder="Search or enter a URL" spellcheck="false">
+      <kbd>Enter</kbd>
+    </form>
+  </div>
+
+  <div id="settings-root"></div>
+  <div id="tutorial-root"></div>
+  <div id="erudaLoadingScreen" hidden>Loading developer tools...</div>
+
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/proxy.js"></script>
+  <script src="/assets/js/loader.js"></script>
+  <script src="/assets/js/downloads.js"></script>
+  <script src="/assets/js/extensions.js"></script>
+  <script src="/assets/js/filter-engine.js"></script>
+  <script src="/assets/js/filters.js"></script>
+  <script src="/assets/js/tabs.js"></script>
+  <script src="/assets/js/status.js"></script>
+  <script src="/assets/js/games.js"></script>
+  <script src="/assets/js/ai.js"></script>
+  <script src="/assets/js/settings.js"></script>
+  <script src="/assets/js/tutorial.js"></script>
+  <script src="/assets/js/sync.js"></script>
+  <script src="/assets/js/eruda.js"></script>
+  <script src="/assets/js/index.js"></script>
+</body>
+</html>

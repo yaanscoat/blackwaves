@@ -1,0 +1,36 @@
+{
+    "name": "blackwaves",
+    "version": "1.0.0",
+    "description": "blackwaves - a sleek web proxy powered by Scramjet. Made by yaanscoat.",
+    "type": "module",
+    "engines": {
+        "node": ">=21.0.0"
+    },
+    "scripts": {
+        "start": "node index.mjs"
+    },
+    "author": "yaanscoat (https://github.com/yaanscoat)",
+    "dependencies": {
+        "@mercuryworkshop/bare-mux": "^2.1.7",
+        "@mercuryworkshop/epoxy-transport": "^2.1.27",
+        "@mercuryworkshop/libcurl-transport": "^1.5.0",
+        "@mercuryworkshop/scramjet": "2.0.67-alpha.2",
+        "@mercuryworkshop/scramjet-controller": "0.0.14",
+        "@mercuryworkshop/wisp-js": "^0.3.3",
+        "@titaniumnetwork-dev/ultraviolet": "^3.2.10",
+        "compression": "^1.7.5",
+        "epoxy-transport-v3": "npm:@mercuryworkshop/epoxy-transport@3.0.2",
+        "express": "^4.21.2",
+        "libcurl-transport-v2": "npm:@mercuryworkshop/libcurl-transport@2.0.6",
+        "scramjet-v1": "npm:@mercuryworkshop/scramjet@1.1.0",
+        "ws": "^8.18.0"
+    },
+    "devDependencies": {
+        "eslint": "^8.36.0",
+        "prettier": "^2.8.4"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yaanscoat"
+    }
+}
