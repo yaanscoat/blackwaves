@@ -48,12 +48,12 @@
     }
     return list;
   }
-  function save(silent) {
+  // Chats stay on this device (cloud sync is capped at 3 KB).
+  function save() {
     chats = chats.sort((a, b) => b.updated - a.updated).slice(0, 50);
     try {
       localStorage.setItem(KEY, JSON.stringify(chats));
     } catch {}
-    if (!silent) BW.emitChange('ai');
   }
   const active = () => chats.find((c) => c.id === activeId) || null;
   const textOf = (m) => (m.role === 'assistant' ? (m.variants[m.idx] || m.variants[0] || {}).content || '' : m.content);
@@ -390,7 +390,7 @@
       if (act.dataset.act === 'regenerate') return regenerate(i);
       if (act.dataset.act === 'prev' || act.dataset.act === 'next') {
         msg.idx = Math.max(0, Math.min(msg.variants.length - 1, msg.idx + (act.dataset.act === 'next' ? 1 : -1)));
-        save(true);
+        save();
         return renderMessages(true);
       }
     }
@@ -478,17 +478,6 @@
     close() {
       view.hidden = true;
       document.body.classList.remove('ai-open');
-    },
-    // cloud sync
-    exportChats: () => chats,
-    importChats(next) {
-      if (!Array.isArray(next)) return;
-      chats = migrate(next);
-      save(true);
-      if (!view.hidden) {
-        renderChats();
-        renderMessages();
-      }
     },
   };
 })();

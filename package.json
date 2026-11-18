@@ -18,6 +18,8 @@
         "@mercuryworkshop/scramjet-controller": "0.0.14",
         "@mercuryworkshop/wisp-js": "^0.3.3",
         "@titaniumnetwork-dev/ultraviolet": "^3.2.10",
+        "chii": "^1.15.5",
+        "chobitsu": "^1.8.6",
         "compression": "^1.7.5",
         "epoxy-transport-v3": "npm:@mercuryworkshop/epoxy-transport@3.0.2",
         "express": "^4.21.2",

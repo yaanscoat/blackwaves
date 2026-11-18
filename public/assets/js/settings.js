@@ -11,7 +11,9 @@
     { id: 'extensions', name: 'Extensions', icon: 'fa-solid fa-puzzle-piece' },
     { id: 'advanced', name: 'Advanced', icon: 'fa-solid fa-microchip' },
     { id: 'sync', name: 'Cloud Sync', icon: 'fa-solid fa-cloud' },
+    { id: 'about', name: 'About', icon: 'fa-solid fa-circle-info' },
   ];
+  const REPO_URL = 'https://github.com/yaanscoat/blackwaves';
 
   const root = document.getElementById('settings-root');
   root.innerHTML = `
@@ -162,8 +164,11 @@
     row(motion, 'Motion effects', '<b>Full</b> everything on. <b>Minimal</b> quick fades only. <b>Reduced</b> slow and sparse. <b>Off</b> no animation at all.', BW.segmented(BW.MOTION, S.get('motion'), (v) => S.set('motion', v)), { stack: true });
 
     const seasonal = section('Seasonal');
-    const autoNote = () => `Automatic picks one by date. Right now that's <b>${esc(BW.SEASONAL.find((x) => x.id === BW.seasonForDate()).name)}</b>.`;
+    const autoNote = () => `Automatic follows the calendar, with a starry night between seasons. Right now that's <b>${esc(BW.SEASONAL.find((x) => x.id === BW.seasonForDate()).name)}</b>.`;
     row(seasonal, 'Seasonal look', autoNote(), dropdownEl(BW.SEASONAL.map((x) => ({ value: x.id, label: x.name })), S.get('seasonal'), (v) => S.set('seasonal', v)));
+
+    const cursor = section('Cursor');
+    row(cursor, 'Custom cursor', 'The Mario Gant cursor set by Behelit. Turn it off to use your system cursor.', BW.toggle(S.get('customCursor'), (v) => S.set('customCursor', v)));
   }
 
   /* ---------------- Cloaking ---------------- */
@@ -276,12 +281,10 @@
         BW.toast(`${esc(rec.manifest.name)} ${v ? 'enabled' : 'disabled'}.`, v ? 'success' : 'info');
       })];
       if (BW.extensions.hasOptions(rec.id)) {
-        controls.unshift(button('<i class="fa-solid fa-gear"></i>', () => {
-          close();
-          BW.app.ensureBrowser();
-          BW.extensions.openOptions(rec.id);
-        }, 'small ghost'));
+        controls.unshift(button('<i class="fa-solid fa-gear"></i>', () => BW.extensions.openOptions(rec.id), 'small ghost'));
+        controls[0].setAttribute('aria-label', 'Options');
       }
+      controls.unshift(pinButton(rec));
       controls.unshift(button('<i class="fa-solid fa-trash"></i>', async () => {
         await BW.extensions.remove(rec.id);
         BW.toast(`Removed ${esc(rec.manifest.name)}.`, 'info');
@@ -291,6 +294,24 @@
       const el = row(installed, rec.manifest.name, `${esc(rec.manifest.description || '')}<br><small>v${esc(rec.manifest.version || '?')} &middot; ${rec.type === 'userscript' ? 'Userscript' : `Manifest V${rec.manifest.manifest_version || 2}`}</small>`, controls);
       el.querySelector('.setting-title').insertAdjacentHTML('afterbegin', icon ? `<img class="ext-icon" src="${icon}" alt="">` : '<i class="fa-solid fa-puzzle-piece ext-icon"></i>');
     }
+  }
+
+  // Pin / unpin an installed extension to the navbar.
+  function pinButton(rec) {
+    const b = button('<i class="fa-solid fa-thumbtack"></i>', () => {
+      const on = !BW.extensions.isPinned(rec.id);
+      BW.extensions.setPinned(rec.id, on);
+      paint();
+      BW.toast(`${esc(rec.manifest.name)} ${on ? 'pinned to' : 'unpinned from'} the toolbar.`, 'info');
+    }, 'small ghost pin-btn');
+    const paint = () => {
+      const on = BW.extensions.isPinned(rec.id);
+      b.classList.toggle('pinned', on);
+      b.setAttribute('aria-pressed', String(on));
+      b.title = on ? 'Unpin from toolbar' : 'Pin to toolbar';
+    };
+    paint();
+    return b;
   }
 
   /* Ad blocking: BlackWaves Shield (recommended) and/or uBlock Origin Lite. Both are optional; nothing is forced. */
@@ -310,11 +331,7 @@
     const ubol = BW.extensions.list().find((r) => r.id === UBOL_ID);
     const controls = [];
     if (ubol && ubol.enabled) {
-      controls.push(button('<i class="fa-solid fa-gauge"></i> Dashboard', () => {
-        close();
-        BW.app.ensureBrowser();
-        BW.extensions.openOptions(UBOL_ID);
-      }, 'small ghost'));
+      controls.push(pinButton(ubol), button('<i class="fa-solid fa-gauge"></i> Dashboard', () => BW.extensions.openOptions(UBOL_ID), 'small ghost'));
     }
     controls.push(BW.toggle(!!(ubol && ubol.enabled), async (v) => {
       try {
@@ -509,8 +526,6 @@
       location.reload();
     }, 'danger'));
 
-    const about = section('About');
-    about.insertAdjacentHTML('beforeend', `<p class="about-text"><b>blackwaves</b> v${VERSION}, made by <a href="https://github.com/yaanscoat" target="_blank" rel="noopener">yaanscoat</a>.<br>Powered by <a href="https://github.com/MercuryWorkshop/scramjet" target="_blank" rel="noopener">Scramjet</a>, <a href="https://github.com/titaniumnetwork-dev/Ultraviolet" target="_blank" rel="noopener">Ultraviolet</a> and Wisp. Based on Waves by xojw.<br><a href="${BW.DISCORD_URL}" target="_blank" rel="noopener"><i class="fa-brands fa-discord"></i> Join the blackwaves Discord</a></p>`);
   }
 
   /* ---------------- Cloud Sync ---------------- */
@@ -527,15 +542,15 @@
 
   function renderSync() {
     const st = BW.sync.status();
-    const what = '<ul class="sync-list"><li><i class="fa-solid fa-palette"></i>Theme, motion &amp; seasonal look</li><li><i class="fa-solid fa-sliders"></i>Every setting, incl. cloaking &amp; engine</li><li><i class="fa-solid fa-clock-rotate-left"></i>Search &amp; browsing history</li><li><i class="fa-solid fa-table-columns"></i>Open tabs</li><li><i class="fa-solid fa-puzzle-piece"></i>Extensions &amp; their data</li><li><i class="fa-solid fa-wand-magic-sparkles"></i>AI chats</li><li><i class="fa-solid fa-user"></i>Your name</li></ul>';
+    const what = '<ul class="sync-list"><li><i class="fa-solid fa-palette"></i>Theme, motion &amp; seasonal look</li><li><i class="fa-solid fa-sliders"></i>Every setting, incl. cloaking &amp; engine</li><li><i class="fa-solid fa-clock-rotate-left"></i>Recent history</li><li><i class="fa-solid fa-table-columns"></i>Open tabs</li><li><i class="fa-solid fa-puzzle-piece"></i>Chrome Web Store extensions</li><li><i class="fa-solid fa-user"></i>Your name</li></ul>';
 
     if (!st.signedIn) {
-      const sec = section('Cloud Sync', 'Sign in on any device to bring all your blackwaves stuff with you. Accounts live on this blackwaves server only.');
+      const sec = section('Cloud Sync', 'Sign in on any device to bring all your blackwaves stuff with you. Accounts live on this blackwaves server only, and synced data is stored encrypted.');
       sec.insertAdjacentHTML('beforeend', what);
       const form = document.createElement('form');
       form.className = 'sync-form';
       form.innerHTML = `<input class="bw-input" name="username" placeholder="Username" autocomplete="username" maxlength="24" spellcheck="false">
-        <input class="bw-input" name="password" type="password" placeholder="Password (6+ characters)" autocomplete="current-password">
+        <input class="bw-input" name="password" type="password" placeholder="Password (8+ characters for new accounts)" autocomplete="current-password">
         <p class="sync-error" hidden></p>
         <div class="sync-actions"><button class="bw-btn primary" data-mode="login" type="submit"><i class="fa-solid fa-right-to-bracket"></i> Sign in</button><button class="bw-btn" data-mode="register" type="button"><i class="fa-solid fa-user-plus"></i> Create account</button></div>`;
       const err = form.querySelector('.sync-error');
@@ -578,11 +593,18 @@
         render('sync');
       }, 'small ghost'),
     ]);
+    row(acct, 'Sign out everywhere', 'Ends every session on every device, including this one. Use it if you signed in on a computer that isn\'t yours.', [
+      button('<i class="fa-solid fa-right-from-bracket"></i> Sign out everywhere', async () => {
+        await BW.sync.signOut(true);
+        BW.toast('Signed out on every device.', 'info');
+        render('sync');
+      }, 'small ghost'),
+    ]);
     statusRow.querySelector('.setting-title').insertAdjacentHTML('afterbegin', '<i class="fa-solid fa-circle-user ext-icon"></i>');
     const desc = statusRow.querySelector('.setting-desc');
     unsubscribeSync = BW.sync.onStatus(() => (desc.innerHTML = statusText()));
 
-    const info = section('What syncs', 'Changes upload a few seconds after you make them. Other devices pick them up when you switch back to them. Extensions over 3 MB stay on the device they were installed on.');
+    const info = section('What syncs', 'Changes upload a few seconds after you make them. Other devices pick them up when you switch back to them. Each account stores up to 3 KB, so history keeps the most recent sites that fit. AI chats, extension settings, unpacked extensions and userscripts stay on this device.');
     info.insertAdjacentHTML('beforeend', what);
 
     const danger = section('Delete account');
@@ -603,7 +625,47 @@
     row(danger, 'Delete cloud account', 'Removes the account and everything stored on the server.', del);
   }
 
-  const RENDERERS = { preferences: renderPreferences, appearance: renderAppearance, cloaking: renderCloaking, extensions: renderExtensions, advanced: renderAdvanced, sync: renderSync };
+  /* ---------------- About ---------------- */
+  const link = (href, text) => `<a href="${href}" target="_blank" rel="noopener">${text}</a>`;
+  const PEOPLE = [
+    { name: 'yaanscoat', href: 'https://github.com/yaanscoat', role: 'coding everything, owner and creator', icon: 'fa-solid fa-crown' },
+    { name: 'bog', role: 'gave me the tools and info to make this website', icon: 'fa-solid fa-toolbox' },
+    { name: 'claude code', href: 'https://claude.com/claude-code', role: 'legendary backend maker', icon: 'fa-solid fa-robot' },
+  ];
+  const SOURCES = [
+    { name: 'selenite', href: 'https://selenite.cc/', what: 'game source' },
+    { name: "chicken king's vault", href: 'https://github.com/gmshelf/ckv', what: 'game source' },
+    { name: 'seraph', href: 'https://github.com/gmshelf/seraph', what: 'game source' },
+    { name: 'ugs', href: 'https://github.com/gmshelf/ugs', what: 'game source' },
+    { name: 'truffled', href: 'https://truffled.lol', what: 'game source' },
+    { name: 'titanium network', href: 'https://github.com/titaniumnetwork-dev/ultraviolet/', what: 'ultraviolet' },
+    { name: 'mercury workshop', href: 'https://github.com/mercuryworkshop/', what: 'scramjet, epoxy, and libcurl' },
+  ];
+
+  function renderAbout() {
+    const hero = document.createElement('div');
+    hero.className = 'about-hero';
+    hero.innerHTML = `<img src="/favicon.ico" alt="">
+      <div class="about-hero-text"><div class="about-name">blackwaves</div><div class="about-version">version ${VERSION}</div></div>
+      <div class="about-links">
+        ${link('https://blackwaveson.top', '<i class="fa-solid fa-globe"></i> website')}
+        ${link(REPO_URL, '<i class="fa-brands fa-github"></i> github')}
+        ${link(BW.DISCORD_URL, '<i class="fa-brands fa-discord"></i> discord')}
+      </div>`;
+    scroll.appendChild(hero);
+
+    const people = section('Credits');
+    people.insertAdjacentHTML('beforeend', `<ul class="credit-people">${PEOPLE.map((p) => `<li><i class="${p.icon}"></i><div><b>${p.href ? link(p.href, esc(p.name)) : esc(p.name)}</b><span>${esc(p.role)}</span></div></li>`).join('')}</ul>`);
+
+    const sources = section('Games & engines');
+    sources.insertAdjacentHTML('beforeend', `<ul class="credit-list">${SOURCES.map((x) => `<li>${link(x.href, esc(x.name))}<span>${esc(x.what)}</span></li>`).join('')}</ul>`);
+
+    const thanks = section('Thanks');
+    thanks.insertAdjacentHTML('beforeend', `<p class="about-text">That's it! Thanks so much for using BlackWaves!! If you have any suggestions, tweaks, issues, ideas, drop them in the ${link(BW.DISCORD_URL, 'discord server')} or open a issue on the ${link(`${REPO_URL}/issues`, 'github repository')}.</p>
+      <p class="about-fine">Based on Waves by ${link('https://luy.lat', 'luyy')}. Extension engine modelled on ${link('https://github.com/x8rr/sapphire', 'Sapphire')}. Mario Gant cursors by ${link('https://www.deviantart.com/behelit/art/Mario-Gant-32008915', 'Behelit')} (CC BY-NC).</p>`);
+  }
+
+  const RENDERERS = { preferences: renderPreferences, appearance: renderAppearance, cloaking: renderCloaking, extensions: renderExtensions, advanced: renderAdvanced, sync: renderSync, about: renderAbout };
 
   function render(tab) {
     if (unsubscribeSync) unsubscribeSync();

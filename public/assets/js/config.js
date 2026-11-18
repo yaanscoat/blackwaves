@@ -18,6 +18,7 @@
     theme: 'midnight',
     motion: 'full',
     seasonal: 'auto',
+    customCursor: true,
     // Cloaking
     cloakPreset: 'none',
     cloakTitle: '',
@@ -36,6 +37,8 @@
     saveHistory: true,
     // Extensions (ids of enabled built-ins)
     builtinExtensions: ['adshield'],
+    // installed extensions shown as icons in the navbar
+    pinnedExtensions: [],
   };
 
   const SEARCH_ENGINES = {

@@ -21,6 +21,18 @@
   <script src="/assets/js/cloak.js"></script>
 </head>
 <body>
+  <!-- Startup splash (splash.js) -->
+  <div class="splash" id="splash" role="status" aria-label="Loading blackwaves">
+    <div class="splash-logo"><img src="/favicon.ico" alt=""></div>
+    <div class="splash-status">
+      <ul class="splash-steps">
+        <li class="splash-step" data-step="browser"><span class="st"></span><span class="label">starting the browser</span></li>
+        <li class="splash-step" data-step="games"><span class="st"></span><span class="label">loading games</span></li>
+        <li class="splash-step" data-step="sync"><span class="st"></span><span class="label">checking cloud sync</span></li>
+      </ul>
+      <div class="splash-bar"><span></span></div>
+    </div>
+  </div>
   <canvas id="seasonal-canvas" aria-hidden="true"></canvas>
   <div id="seasonal-decor" aria-hidden="true"></div>
   <div class="backdrop-glow" aria-hidden="true"></div>
@@ -124,8 +136,9 @@
           <input type="text" id="url-input" autocomplete="off" spellcheck="false">
           <span class="protocol-badge" id="protocol-badge"></span>
         </div>
+        <div class="nav-pins" id="nav-pins"></div>
         <button class="nav-btn" id="nav-extensions" aria-label="Extensions"><i class="fa-solid fa-puzzle-piece"></i></button>
-        <button class="nav-btn" id="nav-eruda" aria-label="Developer tools"><i class="fa-solid fa-code"></i></button>
+        <button class="nav-btn" id="nav-devtools" aria-label="Developer tools"><i class="fa-solid fa-code"></i></button>
         <button class="nav-btn" id="nav-fullscreen" aria-label="Fullscreen"><i class="fa-solid fa-expand"></i></button>
       </div>
       <div class="page-progress" id="page-progress"></div>
@@ -157,9 +170,10 @@
 
   <div id="settings-root"></div>
   <div id="tutorial-root"></div>
-  <div id="erudaLoadingScreen" hidden>Loading developer tools...</div>
+  <div id="devtools-notice" hidden>loading developer tools...</div>
 
   <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/splash.js"></script>
   <script src="/assets/js/proxy.js"></script>
   <script src="/assets/js/loader.js"></script>
   <script src="/assets/js/downloads.js"></script>
@@ -173,7 +187,7 @@
   <script src="/assets/js/settings.js"></script>
   <script src="/assets/js/tutorial.js"></script>
   <script src="/assets/js/sync.js"></script>
-  <script src="/assets/js/eruda.js"></script>
+  <script src="/assets/js/devtools.js"></script>
   <script src="/assets/js/index.js"></script>
 </body>
 </html>

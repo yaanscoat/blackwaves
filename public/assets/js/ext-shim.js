@@ -22,7 +22,53 @@
     return;
   }
 
-  const chrome = host.BW.extensions._shim(id, kind, location.href);
+  // The chrome.* objects are built by the blackwaves page, so anything they hand back (tabs,
+  // storage values, messages from other pages) belongs to that page's realm, and checks like
+  // `tab instanceof Object` fail here. Chrome serializes everything that crosses into an extension
+  // page, so do the same: copy values into this realm with structuredClone. Things that can't be
+  // copied (ports, events) are wrapped instead, so their methods are copied too.
+  const wrapped = new WeakMap();
+  const callbacks = new WeakMap();
+  const copy = (v) => {
+    if (v === null || (typeof v !== 'object' && typeof v !== 'function')) return v;
+    if (typeof v === 'function') return localize(v);
+    try {
+      return structuredClone(v);
+    } catch {
+      return localize(v);
+    }
+  };
+  const settle = (r) => (r && typeof r.then === 'function' && !(r instanceof Promise) ? new Promise((res, rej) => r.then((v) => res(copy(v)), (e) => rej(copy(e)))) : copy(r));
+  const callback = (cb) => {
+    if (typeof cb !== 'function') return cb;
+    if (!callbacks.has(cb)) callbacks.set(cb, function (...args) {
+      return cb.apply(this, args.map(copy));
+    });
+    return callbacks.get(cb);
+  };
+  function localize(obj) {
+    if (wrapped.has(obj)) return wrapped.get(obj);
+    const methods = new Map();
+    const proxy = new Proxy(obj, {
+      get(target, key) {
+        const v = Reflect.get(target, key);
+        if (typeof v === 'function') {
+          if (!methods.has(key)) methods.set(key, function (...args) {
+            return settle(v.apply(target, args.map(callback)));
+          });
+          return methods.get(key);
+        }
+        return v && typeof v === 'object' ? localize(v) : v;
+      },
+      apply(target, self, args) {
+        return settle(Reflect.apply(target, self, args.map(callback)));
+      },
+    });
+    wrapped.set(obj, proxy);
+    return proxy;
+  }
+
+  const chrome = localize(host.BW.extensions._shim(id, kind, location.href));
   try {
     Object.defineProperty(window, 'chrome', { configurable: true, writable: true, value: chrome });
   } catch {

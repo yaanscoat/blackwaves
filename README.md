@@ -1,33 +1,34 @@
-# blackwaves
+# blackwaves!!
 
-A sleek web proxy powered by Scramjet. Made by [yaanscoat](https://github.com/yaanscoat).
+[join our discord](https://discord.gg/Un24M9gnpN)
 
-**Website:** https://blackwaveson.top · [Join the Discord](https://discord.gg/rH2bMPPNq)
+## features
+- clean and minimalistic
+- nice looking ui
+- very fast proxy
+- cloudsync that syncs basically everything
+- cloaking, themes, so much more!!
 
-## Features
+## live instance
+- https://blackwaveson.top
 
-- Slick and clean UI
-- Over 2,000+ games
-- Movies
-- AI
-- So tuff
-- So much more..
+## credits
+- [selenite](https://selenite.cc/) - game source
+- [chicken king's vault](https://github.com/gmshelf/ckv) - game source
+- [seraph](https://github.com/gmshelf/seraph) - game source
+- [ugs](https://github.com/gmshelf/ugs) - game source
+- [truffled](https://truffled.lol) - game source
+- [titanium network](https://github.com/titaniumnetwork-dev/ultraviolet/) - ultraviolet
+- [mercury workshop](https://github.com/mercuryworkshop/) - scramjet, epoxy, and libcurl
 
-## Usage
+## star history
+<a href="https://www.star-history.com/?repos=yaanscoat%2Fblackwaves&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=yaanscoat/blackwaves&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=yaanscoat/blackwaves&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=yaanscoat/blackwaves&type=date&legend=top-left" />
+ </picture>
+</a>
 
-You **CANNOT** run BlackWaves on static hosts like Vercel, GitHub Pages, etc.
-
-## Run locally
-
-```bash
-npm i        # or: bun install
-npm start
-```
-
-## Credits
-
-Based on [Waves](https://github.com/xojw/waves) by xojw. Uses [Scramjet](https://github.com/MercuryWorkshop/scramjet), [Ultraviolet](https://github.com/titaniumnetwork-dev/Ultraviolet) and [Wisp](https://github.com/MercuryWorkshop/wisp-protocol). The extension engine is modelled on [Sapphire](https://github.com/x8rr/sapphire).
-
-## License
-
-[GPL-3.0](LICENSE). Scramjet 2.x and the transports are AGPL-3.0.
+## license
+this project is licensed by the [GNU GPLv3](LICENSE)

@@ -115,6 +115,7 @@
       const legacy = localStorage.getItem('userName');
       if (legacy && !S.get('userName')) S.set('userName', legacy);
     } catch {}
-    BW.tutorial.start();
+    // open after the startup splash is gone
+    BW.splash.done.then(() => BW.tutorial.start());
   }
 })();

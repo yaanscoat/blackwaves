@@ -14,7 +14,7 @@ import { createCwsRouter } from "./cws.mjs";
 import { createAiRouter } from "./ai.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-// Server-only secrets (e.g. OPENROUTER_API_KEY) live in .env, which is never served.
+// Server-only secrets (e.g. SYNC_SECRET) live in .env, which is never served.
 try {
   process.loadEnvFile(path.join(__dirname, ".env"));
 } catch {}
@@ -40,19 +40,36 @@ app.use("/libcurl/", express.static(libcurlPath));
 // proxy-transports (Scramjet latest)
 app.use("/epoxy3/", express.static(epoxyV3Path));
 app.use("/libcurl2/", express.static(libcurlV2Path));
+// public/data holds the cloud sync accounts. It sits in the web root but is never served.
+// Decode and normalize first so /%64ata, /assets/../data or (on Windows) /DATA./ can't slip past.
+const dataDir = process.env.DATA_DIR || path.join(publicPath, "data");
+app.use((req, res, next) => {
+  let p;
+  try {
+    p = decodeURIComponent(req.path);
+  } catch {
+    return res.status(400).end();
+  }
+  const first = path.posix.normalize(p.replace(/\\/g, "/")).split("/").find(Boolean) || "";
+  if (/^data(?:[\s.:]|$)/i.test(first)) return res.status(404).end();
+  next();
+});
 // Proxy engines
 app.use(express.static(publicPath));
 app.use("/uv/", express.static(uvPath));
 app.use("/scram/", express.static(scramjetLegacyPath));
 app.use("/scramjet/", express.static(scramjetLatestPath));
 app.use("/controller/", express.static(controllerPath));
+// Developer tools: Chromium's DevTools frontend (via chii) plus the in-page protocol backend (chobitsu)
+app.use("/devtools/front_end/", express.static(path.join(pkgDir("chii"), "public", "front_end"), { maxAge: "7d" }));
+app.get("/devtools/chobitsu.js", (req, res) => res.sendFile(path.join(pkgDir("chobitsu"), "dist", "chobitsu.js"), { maxAge: "7d" }));
 
-// Cloud sync (accounts + snapshots stored under ./data, or $DATA_DIR)
 // Chrome Web Store search + .crx download for the extensions page
 app.use("/api/cws", createCwsRouter());
 // Built-in AI (OpenRouter relay; the key never leaves the server)
 app.use("/api/ai", createAiRouter());
-app.use("/api/sync", createSyncRouter(process.env.DATA_DIR || path.join(__dirname, "data")));
+// Cloud sync (accounts + encrypted snapshots in public/data, or $DATA_DIR)
+app.use("/api/sync", createSyncRouter(dataDir, { envFile: path.join(__dirname, ".env") }));
 
 /* ------------------------------------------------------------------ */
 /* Server info: location + active clients                              */
@@ -297,7 +314,7 @@ app.use((req, res) => {
 /* WebSockets: ping + live client count, wisp                          */
 /* ------------------------------------------------------------------ */
 
-const port = parseInt(process.env.PORT || "3000");
+const port = parseInt(process.env.PORT || "8000");
 const server = createServer(app);
 const pingWSS = new WebSocketServer({ noServer: true });
 const clientSockets = new Set();

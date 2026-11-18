@@ -37,6 +37,7 @@
     { id: 'newyear', name: 'New Year fireworks' },
     { id: 'rain', name: 'Spring rain' },
     { id: 'fireflies', name: 'Summer fireflies' },
+    { id: 'stars', name: 'Starry night' },
   ];
 
   const root = document.documentElement;
@@ -47,6 +48,7 @@
     const meta = document.querySelector('meta[name="theme-color"]');
     const theme = THEMES.find((t) => t.id === id);
     if (meta) meta.content = theme.colors[0];
+    if (seasonal.current() === 'stars') seasonal.restart(); // star colour follows light/dark
   }
 
   function applyMotion(id) {
@@ -54,24 +56,27 @@
     seasonal.restart();
   }
 
+  // [from month, day, to month, day, effect]; any date outside these windows gets the starry night
+  const SEASONS = [
+    [1, 1, 1, 7, 'newyear'],
+    [1, 8, 1, 31, 'snow'],
+    [2, 7, 2, 14, 'valentine'],
+    [3, 20, 4, 25, 'sakura'],
+    [6, 21, 8, 20, 'fireflies'],
+    [9, 22, 10, 14, 'autumn'],
+    [10, 15, 10, 31, 'halloween'],
+    [11, 1, 11, 15, 'autumn'],
+    [12, 1, 12, 31, 'christmas'],
+  ];
   function seasonForDate(d = new Date()) {
-    const m = d.getMonth() + 1;
-    const day = d.getDate();
-    if (m === 12) return 'christmas';
-    if (m === 1 && day <= 7) return 'newyear';
-    if (m === 1 || (m === 2 && day > 14)) return 'snow';
-    if (m === 2) return 'valentine';
-    if (m === 3 && day < 20) return 'rain';
-    if ((m === 3 && day >= 20) || m === 4) return 'sakura';
-    if (m === 5) return 'rain';
-    if (m >= 6 && m <= 8) return 'fireflies';
-    if (m === 10) return 'halloween';
-    return 'autumn';
+    const md = (d.getMonth() + 1) * 100 + d.getDate();
+    const season = SEASONS.find(([fm, fd, tm, td]) => md >= fm * 100 + fd && md <= tm * 100 + td);
+    return season ? season[4] : 'stars';
   }
 
   /* ---------------- Seasonal particle engine ---------------- */
   const seasonal = (() => {
-    let canvas, ctx, raf, particles = [], effect = 'none', last = 0, w = 0, h = 0, dpr = 1;
+    let canvas, ctx, raf, particles = [], effect = 'none', last = 0, w = 0, h = 0, dpr = 1, lightTheme = false;
 
     const PRESETS = {
       snow: { count: 90, spawn: snowflake },
@@ -83,6 +88,7 @@
       newyear: { count: 0, spawn: null },
       rain: { count: 110, spawn: raindrop },
       fireflies: { count: 40, spawn: firefly },
+      stars: { count: 170, spawn: star },
     };
 
     const rand = (a, b) => a + Math.random() * (b - a);
@@ -110,6 +116,28 @@
     }
     function firefly(initial) {
       return { kind: 'firefly', x: rand(0, w), y: rand(h * 0.3, h), r: rand(1.2, 2.4), vx: rand(-10, 10), vy: rand(-10, 10), phase: rand(0, 6.28), a: 0 };
+    }
+    function star() {
+      const warm = Math.random() < 0.15;
+      const color = lightTheme ? (warm ? '#8a6a2f' : '#3b3b4a') : warm ? '#ffe6b8' : Math.random() < 0.2 ? '#c8d8ff' : '#ffffff';
+      return { kind: 'star', x: rand(0, w), y: rand(0, h), r: rand(0.35, 1.5), base: rand(0.25, 0.85), tw: rand(0.6, 2.2), phase: rand(0, 6.28), color };
+    }
+    function shootingStar() {
+      const ang = rand(0.35, 0.65), sp = rand(500, 800);
+      particles.push({ kind: 'shoot', x: rand(w * 0.1, w * 0.9), y: rand(0, h * 0.4), vx: Math.cos(ang) * sp * (Math.random() < 0.5 ? -1 : 1), vy: Math.sin(ang) * sp, life: rand(0.6, 1.1), age: 0 });
+    }
+    function drawStar(p, alpha) {
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+      if (p.r > 1.2) {
+        // a faint cross glint on the brightest stars
+        ctx.globalAlpha = alpha * 0.35;
+        ctx.fillRect(p.x - p.r * 3, p.y - 0.25, p.r * 6, 0.5);
+        ctx.fillRect(p.x - 0.25, p.y - p.r * 3, 0.5, p.r * 6);
+      }
     }
     function burst() {
       const x = rand(w * 0.15, w * 0.85), y = rand(h * 0.1, h * 0.5);
@@ -190,6 +218,7 @@
       if (!preset) return;
 
       if (effect === 'newyear' && Math.random() < dt * 0.9 * densityScale() + 0.002) burst();
+      if (effect === 'stars' && Math.random() < dt * 0.08 * densityScale()) shootingStar();
       const target = Math.round(preset.count * densityScale());
       while (preset.spawn && particles.length < target) particles.push(preset.spawn(false));
 
@@ -258,6 +287,28 @@
             ctx.shadowBlur = 0;
             if (p.x < -20 || p.x > w + 20 || p.y < -20 || p.y > h + 20) particles[i] = firefly(true);
             continue;
+          case 'star':
+            drawStar(p, p.base * (0.55 + 0.45 * Math.sin(p.phase * p.tw)));
+            continue;
+          case 'shoot': {
+            p.age += dt;
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            const fade = Math.max(0, 1 - p.age / p.life);
+            const trail = ctx.createLinearGradient(p.x, p.y, p.x - p.vx * 0.12, p.y - p.vy * 0.12);
+            const rgb = lightTheme ? '59,59,74' : '255,255,255';
+            trail.addColorStop(0, `rgba(${rgb},0.9)`);
+            trail.addColorStop(1, `rgba(${rgb},0)`);
+            ctx.globalAlpha = fade;
+            ctx.strokeStyle = trail;
+            ctx.lineWidth = 1.4;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p.x - p.vx * 0.12, p.y - p.vy * 0.12);
+            ctx.stroke();
+            if (p.age >= p.life) particles.splice(i, 1);
+            continue;
+          }
           case 'spark':
             p.age += dt;
             p.vy += 70 * dt;
@@ -303,7 +354,19 @@
       cancelAnimationFrame(raf);
       particles = [];
       effect = id === 'auto' ? seasonForDate() : id;
+      lightTheme = getComputedStyle(root).getPropertyValue('--scheme').trim() === 'light';
       decor(effect);
+      if (effect === 'stars' && densityScale() === 0) {
+        // motion off: the night sky still shows, it just holds still
+        resize();
+        ctx.clearRect(0, 0, w, h);
+        for (let i = 0; i < 120; i++) {
+          const p = star();
+          drawStar(p, p.base);
+        }
+        ctx.globalAlpha = 1;
+        return;
+      }
       if (effect === 'none' || densityScale() === 0) {
         ctx && ctx.clearRect(0, 0, canvas.width, canvas.height);
         return;
@@ -319,7 +382,8 @@
     }
 
     window.addEventListener('resize', () => {
-      if (canvas && effect !== 'none') {
+      if (canvas && effect === 'stars') start(BW.settings.get('seasonal')); // re-scatter the sky
+      else if (canvas && effect !== 'none') {
         resize();
         decor(effect);
       }
@@ -342,7 +406,11 @@
     };
   })();
 
+  const applyCursor = (on) => (root.dataset.cursor = on ? 'custom' : 'system');
+
   applyTheme(BW.settings.get('theme'));
+  applyCursor(BW.settings.get('customCursor'));
+  BW.settings.on('customCursor', applyCursor);
   root.dataset.motion = BW.settings.get('motion');
   BW.settings.on('theme', applyTheme);
   BW.settings.on('motion', applyMotion);

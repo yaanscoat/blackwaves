@@ -1,8 +1,9 @@
 /*
  * blackwaves AI: a server-side relay to OpenRouter.
  *
- * The API key lives only on the server (OPENROUTER_API_KEY in .env) and is never sent to
- * browsers. Clients call:
+ * The OpenRouter key ships with the code, base64-encoded (OPENROUTER_API_KEY in the environment
+ * overrides it). The server decodes it and calls OpenRouter itself, so browsers never receive it.
+ * Clients call:
  *   GET  /api/ai/models   free models this key can use, plus the default
  *   POST /api/ai/chat     { model, messages } -> text/event-stream of { delta } / { model } / { error }
  */
@@ -25,11 +26,11 @@ function systemPrompt(siteUrl) {
   return `You are blackwaves AI, a friendly, concise assistant built into blackwaves.
 
 ## Facts about blackwaves (the ONLY things you know about it)
-- blackwaves is a web proxy website made by yaanscoat (GitHub: https://github.com/yaanscoat). It is based on Waves by xojw.
+- blackwaves is a web proxy website made by yaanscoat (GitHub: https://github.com/yaanscoat). It is based on Waves by luyy (https://luy.lat).
 - The official blackwaves website is https://blackwaveson.top${siteUrl.replace(/^https?:\/\//, '') === 'blackwaveson.top' ? '' : ` (the user is currently using a copy at ${siteUrl})`}. These are the only blackwaves addresses you know.
 - Official Discord: https://discord.gg/rH2bMPPNq
 - Movies site: https://yaanscoat.github.io/blackwaves-movies/
-- It runs on Node.js with Express. Self-hosting: get the code from yaanscoat's GitHub profile, run "npm i" then "npm start", and open http://localhost:3000. It needs a Node server; it cannot run on static hosting. You do NOT know the exact repository name or URL, so never write a git clone command or a repo link; point to https://github.com/yaanscoat instead.
+- It runs on Node.js with Express. Self-hosting: get the code from yaanscoat's GitHub profile, run "npm i" then "npm start", and open http://localhost:8000. It needs a Node server; it cannot run on static hosting. You do NOT know the exact repository name or URL, so never write a git clone command or a repo link; point to https://github.com/yaanscoat instead.
 - Proxy engines (Settings > Advanced): Scramjet (latest, the default), Scramjet 1.1.0, and Ultraviolet (marked unstable). Transports: Epoxy or Libcurl, over the Wisp protocol.
 - Browsing happens in a tabbed browser with vertical tabs. "New tab" (or Alt+T) opens a small search bar.
 - Games from five libraries: Selenite, Truffled, Seraph, UGS and CKV.
@@ -48,12 +49,14 @@ function systemPrompt(siteUrl) {
 - Be concise. Use Markdown, and fenced code blocks for code.
 - Today's date is ${new Date().toISOString().slice(0, 10)}.`;
 }
+// base64 only keeps the key from sitting in the source as plain text; it is not encryption.
+const BUILTIN_KEY = "c2stb3ItdjEtYzFjNGJiNGYwYzBkMzY0MzQ4MTI5MzY0ZjBmNmUxZDBmODcwN2UzYmE1NTY3OGM0MDFjOTJlYzJjMjZlOTk5MA==";
 const MAX_MESSAGES = 24;
 const MAX_CHARS = 24000;
 
 export function createAiRouter() {
   const router = express.Router();
-  const key = process.env.OPENROUTER_API_KEY || "";
+  const key = process.env.OPENROUTER_API_KEY || Buffer.from(BUILTIN_KEY, "base64").toString("utf8");
   let models = null;
   let modelsAt = 0;
 
@@ -106,7 +109,7 @@ export function createAiRouter() {
     const available = await listModels();
     const requested = String(req.body?.model || DEFAULT_MODEL);
     // The address the user actually reached us at, so the model never guesses a domain.
-    const host = /^[a-z0-9.-]+(:d+)?$/i.test(req.headers.host || "") ? req.headers.host : "localhost:3000";
+    const host = /^[a-z0-9.-]+(:\d+)?$/i.test(req.headers.host || "") ? req.headers.host : "localhost:8000";
     const proto = String(req.headers["x-forwarded-proto"] || (req.socket.encrypted ? "https" : "http")).split(",")[0].trim();
     const siteUrl = `${proto === "https" ? "https" : "http"}://${host}`;
     // "Generate another answer" asks for more variety; normal answers stay focused.

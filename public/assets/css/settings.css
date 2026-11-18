@@ -73,7 +73,7 @@
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   padding: 9px 16px; border-radius: 11px; white-space: nowrap;
   background: var(--surface-2); border: 1px solid var(--border); color: var(--text);
-  font-size: 14px; cursor: pointer;
+  font-size: 14px; cursor: var(--cur-pointer);
   transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
 .bw-btn:hover { border-color: var(--border-strong); background: var(--surface-3); }
@@ -124,7 +124,7 @@
 .dd-list { max-height: 260px; overflow-y: auto; padding: 5px; }
 .dd-option {
   display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 9px;
-  color: var(--text-2); cursor: pointer; font-size: 14px;
+  color: var(--text-2); cursor: var(--cur-pointer); font-size: 14px;
 }
 .dd-option span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .dd-option small { color: var(--text-3); font-size: 11.5px; max-width: 45%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -133,7 +133,7 @@
 .dd-option.selected::after { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 11px; color: var(--accent); }
 
 /* ---------------- Toggle ---------------- */
-.bw-toggle { position: relative; display: inline-flex; cursor: pointer; flex: none; }
+.bw-toggle { position: relative; display: inline-flex; cursor: var(--cur-pointer); flex: none; }
 .bw-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
 .bw-toggle .track { width: 44px; height: 25px; border-radius: 999px; background: var(--surface-3); border: 1px solid var(--border); transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease); position: relative; }
 .bw-toggle .thumb { position: absolute; top: 3px; left: 3px; width: 17px; height: 17px; border-radius: 50%; background: var(--text-2); transition: transform var(--dur) var(--ease), background var(--dur) var(--ease); }
@@ -228,3 +228,27 @@
 .store-desc { font-size: 12.5px; color: var(--text-3); margin-top: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .tab-spinner.inline { display: inline-block; width: 12px; height: 12px; vertical-align: -2px; margin-right: 6px; }
 @media (max-width: 760px) { .store-item { flex-wrap: wrap; } .store-item .bw-btn { width: 100%; } }
+
+.pin-btn i { transform: rotate(45deg); transition: transform var(--dur) var(--ease); }
+.pin-btn.pinned { color: var(--accent); }
+.pin-btn.pinned i { transform: none; }
+
+/* About */
+.about-hero { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 18px; margin-bottom: 18px; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--border); }
+.about-hero img { width: 54px; height: 54px; border-radius: 14px; }
+.about-hero-text { flex: 1; min-width: 140px; }
+.about-name { font-size: 22px; color: var(--text); font-weight: 600; }
+.about-version { margin-top: 2px; font-size: 13px; color: var(--text-3); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.about-links { display: flex; gap: 8px; flex-wrap: wrap; }
+.about-links a { display: inline-flex; align-items: center; gap: 7px; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-solid); color: var(--text-2); font-size: 13px; text-decoration: none; }
+.about-links a:hover { color: var(--text); border-color: var(--border-strong); }
+.credit-people { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 8px; }
+.credit-people li { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 12px; background: var(--surface-2); }
+.credit-people li > i { width: 32px; height: 32px; flex: none; display: grid; place-items: center; border-radius: 10px; background: var(--accent-soft); color: var(--accent); }
+.credit-people b { display: block; color: var(--text); font-weight: 500; }
+.credit-people b a { color: inherit; }
+.credit-people span { font-size: 13px; color: var(--text-2); }
+.credit-list { list-style: none; margin: 4px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+.credit-list li { display: flex; flex-direction: column; gap: 2px; padding: 10px 14px; border-radius: 11px; background: var(--surface-2); font-size: 13.5px; }
+.credit-list li span { font-size: 12.5px; color: var(--text-3); }
+.about-fine { margin: 10px 0 0; font-size: 12.5px; line-height: 1.6; color: var(--text-3); }

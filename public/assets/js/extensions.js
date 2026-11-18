@@ -523,7 +523,7 @@
     const tabs = allTabs();
     return {
       id: tab.id,
-      index: tabs.indexOf(tab),
+      index: tabs.findIndex((t) => t.id === tab.id),
       windowId: 1,
       active: !!tab.active,
       highlighted: !!tab.active,
@@ -609,12 +609,19 @@
 
   function makeChrome(rt, ctx) {
     const isContent = ctx.kind === 'content';
-    const sender = () => ({ id: rt.id, url: ctx.url || '', origin: ctx.url ? new URL(ctx.url).origin : '', frameId: ctx.frameId || 0, tab: isContent ? tabInfo(ctx.tabId) : undefined });
+    // Extension pages live under /bw-ext/<id>/, so their "origin" is that folder, the way
+    // chrome-extension://<id> is in Chrome. uBlock only answers messages from its own origin.
+    const extBase = rt.getURL('').replace(/\/$/, '');
+    const originOf = (url) => (!url ? '' : url.startsWith(`${extBase}/`) ? extBase : new URL(url).origin);
+    const sender = () => ({ id: rt.id, url: ctx.url || '', origin: originOf(ctx.url), frameId: ctx.frameId || 0, tab: isContent ? tabInfo(ctx.tabId) : undefined });
     const onMessage = isContent ? contentEvent(rt, 'message', ctx.tabId) : rt.events.message;
     const action = {
       setBadgeText: api(({ text }) => {
         rt.badge = text || '';
-        BW.extensions.refreshPopover();
+        updatePinBadge(rt);
+        // re-render the list only; never replace an open popup
+        const pop = document.getElementById('ext-popover');
+        if (pop && !pop.classList.contains('ext-popup')) renderPopover();
       }),
       getBadgeText: api(() => rt.badge),
       setBadgeBackgroundColor: api(() => {}),
@@ -1143,25 +1150,111 @@
     rt.alarms.clear();
   }
 
-  function openPanel(rt, path, title) {
+  // Popups size themselves to their content like Chrome's (25x25 up to 800x600).
+  function fitPopup(frame) {
+    let observer;
+    const fit = () => {
+      try {
+        const doc = frame.contentDocument;
+        if (!doc || !doc.body) return;
+        frame.style.width = '25px';
+        frame.style.height = '25px';
+        const w = Math.max(doc.documentElement.scrollWidth, doc.body.scrollWidth);
+        const h = Math.max(doc.documentElement.scrollHeight, doc.body.scrollHeight);
+        frame.style.width = `${Math.min(800, Math.max(25, w))}px`;
+        frame.style.height = `${Math.min(600, Math.max(25, h))}px`;
+      } catch {}
+    };
+    frame.addEventListener('load', () => {
+      fit();
+      try {
+        observer = new frame.contentWindow.ResizeObserver(() => requestAnimationFrame(fit));
+        observer.observe(frame.contentDocument.body);
+      } catch {}
+      // late-rendering popups (uBlock fills itself in after a message round trip)
+      setTimeout(fit, 150);
+      setTimeout(fit, 600);
+    });
+  }
+
+  function openPanel(rt, path, title, anchor) {
     const popover = document.getElementById('ext-popover');
     popover.hidden = false;
-    popover.innerHTML = `<div class="ext-panel-head"><button class="icon-btn small" data-act="back" aria-label="Back"><i class="fa-solid fa-arrow-left"></i></button><span>${BW.esc(title)}</span></div><iframe class="ext-panel-frame"></iframe>`;
-    popover.querySelector('iframe').src = rt.getURL(String(path).replace(/^\//, ''));
+    placePopover(anchor);
+    const ip = iconPath(rt.manifest);
+    popover.classList.add('ext-popup');
+    popover.dataset.owner = rt.id;
+    popover.innerHTML = `<div class="ext-panel-head"><button class="icon-btn small" data-act="back" aria-label="All extensions"><i class="fa-solid fa-arrow-left"></i></button>${ip ? `<img class="ext-head-icon" src="${rt.getURL(ip)}" alt="">` : ''}<span class="ext-head-title">${BW.esc(title)}</span>${hasOptions(rt) ? '<button class="icon-btn small" data-act="options" aria-label="Options"><i class="fa-solid fa-gear"></i></button>' : ''}</div><iframe class="ext-panel-frame"></iframe>`;
+    const frame = popover.querySelector('iframe');
+    fitPopup(frame);
+    frame.src = rt.getURL(String(path).replace(/^\//, ''));
     popover.querySelector('[data-act="back"]').onclick = () => renderPopover();
+    const opt = popover.querySelector('[data-act="options"]');
+    if (opt) opt.onclick = () => openOptions(rt);
   }
-  const openPopup = (rt) => {
+  const openPopup = (rt, anchor) => {
     const p = popupPath(rt);
-    if (p) openPanel(rt, p, rt.manifest.name);
-    else rt.events.actionClicked.dispatch(tabInfo());
-  };
-  const openOptions = (rt) => {
-    const p = (rt.manifest.options_ui && rt.manifest.options_ui.page) || rt.manifest.options_page;
-    if (p) {
-      document.getElementById('ext-popover').hidden = false;
-      openPanel(rt, p, `${rt.manifest.name} options`);
+    if (p) openPanel(rt, p, rt.manifest.name, anchor);
+    else {
+      document.getElementById('ext-popover').hidden = true;
+      rt.events.actionClicked.dispatch(tabInfo());
     }
   };
+
+  const optionsPath = (rt) => (rt.manifest.options_ui && rt.manifest.options_ui.page) || rt.manifest.options_page || null;
+  const hasOptions = (rt) => !!optionsPath(rt);
+
+  // Options pages and dashboards are full pages, so they get a large window of their own instead
+  // of the toolbar popover (Chrome opens them in a tab or a dialog).
+  function openOptions(rt) {
+    const p = optionsPath(rt);
+    if (!p) return;
+    document.getElementById('ext-popover').hidden = true;
+    document.getElementById('ext-page')?.remove();
+    const ip = iconPath(rt.manifest);
+    const wrap = document.createElement('div');
+    wrap.id = 'ext-page';
+    wrap.className = 'ext-page-overlay';
+    wrap.innerHTML = `<div class="ext-page" role="dialog" aria-modal="true" aria-label="${BW.esc(rt.manifest.name)} options">
+        <div class="ext-page-head">
+          ${ip ? `<img src="${rt.getURL(ip)}" alt="">` : '<i class="fa-solid fa-puzzle-piece"></i>'}
+          <span class="ext-page-title">${BW.esc(rt.manifest.name)}</span>
+          <span class="ext-page-sub">options</span>
+          <button class="icon-btn small" data-act="reload" aria-label="Reload"><i class="fa-solid fa-rotate-right"></i></button>
+          <button class="icon-btn small" data-act="close" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <iframe class="ext-page-frame" src="${rt.getURL(String(p).replace(/^\//, ''))}"></iframe>
+      </div>`;
+    const close = () => {
+      wrap.classList.remove('visible');
+      document.removeEventListener('keydown', onKey, true);
+      setTimeout(() => wrap.remove(), 150);
+    };
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        close();
+      }
+    };
+    wrap.addEventListener('click', (e) => {
+      if (e.target === wrap || e.target.closest('[data-act="close"]')) close();
+      else if (e.target.closest('[data-act="reload"]')) wrap.querySelector('iframe').contentWindow.location.reload();
+    });
+    document.addEventListener('keydown', onKey, true);
+    document.body.appendChild(wrap);
+    requestAnimationFrame(() => wrap.classList.add('visible'));
+  }
+
+  // Line the popover up under the toolbar button that opened it.
+  function placePopover(anchor) {
+    const pop = document.getElementById('ext-popover');
+    const btn = anchor || document.getElementById('nav-extensions');
+    const host = pop.offsetParent || pop.parentElement;
+    if (!btn || !host || !btn.offsetParent) return pop.style.removeProperty('right');
+    const b = btn.getBoundingClientRect();
+    const h = host.getBoundingClientRect();
+    pop.style.right = `${Math.max(8, h.right - b.right)}px`;
+  }
 
   /* ================================================================ */
   /* Built-in extensions                                               */
@@ -1499,9 +1592,9 @@ __s.get(null,(all)=>{__cache=all||{};(function(){\n${code}\n}).call(window);});`
     const rt = runtimes.get(id);
     if (rt) {
       stopBackground(rt);
-          }
+    }
     runtimes.delete(id);
-    encodedCache.delete(id);
+    if (isPinned(id)) setPinned(id, false);
     await idb('extensions', 'readwrite', (s) => s.delete(id));
     await idb('storage', 'readwrite', (s) => {
       s.delete(`${id}:local`);
@@ -1520,86 +1613,34 @@ __s.get(null,(all)=>{__cache=all||{};(function(){\n${code}\n}).call(window);});`
     if (!silent) BW.emitChange('extensions');
   }
 
-  /* ---------------- Cloud sync export / import ---------------- */
-  const SYNC_EXT_LIMIT = 3 * 1024 * 1024; // per extension, before base64
-  const encodedCache = new Map(); // id -> { installedAt, files }
+  /* ---------------- Cloud sync ---------------- */
+  // Synced data is capped at 3 KB, so extensions sync as Chrome Web Store ids and other devices
+  // download them again. Unpacked folders and userscripts stay on the device they were added on.
+  const fromStore = (r) => r.type === 'extension' && /^[a-p]{32}$/.test(r.id) && /^https:\/\/clients2\.google\.com\/service\/update2\/crx/.test(r.manifest.update_url || '');
 
-  async function toBase64(blob) {
-    const bytes = new Uint8Array(await blob.arrayBuffer());
-    let bin = '';
-    for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
-    return btoa(bin);
-  }
-  const fromBase64 = (b64, p) => new Blob([Uint8Array.from(atob(b64), (c) => c.charCodeAt(0))], { type: guessMime(p) });
+  /** [[id, enabled], ...] for every extension installed from the Chrome Web Store. */
+  const syncList = () => [...runtimes.values()].filter((rt) => fromStore(rt.record)).map((rt) => [rt.record.id, rt.record.enabled ? 1 : 0]);
 
-  /** Serializable copy of every installed extension (files + chrome.storage). Big ones are skipped. */
-  async function exportAll() {
+  /** Make the store extensions match a synced list. Returns the ids that couldn't be installed. */
+  async function applySyncList(list) {
     await ready;
-    const extensions = [];
-    const skipped = [];
-    for (const rt of runtimes.values()) {
-      const r = rt.record;
-      const size = Object.values(r.files || {}).reduce((n, b) => n + (b.size || 0), 0);
-      if (size > SYNC_EXT_LIMIT) {
-        skipped.push(r.manifest.name);
-        continue;
+    const wanted = new Map((Array.isArray(list) ? list : []).filter((x) => Array.isArray(x) && /^[a-p]{32}$/.test(x[0])).map(([id, on]) => [id, !!on]));
+    for (const rt of [...runtimes.values()]) if (fromStore(rt.record) && !wanted.has(rt.record.id)) await remove(rt.record.id, true);
+    const failed = [];
+    for (const [id, enabled] of wanted) {
+      try {
+        if (!runtimes.has(id)) {
+          const res = await fetch(`/api/cws/crx/${id}`);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          await install(new File([await res.arrayBuffer()], `${id}.crx`));
+        }
+        if (runtimes.get(id).record.enabled !== enabled) await setEnabled(id, enabled, true);
+      } catch {
+        failed.push(id);
       }
-      let cached = encodedCache.get(r.id);
-      if (!cached || cached.installedAt !== r.installedAt) {
-        const files = {};
-        for (const [p, b] of Object.entries(r.files || {})) files[p] = await toBase64(b);
-        cached = { installedAt: r.installedAt, files };
-        encodedCache.set(r.id, cached);
-      }
-      extensions.push({
-        id: r.id,
-        manifest: r.manifest,
-        type: r.type,
-        enabled: r.enabled,
-        installedAt: r.installedAt,
-        files: cached.files,
-        storage: { local: rt.storage.local, sync: rt.storage.sync },
-      });
-    }
-    return { extensions, skipped };
-  }
-
-  /** Make the installed set match a synced list. */
-  async function importAll(list) {
-    await ready;
-    list = Array.isArray(list) ? list : [];
-    const incoming = new Set(list.map((e) => e.id));
-    for (const id of [...runtimes.keys()]) {
-      const rt = runtimes.get(id);
-      const tooBig = Object.values(rt.record.files || {}).reduce((n, b) => n + (b.size || 0), 0) > SYNC_EXT_LIMIT;
-      if (!incoming.has(id) && !tooBig) await remove(id, true); // big ones never sync, so keep them
-    }
-    for (const e of list) {
-      const existing = runtimes.get(e.id);
-      if (existing && existing.record.installedAt === e.installedAt) {
-        existing.storage.local = (e.storage && e.storage.local) || {};
-        existing.storage.sync = (e.storage && e.storage.sync) || {};
-        await existing.saveStorage('local');
-        await existing.saveStorage('sync');
-        if (existing.record.enabled !== e.enabled) await setEnabled(e.id, e.enabled, true);
-        continue;
-      }
-      if (existing) await remove(e.id, true);
-      const files = {};
-      for (const [p, b64] of Object.entries(e.files || {})) files[p] = fromBase64(b64, p);
-      const record = { id: e.id, manifest: e.manifest, name: e.manifest.name, files, enabled: e.enabled, type: e.type, installedAt: e.installedAt, startedOnce: true };
-      await idb('extensions', 'readwrite', (s) => s.put(record));
-      await idb('storage', 'readwrite', (s) => {
-        s.put((e.storage && e.storage.local) || {}, `${e.id}:local`);
-        return s.put((e.storage && e.storage.sync) || {}, `${e.id}:sync`);
-      });
-      const rt = new Runtime(record);
-      await rt.load();
-      runtimes.set(e.id, rt);
-      encodedCache.set(e.id, { installedAt: e.installedAt, files: e.files });
-      if (record.enabled) startBackground(rt);
     }
     BW.filters && BW.filters.rebuild();
+    return failed;
   }
 
   async function reload(id) {
@@ -1626,32 +1667,94 @@ __s.get(null,(all)=>{__cache=all||{};(function(){\n${code}\n}).call(window);});`
   /* ================================================================ */
   /* Toolbar popover                                                   */
   /* ================================================================ */
+  const extIcon = (rt) => {
+    const ip = iconPath(rt.manifest);
+    return ip ? `<img src="${rt.getURL(ip)}" alt="">` : '<i class="fa-solid fa-puzzle-piece"></i>';
+  };
+
   function renderPopover() {
     const el = document.getElementById('ext-popover');
     if (!el || el.hidden) return;
+    el.classList.remove('ext-popup');
+    delete el.dataset.owner;
+    const pinned = new Set(BW.settings.get('pinnedExtensions'));
     const enabledBuiltins = BUILTINS.filter((b) => BW.settings.get('builtinExtensions').includes(b.id));
     const installed = [...runtimes.values()].filter((rt) => rt.record.enabled);
-    const row = (icon, name, badge, attrs) => `<button class="ext-row" ${attrs}>${icon}<span class="ext-name">${BW.esc(name)}</span>${badge ? `<span class="ext-badge">${BW.esc(badge)}</span>` : ''}</button>`;
+    const badge = (text) => (text ? `<span class="ext-badge">${BW.esc(text)}</span>` : '');
     el.innerHTML = `<div class="ext-panel-head"><i class="fa-solid fa-puzzle-piece"></i><span>Extensions</span></div>
       <div class="ext-list">
         ${installed.map((rt) => {
-          const ip = iconPath(rt.manifest);
-          const icon = ip ? `<img src="${rt.getURL(ip)}" alt="">` : '<i class="fa-solid fa-puzzle-piece"></i>';
-          return row(icon, rt.manifest.name, rt.badge, `data-ext="${rt.id}"`);
+          const on = pinned.has(rt.id);
+          return `<div class="ext-row">
+            <button class="ext-open" data-ext="${rt.id}">${extIcon(rt)}<span class="ext-name">${BW.esc(rt.manifest.name)}</span>${badge(rt.badge)}</button>
+            ${hasOptions(rt) ? `<button class="ext-act" data-options="${rt.id}" aria-label="Options"><i class="fa-solid fa-gear"></i></button>` : ''}
+            <button class="ext-act ext-pin${on ? ' pinned' : ''}" data-pin="${rt.id}" aria-label="${on ? 'Unpin from toolbar' : 'Pin to toolbar'}" aria-pressed="${on}"><i class="fa-solid fa-thumbtack"></i></button>
+          </div>`;
         }).join('')}
-        ${enabledBuiltins.map((b) => row(`<i class="${b.icon}"></i>`, b.name, 'on', 'disabled')).join('')}
+        ${enabledBuiltins.length ? `<div class="ext-group">Built-in</div>${enabledBuiltins.map((b) => `<div class="ext-row builtin"><span class="ext-open"><i class="${b.icon}"></i><span class="ext-name">${BW.esc(b.name)}</span>${badge('on')}</span></div>`).join('')}` : ''}
         ${!installed.length && !enabledBuiltins.length ? '<p class="ext-empty">No extensions enabled.</p>' : ''}
       </div>
       <button class="ext-manage" data-act="manage"><i class="fa-solid fa-sliders"></i> Manage extensions</button>`;
   }
 
+  /* Pinned extensions sit in the navbar next to the puzzle button, like Chrome's toolbar. */
+  const isPinned = (id) => BW.settings.get('pinnedExtensions').includes(id);
+  function setPinned(id, on) {
+    const list = BW.settings.get('pinnedExtensions').filter((x) => x !== id);
+    if (on) list.push(id);
+    BW.settings.set('pinnedExtensions', list);
+  }
+
+  function renderPins() {
+    const bar = document.getElementById('nav-pins');
+    if (!bar) return;
+    const pins = BW.settings.get('pinnedExtensions').map((id) => runtimes.get(id)).filter((rt) => rt && rt.record.enabled);
+    bar.innerHTML = pins
+      .map((rt) => `<button class="nav-btn nav-pin" data-pinned-ext="${rt.id}" title="${BW.esc(rt.manifest.name)}" aria-label="${BW.esc(rt.manifest.name)}">${extIcon(rt)}${rt.badge ? `<span class="nav-pin-badge">${BW.esc(rt.badge)}</span>` : ''}</button>`)
+      .join('');
+  }
+  // badges change often (uBlock counts blocked requests), so only touch the badge text
+  function updatePinBadge(rt) {
+    const btn = document.querySelector(`#nav-pins [data-pinned-ext="${rt.id}"]`);
+    if (!btn) return;
+    let el = btn.querySelector('.nav-pin-badge');
+    if (!rt.badge) return el && el.remove();
+    if (!el) btn.insertAdjacentHTML('beforeend', '<span class="nav-pin-badge"></span>');
+    btn.querySelector('.nav-pin-badge').textContent = rt.badge;
+  }
+
   document.addEventListener('click', (e) => {
+    const pin = e.target.closest('[data-pinned-ext]');
+    if (pin) {
+      e.stopPropagation();
+      const rt = runtimes.get(pin.dataset.pinnedExt);
+      const pop = document.getElementById('ext-popover');
+      // clicking the same pinned icon again closes its popup
+      if (!pop.hidden && pop.dataset.owner === pin.dataset.pinnedExt) {
+        pop.hidden = true;
+        return;
+      }
+      if (rt) openPopup(rt, pin);
+      return;
+    }
     const pop = document.getElementById('ext-popover');
     if (!pop || pop.hidden) return;
     const extBtn = e.target.closest('[data-ext]');
     if (extBtn && pop.contains(extBtn)) {
       const rt = runtimes.get(extBtn.dataset.ext);
-      if (rt) openPopup(rt);
+      if (rt) openPopup(rt, isPinned(rt.id) ? document.querySelector(`[data-pinned-ext="${rt.id}"]`) : null);
+      return;
+    }
+    const pinToggle = e.target.closest('[data-pin]');
+    if (pinToggle && pop.contains(pinToggle)) {
+      setPinned(pinToggle.dataset.pin, !isPinned(pinToggle.dataset.pin));
+      renderPopover();
+      return;
+    }
+    const optBtn = e.target.closest('[data-options]');
+    if (optBtn && pop.contains(optBtn)) {
+      const rt = runtimes.get(optBtn.dataset.options);
+      if (rt) openOptions(rt);
       return;
     }
     if (e.target.closest('[data-act="manage"]')) {
@@ -1662,6 +1765,10 @@ __s.get(null,(all)=>{__cache=all||{};(function(){\n${code}\n}).call(window);});`
     if (!pop.contains(e.target) && !e.target.closest('#nav-extensions')) pop.hidden = true;
   });
 
+  BW.settings.on('pinnedExtensions', renderPins);
+  BW.onChange((what) => what === 'extensions' && renderPins());
+  ready.then(renderPins);
+
   BW.extensions = {
     ready,
     BUILTINS,
@@ -1671,8 +1778,8 @@ __s.get(null,(all)=>{__cache=all||{};(function(){\n${code}\n}).call(window);});`
     setEnabled,
     reload,
     list: () => [...runtimes.values()].map((rt) => rt.record),
-    exportAll,
-    importAll,
+    syncList,
+    applySyncList,
     runtime: (id) => runtimes.get(id),
     iconUrl: (id) => {
       const rt = runtimes.get(id);
@@ -1680,16 +1787,21 @@ __s.get(null,(all)=>{__cache=all||{};(function(){\n${code}\n}).call(window);});`
       return p ? rt.getURL(p) : null;
     },
     hasOptions: (id) => {
-      const m = runtimes.get(id)?.manifest || {};
-      return !!((m.options_ui && m.options_ui.page) || m.options_page);
+      const rt = runtimes.get(id);
+      return !!(rt && hasOptions(rt));
     },
     openOptions: (id) => {
       const rt = runtimes.get(id);
       if (rt) openOptions(rt);
     },
+    isPinned,
+    setPinned,
     togglePopover() {
       const el = document.getElementById('ext-popover');
-      el.hidden = !el.hidden;
+      // the puzzle button always opens the list, even if a pinned popup is showing
+      const showingList = !el.hidden && !el.classList.contains('ext-popup');
+      el.hidden = showingList;
+      if (!el.hidden) placePopover();
       renderPopover();
     },
     refreshPopover: renderPopover,
