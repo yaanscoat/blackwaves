@@ -46,6 +46,8 @@
   ];
 
   const ORIGINAL = { title: 'blackwaves', icon: '/favicon.ico' };
+  // What an about:blank/blob tab shows when no preset is picked, so it never says "blackwaves".
+  const LAUNCHER_DEFAULT = { title: 'Google', icon: fav('google.com') };
   const s = () => BW.settings;
 
   function cloakData() {
@@ -71,18 +73,21 @@
   function setTab(title, icon) {
     const doc = targetDoc();
     doc.title = title;
+    // Absolute, because a blob: launcher can't resolve "/favicon.ico" against its own URL.
+    const href = new URL(icon, location.href).href;
     let link = doc.querySelector('link[rel~="icon"]');
-    if (!link) {
-      link = doc.createElement('link');
-      link.rel = 'icon';
-      doc.head.appendChild(link);
-    }
-    link.href = icon;
+    if (link && link.href === href) return;
+    // Swap the element instead of editing it; some browsers keep showing the old icon otherwise.
+    doc.querySelectorAll('link[rel~="icon"]').forEach((l) => l.remove());
+    link = doc.createElement('link');
+    link.rel = 'icon';
+    link.href = href;
+    doc.head.appendChild(link);
   }
 
   let liveTitle = ORIGINAL.title;
   function apply() {
-    const data = cloakData();
+    const data = cloakData() || (targetDoc() !== document ? LAUNCHER_DEFAULT : null);
     const mode = s().get('cloakMode');
     if (!data || (mode === 'away' && !document.hidden)) {
       setTab(liveTitle, ORIGINAL.icon);
@@ -99,10 +104,18 @@
     }
   }
 
+  // Runs in the about:blank/blob page. A reload or close there can't be undone (about:blank comes
+  // back empty, and the blob: URL is gone once the original tab moves on), so ask first. The panic
+  // key sets __bwLeaving to skip the question. Keys pressed while the outer page has focus go to
+  // blackwaves too, so the panic key always works.
+  const LAUNCHER_SCRIPT = `window.__bwLauncher=true;
+addEventListener('beforeunload',function(e){if(!window.__bwLeaving){e.preventDefault();e.returnValue='';}});
+addEventListener('keydown',function(e){try{document.querySelector('iframe').contentWindow.BW.cloak.handleKey(e);}catch(_){}},true);`;
+
   function launcherHtml() {
-    const data = cloakData() || { title: 'Google', icon: fav('google.com') };
+    const data = cloakData() || LAUNCHER_DEFAULT;
     const esc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-    return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${esc(data.title)}</title><link rel="icon" href="${esc(data.icon)}"><style>html,body{margin:0;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;position:fixed;inset:0}</style></head><body><script>window.__bwLauncher=true;<\/script><iframe src="${esc(location.origin + '/')}" allow="fullscreen; clipboard-read; clipboard-write; autoplay; encrypted-media" allowfullscreen></iframe></body></html>`;
+    return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${esc(data.title)}</title><link rel="icon" href="${esc(data.icon)}"><style>html,body{margin:0;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;position:fixed;inset:0}</style></head><body><script>${LAUNCHER_SCRIPT}<\/script><iframe src="${esc(location.origin + '/')}" allow="fullscreen; autoplay; clipboard-read; clipboard-write; encrypted-media; picture-in-picture; gamepad" allowfullscreen></iframe></body></html>`;
   }
 
   function launch(mode) {
@@ -153,6 +166,7 @@
     if (/INPUT|TEXTAREA|SELECT/.test(tag) || (e.target && e.target.isContentEditable)) return;
     const url = s().get('panicUrl') || 'https://classroom.google.com';
     try {
+      window.top.__bwLeaving = true;
       window.top.location.replace(url);
     } catch {
       location.replace(url);
