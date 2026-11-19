@@ -70,6 +70,10 @@
   grid.addEventListener('error', (e) => {
     if (e.target.tagName === 'IMG' && !e.target.src.endsWith(PLACEHOLDER)) e.target.src = PLACEHOLDER;
   }, true);
+  // thumbnails fade in over the placeholder instead of popping in from an empty box
+  grid.addEventListener('load', (e) => {
+    if (e.target.tagName === 'IMG') e.target.parentElement.classList.add('loaded');
+  }, true);
 
   grid.addEventListener('click', (e) => {
     const el = e.target.closest('.game-card[data-index]');

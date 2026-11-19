@@ -10,13 +10,12 @@ The following versions of this project that are currently supported:
 
 ## Best Practices
 
-- Always ensure you’re using the latest supported version of Waves for optimal performance.
+- Always ensure you’re using the latest supported version of BlackWaves for optimal performance.
 
 ## Why?
 
-Hosting multiple versions of Waves can cost a lot and i do **NOT** have the money for that.
-If you want a old version of Waves you can self host.
+Hosting multiple versions of BlackWaves can cost a lot and I do **NOT** have the money for that.
 
 ## Support
 
-If you are having a problem with Waves feel free to send me a message to my [Email](sefiicc@gmail.com), i'll try to answer you as soon as possile.
+If you are having a problem with Waves feel free to send me a message to my [Email](yaanscoat@gmail.com), I'll try to answer you as soon as possible.

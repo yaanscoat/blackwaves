@@ -31,4 +31,4 @@
 </a>
 
 ## license
-this project is licensed by the [GNU GPLv3](LICENSE)
+this project is licensed by the [blackwaves LICENSE 1.0!!](LICENSE)

@@ -27,6 +27,14 @@
     $('greeting').innerHTML = `<i class="${icon}"></i> ${text}${name ? `, ${BW.esc(name)}` : ''}`;
   }
 
+  $('footer-version').addEventListener('click', () => BW.settingsUI.open('about'));
+
+  // The full hint gets cut off on phones.
+  const narrow = matchMedia('(max-width: 600px)');
+  const setSearchHint = () => (searchInput.placeholder = narrow.matches ? 'Search or enter a URL' : 'Search the web or enter a URL');
+  narrow.addEventListener('change', setSearchHint);
+  setSearchHint();
+
   function updateEngineChip() {
     const id = S.get('searchEngine');
     $('engine-chip').textContent = id === 'custom' ? 'Custom' : BW.SEARCH_ENGINES[id]?.name || 'DuckDuckGo';

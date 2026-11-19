@@ -284,6 +284,8 @@ body.browsing .backdrop-glow, body.browsing #seasonal-canvas, body.browsing #sea
 body.browsing .footer, body.games-open .footer, body.games-open .top-bar, body.ai-open .footer, body.ai-open .top-bar { display: none; }
 .footer-left i { margin-right: 4px; }
 .footer-center a { color: var(--text-2); }
+.footer-version { padding: 0; border: 0; background: none; color: inherit; font: inherit; }
+.footer-version:hover { color: var(--text-2); }
 .footer-right { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
 .status-pill {
   display: inline-flex; align-items: center; gap: 7px; padding: 5px 11px;
@@ -329,11 +331,14 @@ body.browsing .footer, body.games-open .footer, body.games-open .top-bar, body.a
   transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
 .game-card:hover { transform: translateY(-3px); border-color: var(--border-strong); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25); }
-.game-thumb { flex: none; width: 100%; aspect-ratio: 16 / 10; background: var(--surface-2); overflow: hidden; }
-.game-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.game-thumb { flex: none; width: 100%; aspect-ratio: 16 / 10; background: var(--surface-2) url(/assets/images/placeholder.svg) center / cover no-repeat; overflow: hidden; }
+.game-thumb.loaded { background-image: none; }
+.game-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity 0.25s var(--ease); }
+.game-thumb.loaded img { opacity: 1; }
 .game-meta { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px 12px; min-width: 0; }
 .game-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; }
 .game-source { font-size: 11.5px; color: var(--text-3); }
+.game-card.skeleton .game-thumb { background-image: linear-gradient(90deg, var(--surface-2), var(--surface-3), var(--surface-2)); }
 .game-card.skeleton .game-thumb, .game-card.skeleton .game-meta span {
   background: linear-gradient(90deg, var(--surface-2), var(--surface-3), var(--surface-2)); background-size: 200% 100%;
   animation: shimmer 1.2s linear infinite;
@@ -696,7 +701,7 @@ body.browsing .footer, body.games-open .footer, body.games-open .top-bar, body.a
 .ai-welcome h2 { font-size: 26px; margin: 0 0 8px; }
 .ai-welcome p { color: var(--text-3); margin: 0 0 22px; }
 .ai-suggestions { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; text-align: left; }
-.ai-suggestion { display: flex; align-items: center; gap: 12px; padding: 13px 14px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text-2); font-size: 13.5px; transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease); }
+.ai-suggestion { display: flex; align-items: center; gap: 12px; text-align: left; padding: 13px 14px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text-2); font-size: 13.5px; transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease); }
 .ai-suggestion:hover { border-color: var(--border-strong); color: var(--text); }
 .ai-suggestion i { color: var(--accent); width: 16px; }
 .ai-composer {
@@ -714,6 +719,7 @@ body.browsing .footer, body.games-open .footer, body.games-open .top-bar, body.a
   .ai-side-head span, .ai-sidebar .new-tab-btn span, .ai-chat-item span, .ai-chat-item .tab-close, #ai-zola span { display: none; }
   .ai-sidebar .new-tab-btn, .ai-chat-item, #ai-zola { justify-content: center; padding-left: 0; padding-right: 0; }
   .ai-side-head { justify-content: center; }
+  .ai-empty-list { display: none; }
 }
 .blocked-stats i { color: var(--danger); margin-right: 4px; }
 .ai-col { flex: 1; min-width: 0; }

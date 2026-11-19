@@ -189,7 +189,8 @@
       })
     );
     let games = results.flat();
-    if (source === 'all') games.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+    const junk = (name) => (/^[\p{L}\p{N}]/u.test(name) ? 0 : 1);
+    if (source === 'all') games.sort((a, b) => junk(a.name) - junk(b.name) || a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
     return { games, failed };
   }
 
