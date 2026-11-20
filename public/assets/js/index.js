@@ -29,11 +29,42 @@
 
   $('footer-version').addEventListener('click', () => BW.settingsUI.open('about'));
 
-  // The full hint gets cut off on phones.
-  const narrow = matchMedia('(max-width: 600px)');
-  const setSearchHint = () => (searchInput.placeholder = narrow.matches ? 'Search or enter a URL' : 'Search the web or enter a URL');
-  narrow.addEventListener('change', setSearchHint);
-  setSearchHint();
+  /* Search bar hint: random lines from /assets/js/json/text.json, typed out one after another. */
+  (async () => {
+    let texts = [];
+    try {
+      const res = await fetch('/assets/js/json/text.json', { cache: 'no-cache' });
+      texts = ((await res.json()).texts || []).filter((t) => typeof t === 'string' && t.trim());
+    } catch {}
+    if (!texts.length) return; // keep the plain "search the web or enter a url"
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    const animate = () => !['off', 'reduced'].includes(S.get('motion'));
+    let last = -1;
+    const pick = () => {
+      let i = Math.floor(Math.random() * texts.length);
+      if (texts.length > 1 && i === last) i = (i + 1) % texts.length;
+      last = i;
+      return texts[i];
+    };
+    for (;;) {
+      const text = pick();
+      if (!animate() || home.hidden) {
+        searchInput.placeholder = text;
+        await wait(5000);
+        continue;
+      }
+      for (let n = 1; n <= text.length; n++) {
+        searchInput.placeholder = text.slice(0, n);
+        await wait(45 + Math.random() * 45);
+      }
+      await wait(3200);
+      for (let n = text.length - 1; n >= 0; n--) {
+        searchInput.placeholder = text.slice(0, n);
+        await wait(22);
+      }
+      await wait(350);
+    }
+  })();
 
   function updateEngineChip() {
     const id = S.get('searchEngine');

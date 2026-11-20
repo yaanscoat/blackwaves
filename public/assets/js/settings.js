@@ -1,4 +1,4 @@
-/* Settings: centered modal with sidebar tabs. */
+/* Settings: a full page with a search bar, a sidebar of tabs and a two-column grid of settings. */
 (function () {
   const S = BW.settings;
   const esc = BW.esc;
@@ -11,34 +11,42 @@
     { id: 'extensions', name: 'Extensions', icon: 'fa-solid fa-puzzle-piece' },
     { id: 'advanced', name: 'Advanced', icon: 'fa-solid fa-microchip' },
     { id: 'sync', name: 'Cloud Sync', icon: 'fa-solid fa-cloud' },
-    { id: 'about', name: 'About', icon: 'fa-solid fa-circle-info' },
+    { id: 'about', name: 'About', icon: 'fa-solid fa-circle-info', more: true },
   ];
+  const tabButton = (t) => `<button class="settings-tab" data-tab="${t.id}"><i class="${t.icon}"></i><span>${t.name}</span></button>`;
   const REPO_URL = 'https://github.com/yaanscoat/blackwaves';
 
   const root = document.getElementById('settings-root');
   root.innerHTML = `
-    <div class="settings-overlay" id="settings-overlay" hidden>
-      <div class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-heading">
+    <div class="settings-overlay" id="settings-overlay" role="dialog" aria-modal="true" aria-labelledby="settings-heading" hidden>
+      <header class="settings-top">
+        <div class="settings-title">
+          <button class="icon-btn" id="settings-close" aria-label="Close settings"><i class="fa-solid fa-arrow-left"></i></button>
+          <h2 id="settings-heading">Settings</h2>
+        </div>
+        <label class="settings-search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input id="settings-search" type="text" placeholder="Search settings..." autocomplete="off" spellcheck="false">
+        </label>
+      </header>
+      <div class="settings-layout">
         <aside class="settings-sidebar">
-          <div class="settings-brand"><i class="fa-solid fa-gear"></i><span>Settings</span></div>
+          <div class="settings-label">Settings</div>
+          <nav class="settings-tabs">${TABS.filter((t) => !t.more).map(tabButton).join('')}</nav>
+          <div class="settings-label settings-more">More</div>
           <nav class="settings-tabs">
-            ${TABS.map((t) => `<button class="settings-tab" data-tab="${t.id}"><i class="${t.icon}"></i><span>${t.name}</span></button>`).join('')}
+            <button class="settings-tab" data-action="tutorial"><i class="fa-solid fa-book-open"></i><span>Tutorial</span></button>
+            ${TABS.filter((t) => t.more).map(tabButton).join('')}
           </nav>
-          <div class="settings-foot">blackwaves v${VERSION}<br>by <a href="https://github.com/yaanscoat" target="_blank" rel="noopener">yaanscoat</a><br><a href="${BW.DISCORD_URL}" target="_blank" rel="noopener"><i class="fa-brands fa-discord"></i> Join the Discord</a></div>
+          <div class="settings-version"><span>Version</span><b>v${VERSION}</b></div>
         </aside>
-        <section class="settings-main">
-          <header class="settings-header">
-            <h2 id="settings-heading"></h2>
-            <button class="icon-btn" id="settings-close" aria-label="Close settings"><i class="fa-solid fa-xmark"></i></button>
-          </header>
-          <div class="settings-scroll" id="settings-scroll"></div>
-        </section>
+        <main class="settings-scroll" id="settings-scroll"></main>
       </div>
     </div>`;
 
   const overlay = document.getElementById('settings-overlay');
   const scroll = document.getElementById('settings-scroll');
-  const heading = document.getElementById('settings-heading');
+  const searchField = document.getElementById('settings-search');
   let current = 'preferences';
 
   /* ---------------- building blocks ---------------- */
@@ -105,13 +113,14 @@
       BW.toast(v ? `We'll call you ${esc(v)}.` : 'Name cleared.', 'success');
     }));
 
-    const search = section('Search');
+    const search = general;
     const engineOptions = Object.entries(BW.SEARCH_ENGINES).map(([id, e]) => ({
       value: id,
       label: e.name,
       icon: e.home ? `https://www.google.com/s2/favicons?sz=32&domain=${new URL(e.home).hostname}` : 'fa-solid fa-pen',
     }));
     const customRow = document.createElement('div');
+    customRow.className = 'row-group';
     row(search, 'Search engine', 'Where searches from the home page and address bar go.', dropdownEl(engineOptions, S.get('searchEngine'), (v) => {
       S.set('searchEngine', v);
       customRow.hidden = v !== 'custom';
@@ -125,8 +134,7 @@
       BW.toast('Custom search engine saved.', 'success');
     }));
 
-    const games = section('Games');
-    row(games, 'Game source', 'Which library opens first in Games.', dropdownEl(
+    row(general, 'Game source', 'Which library opens first in Games.', dropdownEl(
       [{ value: 'all', label: 'All sources', icon: 'fa-solid fa-layer-group' }].concat(BW.loader.GAME_SOURCES.map((s) => ({ value: s.id, label: s.label, icon: 'fa-solid fa-gamepad' }))),
       S.get('gameSource'),
       (v) => {
@@ -138,10 +146,6 @@
     const behavior = section('Behavior');
     row(behavior, 'Prevent tab closing', 'Ask before the tab closes or reloads, so you never lose a game by accident.', toggleSetting('preventClose', 'Tab close protection on.', 'Tab close protection off.'));
     row(behavior, 'Navigation bar', 'Show the toolbar above proxied pages.', toggleSetting('navbar'));
-    row(behavior, 'Welcome tutorial', 'Walk through the basics again.', button('<i class="fa-solid fa-play"></i> Replay', () => {
-      close();
-      BW.tutorial.start();
-    }));
   }
 
   /* ---------------- Appearance ---------------- */
@@ -160,15 +164,13 @@
     });
     themes.appendChild(grid);
 
-    const motion = section('Motion');
-    row(motion, 'Motion effects', '<b>Full</b> everything on. <b>Minimal</b> quick fades only. <b>Reduced</b> slow and sparse. <b>Off</b> no animation at all.', BW.segmented(BW.MOTION, S.get('motion'), (v) => S.set('motion', v)), { stack: true });
+    const effects = section('Effects');
+    row(effects, 'Motion effects', '<b>Full</b> everything on. <b>Minimal</b> quick fades only. <b>Reduced</b> slow and sparse. <b>Off</b> no animation at all.', BW.segmented(BW.MOTION, S.get('motion'), (v) => S.set('motion', v)), { stack: true });
 
-    const seasonal = section('Seasonal');
     const autoNote = () => `Automatic follows the calendar, with a starry night between seasons. Right now that's <b>${esc(BW.SEASONAL.find((x) => x.id === BW.seasonForDate()).name)}</b>.`;
-    row(seasonal, 'Seasonal look', autoNote(), dropdownEl(BW.SEASONAL.map((x) => ({ value: x.id, label: x.name })), S.get('seasonal'), (v) => S.set('seasonal', v)));
+    row(effects, 'Seasonal look', autoNote(), dropdownEl(BW.SEASONAL.map((x) => ({ value: x.id, label: x.name })), S.get('seasonal'), (v) => S.set('seasonal', v)));
 
-    const cursor = section('Cursor');
-    row(cursor, 'Custom cursor', 'The Mario Gant cursor set by Behelit. Turn it off to use your system cursor.', BW.toggle(S.get('customCursor'), (v) => S.set('customCursor', v)));
+    row(effects, 'Custom cursor', 'The Mario Gant cursor set by Behelit. Turn it off to use your system cursor.', BW.toggle(S.get('customCursor'), (v) => S.set('customCursor', v)));
   }
 
   /* ---------------- Cloaking ---------------- */
@@ -179,6 +181,7 @@
       { value: 'custom', label: 'Custom...', icon: 'fa-solid fa-pen' },
     ].concat(BW.cloak.PRESETS.map((p) => ({ value: p.id, label: p.name, icon: p.icon, hint: p.title })));
     const custom = document.createElement('div');
+    custom.className = 'row-group';
     row(tab, 'Preset', `${BW.cloak.PRESETS.length} presets with real titles and icons.`, dropdownEl(presetOptions, S.get('cloakPreset'), (v) => {
       S.set('cloakPreset', v);
       custom.hidden = v !== 'custom';
@@ -667,17 +670,50 @@
 
   const RENDERERS = { preferences: renderPreferences, appearance: renderAppearance, cloaking: renderCloaking, extensions: renderExtensions, advanced: renderAdvanced, sync: renderSync, about: renderAbout };
 
-  function render(tab) {
+  function cleanup() {
     if (unsubscribeSync) unsubscribeSync();
     unsubscribeSync = null;
     if (unsubscribeStats) unsubscribeStats();
     unsubscribeStats = null;
-    current = tab;
-    heading.textContent = TABS.find((t) => t.id === tab).name;
-    overlay.querySelectorAll('.settings-tab').forEach((b) => b.classList.toggle('active', b.dataset.tab === tab));
     scroll.innerHTML = '';
-    scroll.scrollTop = 0;
+    overlay.scrollTop = 0;
+  }
+
+  function render(tab) {
+    cleanup();
+    current = tab;
+    searchField.value = '';
+    overlay.querySelectorAll('.settings-tab[data-tab]').forEach((b) => b.classList.toggle('active', b.dataset.tab === tab));
     RENDERERS[tab]();
+    // on phones the tabs are a sideways strip; keep the active one in view
+    const active = overlay.querySelector('.settings-tab.active');
+    if (active && matchMedia('(max-width: 760px)').matches) requestAnimationFrame(() => active.scrollIntoView({ block: 'nearest', inline: 'center' }));
+  }
+
+  // Search every tab at once: draw them all, then hide what doesn't match.
+  function search(q) {
+    q = q.trim().toLowerCase();
+    if (!q) return render(current);
+    cleanup();
+    overlay.querySelectorAll('.settings-tab').forEach((b) => b.classList.remove('active'));
+    for (const t of TABS) if (!t.more) RENDERERS[t.id]();
+    const has = (el) => el && el.textContent.toLowerCase().includes(q);
+    for (const sec of scroll.querySelectorAll('.settings-section')) {
+      if (has(sec.querySelector('h3')) || has(sec.querySelector('.section-note'))) continue;
+      let any = false;
+      for (const child of sec.querySelectorAll(':scope > *:not(h3):not(.section-note)')) {
+        const rows = child.classList.contains('row-group') ? [...child.children] : [child];
+        for (const r of rows) {
+          const hit = r.classList.contains('setting-row') && has(r.querySelector('.setting-text'));
+          r.classList.toggle('search-miss', !hit);
+          any = any || (hit && !child.hidden);
+        }
+      }
+      sec.classList.toggle('search-miss', !any);
+    }
+    if (!scroll.querySelector('.settings-section:not(.search-miss)')) {
+      scroll.insertAdjacentHTML('beforeend', `<div class="settings-empty"><i class="fa-solid fa-ghost"></i><p>Nothing matches "${esc(q)}".</p></div>`);
+    }
   }
 
   function open(tab) {
@@ -692,13 +728,23 @@
   }
 
   overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) close();
     const tab = e.target.closest('.settings-tab');
-    if (tab) render(tab.dataset.tab);
+    if (!tab) return;
+    if (tab.dataset.action === 'tutorial') {
+      close();
+      BW.tutorial.start();
+    } else render(tab.dataset.tab);
+  });
+  let searchTimer;
+  searchField.addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => search(searchField.value), 120);
   });
   document.getElementById('settings-close').addEventListener('click', close);
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !overlay.hidden && !document.querySelector('.bw-dropdown.open')) close();
+    if (e.key !== 'Escape' || overlay.hidden || document.querySelector('.bw-dropdown.open')) return;
+    if (document.activeElement === searchField && searchField.value) return render(current);
+    close();
   });
   document.getElementById('settings-open').addEventListener('click', () => open());
 

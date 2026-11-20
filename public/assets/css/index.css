@@ -794,3 +794,6 @@ body.browsing .footer, body.games-open .footer, body.games-open .top-bar, body.a
 @keyframes splash-glow { 50% { opacity: 0.18; transform: scale(1.15); } }
 [data-motion="off"] .splash *, [data-motion="off"] .splash *::before, [data-motion="off"] .splash *::after { animation: none !important; transition: none !important; }
 [data-motion="reduced"] .splash-logo::before { animation-duration: 2.4s; }
+
+/* The rotating search hints come from text.json and keep the case they were written in. */
+#search-input::placeholder { text-transform: none; }
