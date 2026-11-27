@@ -1,5 +1,7 @@
 import express from "express";
+import fs from "fs";
 import { createServer } from "http";
+import { createServer as createHttpsServer } from "https";
 import path from "path";
 import { fileURLToPath } from "url";
 import compression from "compression";
@@ -30,8 +32,25 @@ const libcurlV2Path = path.join(pkgDir("libcurl-transport-v2"), "dist");
 const VERSION = "1.0.0";
 const app = express();
 
+// Built-in HTTPS (no reverse proxy needed). Set TLS_CERT + TLS_KEY to PEM files to enable it;
+// setup.sh does this with a Let's Encrypt certificate. Without them the server is plain HTTP.
+const tlsCert = process.env.TLS_CERT;
+const tlsKey = process.env.TLS_KEY;
+const useTls = Boolean(tlsCert && tlsKey);
+const loadTls = () => ({ cert: fs.readFileSync(tlsCert), key: fs.readFileSync(tlsKey) });
+const domain = process.env.DOMAIN || null;
+// Let's Encrypt HTTP-01 challenges (certbot --webroot) are answered from this folder.
+const acmeDir = process.env.ACME_DIR || null;
+
 app.disable("x-powered-by");
 app.use(compression({ level: 6, threshold: 1024 }));
+if (acmeDir) app.use("/.well-known/acme-challenge/", express.static(acmeDir));
+if (useTls) {
+  app.use((req, res, next) => {
+    res.setHeader("Strict-Transport-Security", "max-age=31536000");
+    next();
+  });
+}
 
 // Bare-mux transports (Ultraviolet + Scramjet 1.1.0)
 app.use("/baremux/", express.static(baremuxPath));
@@ -304,8 +323,36 @@ app.use((req, res) => {
 /* WebSockets: ping + live client count, wisp                          */
 /* ------------------------------------------------------------------ */
 
-const port = parseInt(process.env.PORT || "8000");
-const server = createServer(app);
+const port = parseInt(process.env.PORT || (useTls ? "443" : "8000"));
+const server = useTls ? createHttpsServer(loadTls(), app) : createServer(app);
+
+// With HTTPS on, a small HTTP listener (HTTP_PORT, default 80, 0 turns it off) answers
+// certificate challenges and sends everyone else to the https:// address.
+const httpPort = useTls ? parseInt(process.env.HTTP_PORT ?? "80") : 0;
+let redirectServer = null;
+if (httpPort) {
+  const redirect = express();
+  redirect.disable("x-powered-by");
+  if (acmeDir) redirect.use("/.well-known/acme-challenge/", express.static(acmeDir));
+  redirect.use((req, res) => {
+    const host = domain || (req.headers.host || "localhost").replace(/:\d+$/, "");
+    res.redirect(301, `https://${host}${port === 443 ? "" : `:${port}`}${req.originalUrl}`);
+  });
+  redirectServer = createServer(redirect);
+  redirectServer.on("error", (err) => console.error(`  [blackwaves] HTTP redirect on :${httpPort} failed: ${err.message}`));
+  redirectServer.listen(httpPort);
+}
+
+// SIGHUP reloads the certificate without dropping anyone (certbot's renewal hook sends it).
+process.on("SIGHUP", () => {
+  if (!useTls) return;
+  try {
+    server.setSecureContext(loadTls());
+    console.log("  [blackwaves] TLS certificate reloaded.");
+  } catch (err) {
+    console.error(`  [blackwaves] TLS reload failed: ${err.message}`);
+  }
+});
 const pingWSS = new WebSocketServer({ noServer: true });
 const clientSockets = new Set();
 
@@ -369,7 +416,9 @@ server.on("listening", () => {
   const address = server.address();
   console.log(STARTUP_ART);
   console.log(`  [blackwaves] v${VERSION} by yaanscoat - https://github.com/yaanscoat`);
-  console.log(`  [blackwaves] Running at http://localhost:${address.port}`);
+  const scheme = useTls ? "https" : "http";
+  const defaultPort = useTls ? 443 : 80;
+  console.log(`  [blackwaves] Running at ${scheme}://${domain || "localhost"}${address.port === defaultPort ? "" : `:${address.port}`}`);
   console.log(`  [blackwaves] Engines: Scramjet latest | Scramjet 1.1.0 | Ultraviolet\n`);
   resolveLocation().then(() => {
     console.log(`  [blackwaves] Server location: ${serverLocation}`);
@@ -388,6 +437,7 @@ function shutdown(signal) {
   console.log(SHUTDOWN_ART);
   console.log(`  [blackwaves] ${signal} received, closing ${clientSockets.size} client(s)...`);
   for (const ws of clientSockets) ws.terminate();
+  redirectServer?.close();
   server.close(() => {
     console.log("  [blackwaves] Server closed. See you next wave!\n");
     process.exit(0);
