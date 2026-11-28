@@ -1,6 +1,6 @@
 # blackwaves!!
 
-[![Join our Discord](https://invidget.switchblade.xyz/Un24M9gnpN)](https://discord.gg/Un24M9gnpN)
+[![Join our Discord!!](https://invidget.switchblade.xyz/Un24M9gnpN)](https://discord.gg/Un24M9gnpN)
 
 ## features
 - clean and minimalistic
